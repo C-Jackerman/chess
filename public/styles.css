@@ -978,10 +978,10 @@ select {
 
 /* Optional 3D Perspective Mode */
 body.board-3d .board-frame {
-  transform: perspective(950px) rotateX(14deg);
+  transform: perspective(1000px) rotateX(12deg) scale(0.94);
   box-shadow:
-    0 26px 50px rgba(0, 0, 0, 0.65),
-    0 10px 0 var(--board-border);
+    0 20px 42px rgba(0, 0, 0, 0.65),
+    0 8px 0 var(--board-border);
 }
 
 .chessboard {
@@ -1982,11 +1982,18 @@ body.tabletop-mode .piece-wrap.piece-color-b {
 
 @media (max-width: 480px) {
   .brand-text h1 {
-    font-size: 13.5px;
+    font-size: 13px;
+    white-space: nowrap;
   }
   .brand-badge,
-  .online-pill {
+  .online-pill,
+  .pill-icon {
     display: none;
+  }
+  .mode-pill {
+    white-space: nowrap;
+    padding: 5px 8px;
+    font-size: 11px;
   }
   .chess-clock {
     font-size: 15px;
