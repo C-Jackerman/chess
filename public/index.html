@@ -3,307 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0f17" />
+  <meta name="theme-color" content="#302e2b" />
   <title>Royal Chess — Đấu Trường Cờ Vua Trực Tuyến</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=3" />
 </head>
 <body>
-  <!-- Subtle SVG drop shadow filter for chess pieces -->
+  <!-- Piece Drop Shadow Filter -->
   <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
     <defs>
       <filter id="piece-shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="2" stdDeviation="1.5" flood-color="rgba(0,0,0,0.42)" />
+        <feDropShadow dx="0" dy="2" stdDeviation="1.4" flood-color="rgba(0,0,0,0.4)" />
       </filter>
     </defs>
   </svg>
 
-  <!-- TOP NAVIGATION BAR -->
-  <header class="topbar">
-    <div class="brand-group">
-      <div class="brand-logo" aria-hidden="true">♔</div>
-      <div class="brand-text">
-        <h1>ROYAL CHESS</h1>
-      </div>
-    </div>
-
-    <!-- Clean Segmented Mode Switcher (No Cluttered Emojis) -->
-    <nav class="mode-switcher" aria-label="Chế độ chơi">
-      <button type="button" class="mode-pill active" data-mode="online" id="btn-mode-online">
-        Trực tuyến 1v1
-      </button>
-      <button type="button" class="mode-pill" data-mode="ai" id="btn-mode-ai">
-        Đấu với AI
-      </button>
-      <button type="button" class="mode-pill" data-mode="local" id="btn-mode-local">
-        2 Người chơi
-      </button>
-    </nav>
-
-    <!-- Right Header Controls -->
-    <div class="topbar-actions">
-      <div class="online-pill" id="online-status-pill" title="Người chơi đang trực tuyến">
-        <span class="status-dot online"></span>
-        <span id="online-count-text">1 online</span>
-      </div>
-      <button type="button" class="icon-action-btn" id="btn-open-customize" title="Tùy chỉnh bàn cờ & giao diện">
-        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
-        <span class="btn-label-desktop">Giao diện</span>
-      </button>
-      <button type="button" class="profile-trigger-btn" id="btn-open-profile" title="Hồ sơ kỳ thủ">
-        <span class="avatar-mini" id="header-avatar">♔</span>
-        <span class="btn-label-desktop" id="header-username">Kỳ Thủ</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Hidden elements kept for state compatibility -->
+  <!-- Hidden legacy hooks for compatibility -->
   <div class="hidden" aria-hidden="true">
-    <span id="profile-card-avatar">♔</span>
+    <span id="profile-card-avatar">K</span>
     <span id="profile-card-title">GM</span>
     <span id="profile-card-name">Kỳ Thủ</span>
     <span id="profile-mode-label"></span>
     <button type="button" id="btn-edit-profile-inline"></button>
   </div>
 
-  <!-- MAIN 3-COLUMN WORKSPACE -->
-  <main class="app-layout" id="app-layout" data-mobile-view="board">
-    <!-- ==========================================
-         LEFT PANEL: CLEAN MATCHMAKING & SETUP
-         ========================================== -->
-    <aside class="side-panel panel-left" id="panel-lobby">
-      <!-- ONLINE 1V1 SOLO CONTROLS -->
-      <section class="panel-card mode-section" id="section-online-controls">
-        <div class="card-header">
-          <h2>Đấu Trực Tuyến 1v1</h2>
-          <span class="badge-subtle">Thời gian thực</span>
-        </div>
-
-        <!-- Active Room Banner (Shown when inside an online room) -->
-        <div class="active-room-box hidden" id="active-room-box">
-          <div class="room-code-header">
-            <span class="room-label">MÃ PHÒNG HIỆN TẠI</span>
-            <span class="room-role-badge" id="active-room-role">Quân Trắng</span>
-          </div>
-          <div class="room-code-display" id="active-room-code">------</div>
-          <div class="room-share-actions">
-            <button type="button" class="btn-secondary btn-sm" id="btn-copy-code">
-              Sao chép mã
-            </button>
-            <button type="button" class="btn-primary btn-sm" id="btn-copy-link">
-              Sao chép link mời
-            </button>
-          </div>
-          <button type="button" class="btn-ghost-danger btn-sm full-width" id="btn-leave-room">
-            Rời phòng đấu
-          </button>
-        </div>
-
-        <!-- Create / Matchmake Controls -->
-        <div id="lobby-match-controls">
-          <button type="button" class="btn-quickmatch" id="btn-quick-match">
-            <div class="qm-text">
-              <strong>Ghép trận nhanh</strong>
-              <small>Tự động tìm đối thủ đang chờ</small>
-            </div>
-            <span class="qm-arrow">→</span>
-          </button>
-
-          <div class="divider-text"><span>TẠO PHÒNG RIÊNG</span></div>
-
-          <div class="form-row-2">
-            <div class="form-group">
-              <label for="select-online-tc">Thời gian</label>
-              <select id="select-online-tc" class="ui-select">
-                <option value="1+0">1 + 0 (Siêu chớp)</option>
-                <option value="2+1">2 + 1 (Siêu chớp)</option>
-                <option value="3+0">3 + 0 (Cờ chớp)</option>
-                <option value="3+2">3 + 2 (Cờ chớp)</option>
-                <option value="5+0">5 + 0 (Cờ chớp)</option>
-                <option value="10+0" selected>10 + 0 (Cờ nhanh)</option>
-                <option value="15+10">15 + 10 (Tiêu chuẩn)</option>
-                <option value="unlimited">Không giới hạn</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="select-online-color">Màu quân</label>
-              <select id="select-online-color" class="ui-select">
-                <option value="random" selected>Ngẫu nhiên</option>
-                <option value="w">Quân Trắng</option>
-                <option value="b">Quân Đen</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="button" class="btn-primary full-width" id="btn-create-room">
-            Tạo phòng & lấy link mời
-          </button>
-
-          <div class="divider-text"><span>VÀO PHÒNG BẰNG MÃ</span></div>
-
-          <div class="join-code-row">
-            <input
-              type="text"
-              id="input-room-code"
-              class="ui-input code-input"
-              placeholder="Nhập mã 6 ký tự..."
-              maxlength="8"
-              autocomplete="off"
-            />
-            <button type="button" class="btn-secondary" id="btn-join-code">Vào</button>
-          </div>
-        </div>
-
-        <!-- Live Open Rooms List -->
-        <div class="lobby-list-wrap">
-          <div class="lobby-list-header">
-            <span>Phòng đang mở (<span id="lobby-room-count">0</span>)</span>
-            <button type="button" class="text-link-btn" id="btn-refresh-lobby">Làm mới</button>
-          </div>
-          <div class="lobby-rooms-list" id="lobby-rooms-list">
-            <div class="empty-lobby-msg">Chưa có phòng chờ. Bấm <b>Tạo phòng</b> để mời bạn bè.</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- AI MODE SETTINGS -->
-      <section class="panel-card mode-section hidden" id="section-ai-controls">
-        <div class="card-header">
-          <h2>Đấu Với Trí Tuệ Nhân Tạo</h2>
-          <span class="badge-subtle">Minimax Engine</span>
-        </div>
-
-        <div class="form-group">
-          <label>Cấp độ kỹ năng</label>
-          <div class="ai-level-grid" id="ai-level-grid">
-            <button type="button" class="ai-lvl-btn" data-level="1">
-              <strong>Tập sự</strong>
-              <small>ELO 800</small>
-            </button>
-            <button type="button" class="ai-lvl-btn" data-level="2">
-              <strong>Câu lạc bộ</strong>
-              <small>ELO 1250</small>
-            </button>
-            <button type="button" class="ai-lvl-btn active" data-level="3">
-              <strong>Kiện tượng</strong>
-              <small>ELO 1650</small>
-            </button>
-            <button type="button" class="ai-lvl-btn" data-level="4">
-              <strong>Đại kiện tượng</strong>
-              <small>ELO 2100+</small>
-            </button>
-          </div>
-        </div>
-
-        <div class="form-row-2">
-          <div class="form-group">
-            <label for="select-ai-color">Màu quân</label>
-            <select id="select-ai-color" class="ui-select">
-              <option value="w" selected>Quân Trắng</option>
-              <option value="b">Quân Đen</option>
-              <option value="random">Ngẫu nhiên</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="select-ai-tc">Thời gian</label>
-            <select id="select-ai-tc" class="ui-select">
-              <option value="unlimited" selected>Không giới hạn</option>
-              <option value="10+0">10 phút</option>
-              <option value="5+0">5 phút</option>
-              <option value="3+2">3 + 2 chớp</option>
-            </select>
-          </div>
-        </div>
-
-        <button type="button" class="btn-primary full-width" id="btn-start-ai">
-          Bắt đầu ván mới
-        </button>
-      </section>
-
-      <!-- LOCAL 2-PLAYER PASS & PLAY SETTINGS -->
-      <section class="panel-card mode-section hidden" id="section-local-controls">
-        <div class="card-header">
-          <h2>2 Người Chơi Trên 1 Thiết Bị</h2>
-          <span class="badge-subtle">Pass & Play</span>
-        </div>
-
-        <p class="helper-note">
-          Chế độ chơi đối kháng trực tiếp cùng bạn bè trên một màn hình máy tính hoặc điện thoại.
-        </p>
-
-        <div class="form-group">
-          <label for="select-local-tc">Thời gian mỗi bên</label>
-          <select id="select-local-tc" class="ui-select">
-            <option value="10+0" selected>10 + 0 (Cờ nhanh)</option>
-            <option value="5+0">5 + 0 (Cờ chớp)</option>
-            <option value="3+2">3 + 2 (Cờ chớp)</option>
-            <option value="15+10">15 + 10 (Tiêu chuẩn)</option>
-            <option value="unlimited">Không giới hạn</option>
-          </select>
-        </div>
-
-        <div class="switch-list">
-          <label class="switch-row">
-            <span>Tự động xoay bàn cờ sau mỗi lượt</span>
-            <input type="checkbox" class="ui-switch" id="chk-auto-flip" />
-          </label>
-
-          <label class="switch-row">
-            <span>Xoay ngược quân Đen 180° (Chơi đối diện)</span>
-            <input type="checkbox" class="ui-switch" id="chk-tabletop-mode" />
-          </label>
-        </div>
-
-        <button type="button" class="btn-primary full-width" id="btn-start-local">
-          Bắt đầu ván 2 người
-        </button>
-      </section>
-    </aside>
+  <!-- ========================================================================
+       CHESS.COM INSPIRED 2-COLUMN PLAY LAYOUT (BOARD STAGE + UNIFIED SIDEBAR)
+       ======================================================================== -->
+  <main class="chesscom-workspace" id="app-layout" data-mobile-view="board">
 
     <!-- ==========================================
-         CENTER PANEL: CLEAN CHESSBOARD ARENA
+         LEFT / CENTER STAGE: THE CHESSBOARD ARENA
          ========================================== -->
-    <section class="arena-center" id="arena-center">
-      <!-- Subtle Typographic Match Info Line -->
-      <div class="match-info-strip">
-        <span class="opening-badge" id="opening-name-display">
-          Thế trận khởi đầu
-        </span>
-        <div class="turn-status-pill" id="turn-status-pill">
-          <span class="turn-dot white" id="turn-dot"></span>
-          <span id="turn-status-text">Lượt Trắng</span>
-        </div>
-      </div>
-
+    <section class="board-column" id="arena-center">
       <!-- TOP PLAYER BAR (OPPONENT) -->
-      <div class="player-bar player-top" id="player-bar-top">
-        <div class="player-identity">
-          <div class="player-avatar-wrap">
-            <span class="player-avatar" id="top-player-avatar">♚</span>
-            <span class="conn-indicator online" id="top-player-conn"></span>
+      <div class="player-strip player-top" id="player-bar-top">
+        <div class="player-left">
+          <div class="avatar-tile opponent-tile">
+            <span id="top-player-avatar">M</span>
+            <span class="conn-dot online" id="top-player-conn"></span>
           </div>
-          <div class="player-details">
-            <div class="player-name-line">
-              <span class="player-name" id="top-player-name">Kiện Tượng AI</span>
-              <span class="title-chip" id="top-player-title">AI</span>
+          <div class="player-meta">
+            <div class="player-title-row">
+              <span class="player-name" id="top-player-name">Đại Kiện Tượng AI</span>
+              <span class="rating-tag" id="top-player-title">1650</span>
             </div>
-            <div class="captured-row">
-              <div class="captured-pieces" id="top-captured-pieces"></div>
-              <span class="material-badge hidden" id="top-material-badge">+0</span>
+            <div class="captured-strip">
+              <span class="captured-pieces" id="top-captured-pieces"></span>
+              <span class="material-diff hidden" id="top-material-badge">+0</span>
             </div>
           </div>
         </div>
-        <div class="chess-clock" id="top-player-clock">10:00</div>
+        <div class="clock-box" id="top-player-clock">10:00</div>
       </div>
 
-      <!-- BOARD & EVALUATION BAR STAGE -->
+      <!-- CHESSBOARD + EVALUATION BAR -->
       <div class="board-stage" id="board-stage">
-        <div class="eval-bar-container" id="eval-bar-container" title="Đánh giá thế cờ">
+        <div class="eval-bar-container" id="eval-bar-container">
           <div class="eval-fill-white" id="eval-fill-white" style="height: 50%"></div>
           <span class="eval-score-text" id="eval-score-text">0.0</span>
         </div>
@@ -311,34 +69,34 @@
         <div class="board-frame" id="board-frame">
           <div class="chessboard" id="chessboard" role="grid" aria-label="Bàn cờ vua 8x8"></div>
 
-          <!-- Tactical Arrows & AI Hint Overlay -->
+          <!-- Tactical Arrows & AI Hints -->
           <svg class="board-arrows-svg" id="board-arrows-svg" viewBox="0 0 800 800" preserveAspectRatio="none"></svg>
 
-          <!-- Floating Reactions Overlay -->
+          <!-- Floating Text Reactions -->
           <div class="reactions-overlay" id="reactions-overlay"></div>
 
           <!-- Pawn Promotion Modal -->
           <div class="board-modal hidden" id="promotion-modal">
-            <div class="promotion-card">
+            <div class="modal-box">
               <h3>Chọn quân phong cấp</h3>
               <div class="promotion-options" id="promotion-options"></div>
-              <button type="button" class="text-link-btn" id="btn-cancel-promotion">Hủy</button>
+              <button type="button" class="btn-flat" id="btn-cancel-promotion">Hủy bỏ</button>
             </div>
           </div>
 
-          <!-- Online Room Waiting Overlay -->
+          <!-- Waiting for Opponent Overlay -->
           <div class="board-modal hidden" id="waiting-room-overlay">
-            <div class="waiting-card">
-              <span class="waiting-tag">PHÒNG ĐẤU ĐÃ SẴN SÀNG</span>
-              <h3>Đang chờ đối thủ...</h3>
-              <p>Gửi mã phòng hoặc liên kết mời bên dưới cho bạn bè để bắt đầu ván đấu:</p>
-              <div class="waiting-code-pill" id="waiting-overlay-code">------</div>
-              <div class="waiting-btn-group">
-                <button type="button" class="btn-primary" id="btn-waiting-copy-link">
-                  Sao chép liên kết mời
+            <div class="modal-box">
+              <span class="status-tag">ĐANG CHỜ ĐỐI THỦ</span>
+              <h3>Phòng đấu đã sẵn sàng</h3>
+              <p>Gửi mã phòng hoặc sao chép liên kết bên dưới gửi cho bạn bè để bắt đầu solo 1v1:</p>
+              <div class="code-box" id="waiting-overlay-code">------</div>
+              <div class="modal-stack-btns">
+                <button type="button" class="btn-green-3d" id="btn-waiting-copy-link">
+                  Sao chép liên kết mời bạn bè
                 </button>
-                <button type="button" class="btn-secondary" id="btn-waiting-hide">
-                  Đóng khung chờ
+                <button type="button" class="btn-dark-3d" id="btn-waiting-hide">
+                  Xem bàn cờ
                 </button>
               </div>
             </div>
@@ -353,18 +111,18 @@
             </div>
           </div>
 
-          <!-- Game Over Modal -->
+          <!-- Game Over Modal (Chess.com style result card) -->
           <div class="board-modal hidden" id="gameover-modal">
-            <div class="gameover-card">
-              <div class="gameover-trophy" id="gameover-icon">♔</div>
-              <h2 id="gameover-title">Kết thúc ván đấu</h2>
-              <p id="gameover-subtitle">Quân Trắng giành chiến thắng.</p>
-              <div class="gameover-actions">
-                <button type="button" class="btn-primary" id="btn-gameover-rematch">
-                  Tái đấu / Ván mới
+            <div class="modal-box gameover-box">
+              <div class="result-badge" id="gameover-icon">1 - 0</div>
+              <h2 id="gameover-title">Trắng Chiến Thắng</h2>
+              <p id="gameover-subtitle">Chiếu hết</p>
+              <div class="modal-stack-btns">
+                <button type="button" class="btn-green-3d" id="btn-gameover-rematch">
+                  Ván mới / Tái đấu
                 </button>
-                <button type="button" class="btn-secondary" id="btn-gameover-inspect">
-                  Xem lại bàn cờ
+                <button type="button" class="btn-dark-3d" id="btn-gameover-inspect">
+                  Phân tích bàn cờ
                 </button>
               </div>
             </div>
@@ -373,74 +131,252 @@
       </div>
 
       <!-- BOTTOM PLAYER BAR (YOU) -->
-      <div class="player-bar player-bottom" id="player-bar-bottom">
-        <div class="player-identity">
-          <div class="player-avatar-wrap">
-            <span class="player-avatar" id="bottom-player-avatar">♔</span>
-            <span class="conn-indicator online" id="bottom-player-conn"></span>
-          </div>
-          <div class="player-details">
-            <div class="player-name-line">
+      <div class="player-strip player-bottom" id="player-bar-bottom">
+        <div class="player-left">
+          <button type="button" class="avatar-tile user-tile" id="btn-open-profile" title="Đổi tên & hồ sơ">
+            <span id="bottom-player-avatar">K</span>
+            <span class="conn-dot online" id="bottom-player-conn"></span>
+          </button>
+          <div class="player-meta">
+            <div class="player-title-row">
               <span class="player-name" id="bottom-player-name">Kỳ Thủ</span>
-              <span class="title-chip" id="bottom-player-title">GM</span>
+              <span class="rating-tag" id="bottom-player-title">GM</span>
+              <button type="button" class="inline-edit-link" id="header-username" title="Đổi tên">Đổi tên</button>
+              <span class="hidden" id="header-avatar">K</span>
             </div>
-            <div class="captured-row">
-              <div class="captured-pieces" id="bottom-captured-pieces"></div>
-              <span class="material-badge hidden" id="bottom-material-badge">+0</span>
+            <div class="captured-strip">
+              <span class="captured-pieces" id="bottom-captured-pieces"></span>
+              <span class="material-diff hidden" id="bottom-material-badge">+0</span>
             </div>
           </div>
         </div>
-        <div class="chess-clock" id="bottom-player-clock">10:00</div>
-      </div>
-
-      <!-- MINIMALIST CONTROL BAR -->
-      <div class="action-dock">
-        <button type="button" class="dock-btn" id="btn-new-game" title="Ván mới hoặc Tái đấu">
-          <span>Ván mới</span>
-        </button>
-        <button type="button" class="dock-btn" id="btn-flip-board" title="Đổi góc nhìn bàn cờ">
-          <span>Xoay bàn</span>
-        </button>
-        <button type="button" class="dock-btn" id="btn-hint" title="Gợi ý nước đi tốt nhất">
-          <span>Gợi ý</span>
-        </button>
-        <button type="button" class="dock-btn" id="btn-undo" title="Đi lại nước trước">
-          <span>Đi lại</span>
-        </button>
-        <button type="button" class="dock-btn" id="btn-offer-draw" title="Đề nghị hòa cờ">
-          <span>Cầu hòa</span>
-        </button>
-        <button type="button" class="dock-btn danger" id="btn-resign" title="Nhận thua ván này">
-          <span>Đầu hàng</span>
-        </button>
+        <div class="clock-box" id="bottom-player-clock">10:00</div>
       </div>
     </section>
 
     <!-- ==========================================
-         RIGHT PANEL: MOVES, CHAT & CUSTOM STUDIO
+         RIGHT UNIFIED COMMAND SIDEBAR (CHESS.COM DOCK)
          ========================================== -->
-    <aside class="side-panel panel-right" id="panel-right">
-      <div class="panel-tabs" role="tablist">
-        <button type="button" class="panel-tab active" data-tab="moves" id="tab-btn-moves">
-          Biên bản <span class="tab-count" id="move-count-badge">0</span>
-        </button>
-        <button type="button" class="panel-tab" data-tab="chat" id="tab-btn-chat">
-          Trò chuyện
-        </button>
-        <button type="button" class="panel-tab" data-tab="customize" id="tab-btn-customize">
-          Giao diện
-        </button>
+    <aside class="sidebar-dock" id="panel-right">
+      <!-- Brand + Live Status Strip -->
+      <div class="dock-brand-bar">
+        <div class="dock-brand-title">
+          <strong>ROYAL CHESS</strong>
+          <span class="live-indicator" id="online-status-pill">
+            <span class="live-dot"></span>
+            <span id="online-count-text">1 online</span>
+          </span>
+        </div>
+        <div class="turn-status-pill" id="turn-status-pill">
+          <span class="turn-dot white" id="turn-dot"></span>
+          <span id="turn-status-text">Lượt Trắng</span>
+        </div>
       </div>
 
-      <!-- TAB 1: MOVE HISTORY -->
-      <div class="tab-pane active" id="tab-pane-moves">
-        <div class="replay-bar">
-          <button type="button" class="replay-btn" id="btn-step-first" title="Đầu ván">«</button>
-          <button type="button" class="replay-btn" id="btn-step-prev" title="Nước trước">‹</button>
-          <button type="button" class="replay-btn" id="btn-step-next" title="Nước tiếp">›</button>
-          <button type="button" class="replay-btn" id="btn-step-last" title="Hiện tại">»</button>
+      <!-- Main Sidebar Navigation Tabs (Pure Typography, Zero Icons) -->
+      <nav class="dock-tabs" role="tablist">
+        <button type="button" class="dock-tab active" data-tab="play" id="tab-btn-play">
+          Chơi cờ
+        </button>
+        <button type="button" class="dock-tab" data-tab="moves" id="tab-btn-moves">
+          Biên bản <span class="tab-counter" id="move-count-badge">0</span>
+        </button>
+        <button type="button" class="dock-tab" data-tab="chat" id="tab-btn-chat">
+          Trò chuyện
+        </button>
+        <button type="button" class="dock-tab" data-tab="customize" id="tab-btn-customize">
+          Giao diện
+        </button>
+        <button type="button" class="hidden" id="btn-open-customize"></button>
+      </nav>
+
+      <!-- ====================================================
+           TAB 1: PLAY & MATCHMAKING (CHESS.COM PLAY MENU)
+           ==================================================== -->
+      <div class="dock-pane active" id="tab-pane-play">
+        <!-- Segmented Mode Selector -->
+        <div class="mode-selector-bar" id="panel-lobby">
+          <button type="button" class="mode-pill active" data-mode="online" id="btn-mode-online">
+            Online 1v1
+          </button>
+          <button type="button" class="mode-pill" data-mode="ai" id="btn-mode-ai">
+            Đấu với Máy
+          </button>
+          <button type="button" class="mode-pill" data-mode="local" id="btn-mode-local">
+            2 Người
+          </button>
         </div>
 
+        <!-- 1A. ONLINE 1V1 SECTION -->
+        <div class="mode-section" id="section-online-controls">
+          <!-- Active Room Card -->
+          <div class="active-room-box hidden" id="active-room-box">
+            <div class="room-code-header">
+              <span>MÃ PHÒNG ĐẤU</span>
+              <span class="room-role-badge" id="active-room-role">Quân Trắng</span>
+            </div>
+            <div class="room-code-display" id="active-room-code">------</div>
+            <div class="room-share-actions">
+              <button type="button" class="btn-dark-3d btn-sm" id="btn-copy-code">
+                Sao chép mã
+              </button>
+              <button type="button" class="btn-green-3d btn-sm" id="btn-copy-link">
+                Sao chép link mời
+              </button>
+            </div>
+            <button type="button" class="btn-danger-flat full-width" id="btn-leave-room">
+              Rời phòng hiện tại
+            </button>
+          </div>
+
+          <!-- Matchmaking Setup -->
+          <div id="lobby-match-controls">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="select-online-tc">Thời gian thi đấu</label>
+                <select id="select-online-tc" class="ui-select">
+                  <option value="1+0">1 phút (Siêu chớp)</option>
+                  <option value="2+1">2 | 1 (Siêu chớp)</option>
+                  <option value="3+0">3 phút (Cờ chớp)</option>
+                  <option value="3+2">3 | 2 (Cờ chớp)</option>
+                  <option value="5+0">5 phút (Cờ chớp)</option>
+                  <option value="10+0" selected>10 phút (Cờ nhanh)</option>
+                  <option value="15+10">15 | 10 (Tiêu chuẩn)</option>
+                  <option value="unlimited">Không giới hạn</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="select-online-color">Chọn màu quân</label>
+                <select id="select-online-color" class="ui-select">
+                  <option value="random" selected>Ngẫu nhiên</option>
+                  <option value="w">Quân Trắng</option>
+                  <option value="b">Quân Đen</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="button" class="btn-green-3d btn-lg full-width" id="btn-quick-match">
+              Chơi ngay (Ghép trận nhanh)
+            </button>
+
+            <button type="button" class="btn-dark-3d full-width mt-8" id="btn-create-room">
+              Tạo phòng riêng & lấy link mời bạn bè
+            </button>
+
+            <div class="join-code-row mt-10">
+              <input
+                type="text"
+                id="input-room-code"
+                class="ui-input code-input"
+                placeholder="Nhập mã phòng 6 ký tự..."
+                maxlength="8"
+                autocomplete="off"
+              />
+              <button type="button" class="btn-dark-3d" id="btn-join-code">Vào phòng</button>
+            </div>
+          </div>
+
+          <!-- Open Rooms Lobby -->
+          <div class="lobby-list-wrap">
+            <div class="lobby-list-header">
+              <span>Sảnh phòng đang mở (<span id="lobby-room-count">0</span>)</span>
+              <button type="button" class="text-link-btn" id="btn-refresh-lobby">Làm mới</button>
+            </div>
+            <div class="lobby-rooms-list" id="lobby-rooms-list">
+              <div class="empty-lobby-msg">Chưa có phòng chờ. Bấm <b>Tạo phòng riêng</b> để mở bàn mới.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1B. PLAY VS AI SECTION -->
+        <div class="mode-section hidden" id="section-ai-controls">
+          <div class="form-group">
+            <label>Chọn cấp độ Máy (AI Engine)</label>
+            <div class="ai-level-grid" id="ai-level-grid">
+              <button type="button" class="ai-lvl-btn" data-level="1">
+                <strong>Tập sự</strong>
+                <small>ELO 800</small>
+              </button>
+              <button type="button" class="ai-lvl-btn" data-level="2">
+                <strong>Câu lạc bộ</strong>
+                <small>ELO 1250</small>
+              </button>
+              <button type="button" class="ai-lvl-btn active" data-level="3">
+                <strong>Kiện tượng</strong>
+                <small>ELO 1650</small>
+              </button>
+              <button type="button" class="ai-lvl-btn" data-level="4">
+                <strong>Đại kiện tượng</strong>
+                <small>ELO 2100+</small>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="select-ai-color">Bạn cầm quân</label>
+              <select id="select-ai-color" class="ui-select">
+                <option value="w" selected>Quân Trắng</option>
+                <option value="b">Quân Đen</option>
+                <option value="random">Ngẫu nhiên</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="select-ai-tc">Thời gian</label>
+              <select id="select-ai-tc" class="ui-select">
+                <option value="unlimited" selected>Không giới hạn</option>
+                <option value="10+0">10 phút</option>
+                <option value="5+0">5 phút</option>
+                <option value="3+2">3 | 2 chớp</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" class="btn-green-3d btn-lg full-width" id="btn-start-ai">
+            Bắt đầu đấu với Máy
+          </button>
+        </div>
+
+        <!-- 1C. 2 PLAYERS PASS & PLAY SECTION -->
+        <div class="mode-section hidden" id="section-local-controls">
+          <div class="form-group">
+            <label for="select-local-tc">Đồng hồ mỗi bên</label>
+            <select id="select-local-tc" class="ui-select">
+              <option value="10+0" selected>10 phút (Cờ nhanh)</option>
+              <option value="5+0">5 phút (Cờ chớp)</option>
+              <option value="3+2">3 | 2 (Cờ chớp)</option>
+              <option value="15+10">15 | 10 (Tiêu chuẩn)</option>
+              <option value="unlimited">Không giới hạn</option>
+            </select>
+          </div>
+
+          <div class="switch-list">
+            <label class="switch-row">
+              <span>Tự động xoay bàn cờ sau mỗi nước</span>
+              <input type="checkbox" class="ui-switch" id="chk-auto-flip" />
+            </label>
+            <label class="switch-row">
+              <span>Xoay ngược quân Đen 180° (Chơi đối diện)</span>
+              <input type="checkbox" class="ui-switch" id="chk-tabletop-mode" />
+            </label>
+          </div>
+
+          <button type="button" class="btn-green-3d btn-lg full-width" id="btn-start-local">
+            Bắt đầu ván 2 người
+          </button>
+        </div>
+      </div>
+
+      <!-- ====================================================
+           TAB 2: GAME NOTATION & TACTICAL CONTROLS
+           ==================================================== -->
+      <div class="dock-pane" id="tab-pane-moves">
+        <!-- Opening Explorer Strip -->
+        <div class="opening-strip" id="opening-name-display">
+          Thế trận khởi đầu
+        </div>
+
+        <!-- Zebra-striped Algebraic Move Table -->
         <div class="moves-table-wrap" id="moves-table-wrap">
           <table class="moves-table">
             <thead>
@@ -452,49 +388,66 @@
             </thead>
             <tbody id="moves-tbody">
               <tr class="empty-moves-row">
-                <td colspan="3">Chưa có nước đi nào được thực hiện.</td>
+                <td colspan="3">Hãy đi nước cờ đầu tiên trên bàn cờ.</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div class="emoji-reaction-bar" aria-label="Biểu cảm nhanh">
-          <span class="emoji-label">Biểu cảm</span>
-          <div class="emoji-group">
-            <button type="button" class="emoji-btn" data-emoji="👏">👏</button>
-            <button type="button" class="emoji-btn" data-emoji="🔥">🔥</button>
-            <button type="button" class="emoji-btn" data-emoji="😎">😎</button>
-            <button type="button" class="emoji-btn" data-emoji="🤔">🤔</button>
-            <button type="button" class="emoji-btn" data-emoji="🤝">🤝</button>
-          </div>
+        <!-- Replay Step Controls -->
+        <div class="replay-bar">
+          <button type="button" class="replay-btn" id="btn-step-first" title="Về đầu ván">Đầu</button>
+          <button type="button" class="replay-btn" id="btn-step-prev" title="Lùi 1 nước">Trước</button>
+          <button type="button" class="replay-btn" id="btn-step-next" title="Tiến 1 nước">Tiếp</button>
+          <button type="button" class="replay-btn" id="btn-step-last" title="Về hiện tại">Cuối</button>
         </div>
 
+        <!-- Chess.com Style In-Panel Game Controls -->
+        <div class="game-control-grid">
+          <button type="button" class="ctrl-btn primary" id="btn-new-game">Ván mới</button>
+          <button type="button" class="ctrl-btn" id="btn-flip-board">Xoay bàn</button>
+          <button type="button" class="ctrl-btn" id="btn-hint">Gợi ý AI</button>
+          <button type="button" class="ctrl-btn" id="btn-undo">Đi lại</button>
+          <button type="button" class="ctrl-btn" id="btn-offer-draw">Cầu hòa</button>
+          <button type="button" class="ctrl-btn danger" id="btn-resign">Đầu hàng</button>
+        </div>
+
+        <!-- FEN / PGN Export Row -->
         <div class="fen-tools-box">
           <div class="fen-btn-row">
-            <button type="button" class="btn-secondary btn-xs" id="btn-copy-fen">Sao chép FEN</button>
-            <button type="button" class="btn-secondary btn-xs" id="btn-copy-pgn">Sao chép PGN</button>
-            <button type="button" class="btn-secondary btn-xs" id="btn-load-fen-toggle">Nạp FEN</button>
+            <button type="button" class="btn-flat btn-xs" id="btn-copy-fen">Copy FEN</button>
+            <button type="button" class="btn-flat btn-xs" id="btn-copy-pgn">Copy PGN</button>
+            <button type="button" class="btn-flat btn-xs" id="btn-load-fen-toggle">Nạp FEN</button>
           </div>
           <div class="fen-load-drawer hidden" id="fen-load-drawer">
             <input type="text" id="input-custom-fen" class="ui-input" placeholder="Dán chuỗi FEN..." />
-            <button type="button" class="btn-primary btn-xs" id="btn-apply-fen">Nạp</button>
+            <button type="button" class="btn-green-3d btn-xs" id="btn-apply-fen">Nạp</button>
           </div>
         </div>
       </div>
 
-      <!-- TAB 2: CHAT -->
-      <div class="tab-pane" id="tab-pane-chat">
+      <!-- ====================================================
+           TAB 3: LIVE CHAT & QUICK PHRASES
+           ==================================================== -->
+      <div class="dock-pane" id="tab-pane-chat">
         <div class="chat-messages" id="chat-messages">
           <div class="chat-msg system">
-            <span>Chào mừng đến với <b>Royal Chess</b>. Chúc bạn có những ván cờ hay.</span>
+            <span>Phòng trò chuyện trực tiếp. Hãy giữ thái độ lịch sự khi thi đấu.</span>
           </div>
         </div>
 
         <div class="quick-chat-chips">
-          <button type="button" class="chat-chip" data-msg="Chúc bạn một ván cờ hay!">Chúc may mắn</button>
-          <button type="button" class="chat-chip" data-msg="Nước đi rất sắc sảo!">Nước đi hay</button>
-          <button type="button" class="chat-chip" data-msg="Làm thêm ván tái đấu nhé?">Tái đấu nhé</button>
-          <button type="button" class="chat-chip" data-msg="GG WP! Ván đấu rất tuyệt.">GG WP</button>
+          <button type="button" class="chat-chip" data-msg="Chúc bạn ván cờ hay!">Chúc may mắn</button>
+          <button type="button" class="chat-chip" data-msg="Nước đi rất cao!">Nước đi hay</button>
+          <button type="button" class="chat-chip" data-msg="Tái đấu thêm ván nữa nhé?">Tái đấu nhé</button>
+          <button type="button" class="chat-chip" data-msg="GG WP!">GG WP</button>
+        </div>
+
+        <div class="quick-chat-chips">
+          <button type="button" class="chat-chip emoji-btn" data-emoji="Hay quá!">Hay quá</button>
+          <button type="button" class="chat-chip emoji-btn" data-emoji="Tuyệt vời!">Tuyệt vời</button>
+          <button type="button" class="chat-chip emoji-btn" data-emoji="Đang suy nghĩ...">Đang tính</button>
+          <button type="button" class="chat-chip emoji-btn" data-emoji="Cảm ơn!">Cảm ơn</button>
         </div>
 
         <form class="chat-input-row" id="chat-form">
@@ -506,42 +459,44 @@
             maxlength="180"
             autocomplete="off"
           />
-          <button type="submit" class="btn-primary">Gửi</button>
+          <button type="submit" class="btn-green-3d">Gửi</button>
         </form>
       </div>
 
-      <!-- TAB 3: CUSTOMIZATION STUDIO -->
-      <div class="tab-pane" id="tab-pane-customize">
+      <!-- ====================================================
+           TAB 4: BOARD & PIECE CUSTOMIZATION STUDIO
+           ==================================================== -->
+      <div class="dock-pane" id="tab-pane-customize">
         <div class="custom-studio-scroll">
           <div class="studio-group">
-            <h3>Màu sắc bàn cờ</h3>
+            <h3>Màu bàn cờ (8 chủ đề)</h3>
             <div class="theme-grid" id="board-theme-grid"></div>
           </div>
 
           <div class="studio-group">
-            <h3>Kiểu dáng quân cờ</h3>
+            <h3>Kiểu quân cờ (5 bộ)</h3>
             <div class="piece-set-grid" id="piece-set-grid"></div>
           </div>
 
           <div class="studio-group">
-            <h3>Giao diện nền</h3>
+            <h3>Tông màu nền</h3>
             <div class="ui-theme-grid" id="ui-theme-grid"></div>
           </div>
 
           <div class="studio-group">
-            <h3>Âm thanh & Hiển thị</h3>
+            <h3>Cài đặt bàn cờ & âm thanh</h3>
             <div class="form-group">
-              <label for="select-sound-pack">Hiệu ứng âm thanh</label>
+              <label for="select-sound-pack">Âm thanh quân cờ</label>
               <select id="select-sound-pack" class="ui-select">
-                <option value="wood" selected>Gỗ tiêu chuẩn (Classic)</option>
-                <option value="crystal">Pha lê hiện đại (Synth)</option>
-                <option value="muted">Tắt âm thanh</option>
+                <option value="wood" selected>Gỗ tiêu chuẩn (Chess.com Wood)</option>
+                <option value="crystal">Hiện đại (Crystal)</option>
+                <option value="muted">Tắt tiếng</option>
               </select>
             </div>
 
             <div class="switch-list">
               <label class="switch-row">
-                <span>Góc nhìn bàn cờ 3D nghiêng</span>
+                <span>Bàn cờ góc nhìn 3D nghiêng</span>
                 <input type="checkbox" class="ui-switch" id="chk-board-3d" />
               </label>
               <label class="switch-row">
@@ -553,7 +508,7 @@
                 <input type="checkbox" class="ui-switch" id="chk-show-legal" checked />
               </label>
               <label class="switch-row">
-                <span>Tọa độ bàn cờ (A–H, 1–8)</span>
+                <span>Hiện tọa độ bàn cờ (a–h, 1–8)</span>
                 <input type="checkbox" class="ui-switch" id="chk-show-coords" checked />
               </label>
               <label class="switch-row">
@@ -563,7 +518,7 @@
             </div>
           </div>
 
-          <button type="button" class="btn-secondary full-width" id="btn-reset-custom">
+          <button type="button" class="btn-dark-3d full-width" id="btn-reset-custom">
             Khôi phục mặc định
           </button>
         </div>
@@ -571,48 +526,29 @@
     </aside>
   </main>
 
-  <!-- CLEAN MOBILE BOTTOM NAVIGATION -->
-  <nav class="mobile-bottom-nav" aria-label="Điều hướng di động">
-    <button type="button" class="mob-nav-btn active" data-mob-view="board">
-      <span>Bàn cờ</span>
-    </button>
-    <button type="button" class="mob-nav-btn" data-mob-view="lobby">
-      <span>Chế độ</span>
-    </button>
-    <button type="button" class="mob-nav-btn" data-mob-view="moves">
-      <span>Biên bản</span>
-    </button>
-    <button type="button" class="mob-nav-btn" data-mob-view="chat">
-      <span>Trò chuyện</span>
-    </button>
-    <button type="button" class="mob-nav-btn" data-mob-view="customize">
-      <span>Giao diện</span>
-    </button>
-  </nav>
-
   <!-- PLAYER PROFILE MODAL -->
   <div class="global-modal-backdrop hidden" id="profile-modal">
     <div class="global-modal-card">
       <div class="modal-header">
         <h3>Hồ sơ kỳ thủ</h3>
-        <button type="button" class="modal-close-btn" id="btn-close-profile">✕</button>
+        <button type="button" class="modal-close-btn" id="btn-close-profile">Đóng</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label for="input-profile-name">Tên hiển thị</label>
-          <input type="text" id="input-profile-name" class="ui-input" maxlength="22" placeholder="Nhập tên của bạn..." />
+          <label for="input-profile-name">Tên kỳ thủ</label>
+          <input type="text" id="input-profile-name" class="ui-input" maxlength="22" placeholder="Nhập tên hiển thị..." />
         </div>
         <div class="form-group">
           <label>Danh hiệu</label>
           <div class="title-picker-grid" id="title-picker-grid"></div>
         </div>
         <div class="form-group">
-          <label>Biểu tượng</label>
+          <label>Chữ cái đại diện</label>
           <div class="avatar-picker-grid" id="avatar-picker-grid"></div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-primary full-width" id="btn-save-profile">Lưu thay đổi</button>
+        <button type="button" class="btn-green-3d full-width" id="btn-save-profile">Lưu hồ sơ</button>
       </div>
     </div>
   </div>
@@ -620,6 +556,6 @@
   <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script type="module" src="/app.js"></script>
+  <script type="module" src="/app.js?v=3"></script>
 </body>
 </html>

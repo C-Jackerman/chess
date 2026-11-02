@@ -132,38 +132,38 @@ export const PIECE_SETS = {
 export const UI_THEMES = {
   obsidian: {
     id: 'obsidian',
-    name: 'Dark Obsidian',
-    bg: '#0b0f19',
-    panel: '#131a2a',
-    text: '#f8fafc'
+    name: 'Chess.com Slate',
+    bg: '#302e2b',
+    panel: '#262421',
+    text: '#ffffff'
   },
   midnight: {
     id: 'midnight',
-    name: 'Cyber Amethyst',
-    bg: '#0d091a',
-    panel: '#18112e',
-    text: '#f5f3ff'
+    name: 'Midnight Pro',
+    bg: '#161b22',
+    panel: '#0d1117',
+    text: '#f0f6fc'
   },
   espresso: {
     id: 'espresso',
-    name: 'Grandmaster Club',
-    bg: '#14100d',
-    panel: '#211b16',
+    name: 'Walnut Club',
+    bg: '#241c17',
+    panel: '#1b1410',
     text: '#fdf8f5'
   },
   alabaster: {
     id: 'alabaster',
-    name: 'Light Alabaster',
-    bg: '#f1f5f9',
+    name: 'Light Classic',
+    bg: '#ebecd0',
     panel: '#ffffff',
-    text: '#0f172a'
+    text: '#1f2937'
   }
 };
 
 export const AVATAR_LIST = [
-  '♔', '♕', '♖', '♗', '♘', '♙',
-  '♚', '♛', '♜', '♝', '♞', '♟',
-  '◆', '❖', '✦', '❂'
+  'A', 'B', 'C', 'D', 'E', 'F',
+  'G', 'H', 'K', 'M', 'N', 'P',
+  'Q', 'R', 'S', 'V'
 ];
 
 export const TITLE_LIST = [

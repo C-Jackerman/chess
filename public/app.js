@@ -30,7 +30,7 @@ function generatePlayerId() {
 const defaultProfile = {
   playerId: generatePlayerId(),
   name: 'Kỳ Thủ ' + Math.floor(100 + Math.random() * 899),
-  avatar: '♔',
+  avatar: 'K',
   title: 'GM'
 };
 
@@ -50,8 +50,8 @@ const defaultSettings = {
 
 let userProfile = loadJSON(STORAGE_KEYS.PROFILE, defaultProfile);
 if (!userProfile.playerId) userProfile.playerId = generatePlayerId();
-if (!['♔','♕','♖','♗','♘','♙','♚','♛','♜','♝','♞','♟','◆','❖','✦','❂'].includes(userProfile.avatar)) {
-  userProfile.avatar = '♔';
+if (!/^[A-Z]$/.test(userProfile.avatar)) {
+  userProfile.avatar = (userProfile.name || 'K').trim().charAt(0).toUpperCase() || 'K';
 }
 saveJSON(STORAGE_KEYS.PROFILE, userProfile);
 
@@ -365,6 +365,9 @@ function syncOnlineRoomState(room, latestMove = null) {
   if (latestMove || state.moveHistory.length > prevMoveCount) {
     const mv = latestMove || state.lastMove;
     playMoveSound(mv, state.chess.inCheck(), state.chess.isGameOver());
+    if (state.moveHistory.length === 1) {
+      setRightTab('moves');
+    }
   }
 
   // Render chat if needed
@@ -377,7 +380,7 @@ function syncOnlineRoomState(room, latestMove = null) {
 
 function createOnlineRoom() {
   if (!state.socket) {
-    showToast('⚠️ Đang kết nối máy chủ...');
+    showToast('Đang kết nối máy chủ...');
     return;
   }
   const timeControl = document.getElementById('select-online-tc').value;
@@ -396,7 +399,7 @@ function createOnlineRoom() {
     },
     (res) => {
       if (res && res.ok) {
-        showToast(`✅ Đã tạo phòng ${res.room.code}! Hãy gửi link mời đối thủ.`);
+        showToast(`Đã tạo phòng ${res.room.code}. Hãy gửi link mời đối thủ.`);
       }
     }
   );
@@ -417,9 +420,10 @@ function quickMatchOnline() {
     (res) => {
       if (res && res.ok) {
         if (res.quickMatchWaiting) {
-          showToast(`⚡ Đang tìm đối thủ tại phòng ${res.room.code}...`);
+          showToast(`Đang tìm đối thủ tại phòng ${res.room.code}...`);
         } else {
-          showToast(`⚔️ Đã tìm thấy đối thủ! Ván đấu bắt đầu!`);
+          showToast(`Đã tìm thấy đối thủ. Ván đấu bắt đầu!`);
+          setRightTab('moves');
         }
       }
     }
@@ -428,7 +432,7 @@ function quickMatchOnline() {
 
 function joinOnlineRoomByCode(code) {
   if (!code) {
-    showToast('⚠️ Vui lòng nhập mã phòng gồm 6 ký tự!');
+    showToast('Vui lòng nhập mã phòng gồm 6 ký tự.');
     return;
   }
   if (!state.socket) return;
@@ -443,9 +447,9 @@ function joinOnlineRoomByCode(code) {
     },
     (res) => {
       if (!res || !res.ok) {
-        showToast(`❌ ${res?.error || 'Không tìm thấy phòng!'}`);
+        showToast(`${res?.error || 'Không tìm thấy phòng!'}`);
       } else {
-        showToast(`✅ Đã vào phòng ${res.room.code}!`);
+        showToast(`Đã vào phòng ${res.room.code}.`);
       }
     }
   );
@@ -468,8 +472,9 @@ function leaveOnlineRoom() {
 
   startNewAiOrLocalGame('ai', false);
   state.mode = 'online';
+  setRightTab('play');
   renderAll();
-  showToast('🚪 Đã rời phòng đấu.');
+  showToast('Đã rời phòng đấu.');
 }
 
 function renderLobbyRooms(rooms) {
@@ -1140,22 +1145,24 @@ function getPlayersDisplayInfo() {
   if (state.mode === 'online' && state.onlineRoom) {
     const rw = state.onlineRoom.players.w;
     const rb = state.onlineRoom.players.b;
+    const cleanMono = (av, name, fallback) =>
+      /^[A-Z0-9]$/.test(av) ? av : ((name || fallback).trim().charAt(0).toUpperCase() || fallback);
     return {
       w: rw
-        ? { name: rw.name, avatar: rw.avatar || '♔', title: rw.title, connected: rw.connected }
-        : { name: 'Đang chờ đối thủ...', avatar: '♙', title: 'SOLO', connected: false },
+        ? { name: rw.name, avatar: cleanMono(rw.avatar, rw.name, 'W'), title: rw.title, connected: rw.connected }
+        : { name: 'Đang chờ đối thủ...', avatar: 'W', title: 'SOLO', connected: false },
       b: rb
-        ? { name: rb.name, avatar: rb.avatar || '♚', title: rb.title, connected: rb.connected }
-        : { name: 'Đang chờ đối thủ...', avatar: '♟', title: 'SOLO', connected: false }
+        ? { name: rb.name, avatar: cleanMono(rb.avatar, rb.name, 'B'), title: rb.title, connected: rb.connected }
+        : { name: 'Đang chờ đối thủ...', avatar: 'B', title: 'SOLO', connected: false }
     };
   }
 
   if (state.mode === 'ai') {
     const aiNames = {
-      1: { name: 'AI Tập Sự', title: '800', avatar: '♟' },
-      2: { name: 'AI Câu Lạc Bộ', title: '1250', avatar: '♞' },
-      3: { name: 'AI Kiện Tượng', title: '1650', avatar: '♜' },
-      4: { name: 'AI Đại Kiện Tượng', title: 'GM', avatar: '♚' }
+      1: { name: 'AI Tập Sự', title: '800', avatar: 'A' },
+      2: { name: 'AI Câu Lạc Bộ', title: '1250', avatar: 'C' },
+      3: { name: 'AI Kiện Tượng', title: '1650', avatar: 'M' },
+      4: { name: 'AI Đại Kiện Tượng', title: '2100', avatar: 'G' }
     };
     const bot = aiNames[state.aiLevel] || aiNames[3];
     const me = {
@@ -1172,13 +1179,13 @@ function getPlayersDisplayInfo() {
   return {
     w: {
       name: `${userProfile.name} (Trắng)`,
-      avatar: '♔',
+      avatar: 'T',
       title: userProfile.title,
       connected: true
     },
     b: {
       name: 'Kỳ Thủ 2 (Đen)',
-      avatar: '♚',
+      avatar: 'Đ',
       title: 'SOLO',
       connected: true
     }
@@ -1413,13 +1420,13 @@ function openPromotionModal(from, to, color) {
 
 function showGameOverModal(result) {
   if (!result) return;
-  el.gameoverIcon.textContent = result.winner === 'draw' ? '½' : '♔';
+  el.gameoverIcon.textContent = result.winner === 'draw' ? '½ - ½' : result.winner === 'w' ? '1 - 0' : '0 - 1';
   el.gameoverTitle.textContent =
     result.winner === 'draw'
       ? 'Ván đấu Hòa cờ'
       : result.winner === 'w'
-      ? 'Quân Trắng chiến thắng'
-      : 'Quân Đen chiến thắng';
+      ? 'Trắng Chiến Thắng'
+      : 'Đen Chiến Thắng';
   el.gameoverSubtitle.textContent = result.message || '';
   el.gameoverModal.classList.remove('hidden');
 }
@@ -1548,7 +1555,9 @@ function buildCustomizationStudio() {
 // ============================================================================
 function renderProfileToDOM() {
   el.headerAvatar.textContent = userProfile.avatar;
-  el.headerUsername.textContent = userProfile.name;
+  if (el.headerUsername && el.headerUsername.tagName !== 'BUTTON') {
+    el.headerUsername.textContent = userProfile.name;
+  }
   el.profileCardAvatar.textContent = userProfile.avatar;
   el.profileCardTitle.textContent = userProfile.title;
   el.profileCardName.textContent = userProfile.name;
@@ -1689,20 +1698,22 @@ function updateModeTabsUI(activeMode) {
 }
 
 function setRightTab(tabName) {
-  document.querySelectorAll('.panel-tab').forEach((b) => {
-    b.classList.toggle('active', b.getAttribute('data-tab') === tabName);
+  const mapped = tabName === 'lobby' ? 'play' : tabName;
+  document.querySelectorAll('.dock-tab, .panel-tab').forEach((b) => {
+    b.classList.toggle('active', b.getAttribute('data-tab') === mapped);
   });
-  document.getElementById('tab-pane-moves').classList.toggle('active', tabName === 'moves');
-  document.getElementById('tab-pane-chat').classList.toggle('active', tabName === 'chat');
-  document.getElementById('tab-pane-customize').classList.toggle('active', tabName === 'customize');
+  const playPane = document.getElementById('tab-pane-play');
+  if (playPane) playPane.classList.toggle('active', mapped === 'play');
+  document.getElementById('tab-pane-moves').classList.toggle('active', mapped === 'moves');
+  document.getElementById('tab-pane-chat').classList.toggle('active', mapped === 'chat');
+  document.getElementById('tab-pane-customize').classList.toggle('active', mapped === 'customize');
 }
 
 function setMobileView(view) {
   el.appLayout.setAttribute('data-mobile-view', view);
-  document.querySelectorAll('.mob-nav-btn').forEach((btn) => {
-    btn.classList.toggle('active', btn.getAttribute('data-mob-view') === view);
-  });
-  if (view === 'moves' || view === 'chat' || view === 'customize') {
+  if (view === 'lobby' || view === 'play') {
+    setRightTab('play');
+  } else if (view === 'moves' || view === 'chat' || view === 'customize') {
     setRightTab(view);
   }
 }
@@ -1719,25 +1730,10 @@ function bindUIEvents() {
   });
 
   // Right Panel Tabs
-  document.querySelectorAll('.panel-tab').forEach((btn) => {
+  document.querySelectorAll('.dock-tab, .panel-tab').forEach((btn) => {
     btn.addEventListener('click', () => {
       setRightTab(btn.getAttribute('data-tab'));
     });
-  });
-
-  // Mobile Bottom Nav
-  document.querySelectorAll('.mob-nav-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      setMobileView(btn.getAttribute('data-mob-view'));
-    });
-  });
-
-  // Header Customize shortcut
-  document.getElementById('btn-open-customize').addEventListener('click', () => {
-    setRightTab('customize');
-    if (window.innerWidth <= 960) {
-      setMobileView('customize');
-    }
   });
 
   // Profile Modal Open/Close/Save
@@ -1746,6 +1742,7 @@ function bindUIEvents() {
     el.profileModal.classList.remove('hidden');
   };
   document.getElementById('btn-open-profile').addEventListener('click', openProfile);
+  document.getElementById('header-username')?.addEventListener('click', openProfile);
   document.getElementById('btn-edit-profile-inline').addEventListener('click', openProfile);
   document.getElementById('profile-card-avatar').addEventListener('click', openProfile);
   document.getElementById('btn-close-profile').addEventListener('click', () => {
@@ -1806,13 +1803,13 @@ function bindUIEvents() {
   });
   document.getElementById('btn-start-ai').addEventListener('click', () => {
     startNewAiOrLocalGame('ai', true);
-    setMobileView('board');
+    setRightTab('moves');
   });
 
   // Local 2P Mode Start
   document.getElementById('btn-start-local').addEventListener('click', () => {
     startNewAiOrLocalGame('local', true);
-    setMobileView('board');
+    setRightTab('moves');
   });
 
   // Action Dock Controls
