@@ -113,20 +113,25 @@ export const PIECE_SETS = {
     name: 'Imperial Brass & Onyx',
     subtitle: 'Hoàng kim & Hắc ngọc chạm khắc'
   },
+  shogun: {
+    id: 'shogun',
+    name: 'Royal Shogun Armor',
+    subtitle: 'Chiến giáp Samurai góc cạnh'
+  },
   minimal: {
     id: 'minimal',
-    name: 'Architectural Geometric',
+    name: 'Architectural Bauhaus',
     subtitle: 'Vector hình học tối giản'
   },
   crystal: {
     id: 'crystal',
-    name: 'Nordic Alabaster',
-    subtitle: 'Đá cẩm thạch Bắc Âu'
+    name: 'Nordic Faceted Crystal',
+    subtitle: 'Pha lê đa diện Bắc Âu'
   },
   neon: {
     id: 'neon',
-    name: 'High-Contrast Tournament',
-    subtitle: 'Tương phản cao dễ quan sát'
+    name: 'Cyber Rim Tournament',
+    subtitle: 'Viền phát sáng tương phản cao'
   }
 };
 
@@ -503,9 +508,19 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
   if (styleVariant === 'minimal') {
     return renderMinimalistPiece(type, isWhite, defs, `url(#grad_${uid})`, strokeColor, innerStroke);
   }
+  if (styleVariant === 'shogun') {
+    return renderShogunPiece(type, isWhite, uid);
+  }
+  if (styleVariant === 'crystal') {
+    return renderCrystalPiece(type, isWhite, uid);
+  }
 
   const fillUrl = `url(#grad_${uid})`;
   const shadowEllipse = `<ellipse cx="22.5" cy="40.2" rx="14.2" ry="2.2" fill="rgba(0,0,0,0.28)" />`;
+  const imperialGem =
+    styleVariant === 'imperial'
+      ? `<circle cx="22.5" cy="23.5" r="1.6" fill="${isWhite ? '#d97706' : '#fbbf24'}" stroke="none"/>`
+      : '';
   let body = '';
 
   switch (type) {
@@ -577,6 +592,7 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
           <path d="M 11.5,30 C 18,28.5 27,28.5 33.5,30" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
           <path d="M 12,33.5 C 18.5,32 26.5,32 33,33.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
           <path d="M 11.5,36.8 C 18.5,35.5 26.5,35.5 33.5,36.8" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          ${imperialGem}
         </g>
       `;
       break;
@@ -592,12 +608,149 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
           <path d="M 11.5,30 C 17,27 27,27 32.5,30" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
           <path d="M 11.5,33.5 C 17,30.5 27,30.5 32.5,33.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
           <path d="M 11.5,37 C 17,34 27,34 32.5,37" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          ${imperialGem}
         </g>
       `;
       break;
   }
 
   return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-${styleVariant}">${defs}${body}</svg>`;
+}
+
+function renderShogunPiece(type, isWhite, uid) {
+  const stop1 = isWhite ? '#fff5eb' : '#3a1d24';
+  const stop2 = isWhite ? '#e6cdb5' : '#1f1216';
+  const stop3 = isWhite ? '#b89472' : '#0d0709';
+  const stroke = isWhite ? '#291c14' : '#090506';
+  const accent = isWhite ? '#b45309' : '#f59e0b';
+  const fillUrl = `url(#grad_${uid})`;
+  const defs = `
+    <defs>
+      <linearGradient id="grad_${uid}" x1="15%" y1="8%" x2="85%" y2="92%">
+        <stop offset="0%" stop-color="${stop1}" />
+        <stop offset="55%" stop-color="${stop2}" />
+        <stop offset="100%" stop-color="${stop3}" />
+      </linearGradient>
+    </defs>
+  `;
+  const shadow = `<ellipse cx="22.5" cy="40.2" rx="14.2" ry="2.2" fill="rgba(0,0,0,0.3)" />`;
+  let shape = '';
+  switch (type) {
+    case 'p':
+      shape = `
+        <polygon points="22.5,8.5 29,15 26,21 31,34 34,39 11,39 14,34 19,21 16,15" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+        <polygon points="22.5,12 25.5,15.5 22.5,19 19.5,15.5" fill="${accent}"/>
+        <line x1="14" y1="35" x2="31" y2="35" stroke="${accent}" stroke-width="1.4"/>
+      `;
+      break;
+    case 'r':
+      shape = `
+        <polygon points="9,12 14,9 17,12 22.5,9 28,12 31,9 36,12 33,17 31,34 35,39 10,39 14,34 12,17" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+        <line x1="13" y1="17" x2="32" y2="17" stroke="${accent}" stroke-width="1.5"/>
+        <rect x="19.5" y="21" width="6" height="9" rx="1" fill="none" stroke="${accent}" stroke-width="1.3"/>
+        <line x1="13" y1="35" x2="32" y2="35" stroke="${accent}" stroke-width="1.5"/>
+      `;
+      break;
+    case 'n':
+      shape = `
+        <polygon points="12,39 15,24 9,23 7,18 14,10 16,6.5 20,9.5 26,8 34,15 35,27 33,39" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+        <polygon points="15,13 19,12 17,15.5" fill="${accent}"/>
+        <polyline points="23,11 29,17 29,34" fill="none" stroke="${accent}" stroke-width="1.4"/>
+        <line x1="13" y1="35.5" x2="33" y2="35.5" stroke="${accent}" stroke-width="1.5"/>
+      `;
+      break;
+    case 'b':
+      shape = `
+        <polygon points="22.5,6 26,11 24,13 31,21 29,34 34,39 11,39 16,34 14,21 21,13 19,11" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+        <polygon points="22.5,16 26,22 22.5,28 19,22" fill="none" stroke="${accent}" stroke-width="1.4"/>
+        <line x1="14" y1="35" x2="31" y2="35" stroke="${accent}" stroke-width="1.5"/>
+      `;
+      break;
+    case 'q':
+      shape = `
+        <polygon points="10,39 13,33 8,14 16,22 16,9.5 22.5,19 22.5,7 22.5,19 29,9.5 29,22 37,14 32,33 35,39" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+        <polygon points="22.5,22 26,27 22.5,31 19,27" fill="${accent}"/>
+        <line x1="12.5" y1="35" x2="32.5" y2="35" stroke="${accent}" stroke-width="1.5"/>
+      `;
+      break;
+    case 'k':
+      shape = `
+        <polygon points="18,6.5 22.5,4.5 27,6.5 24,11 21,11" fill="${accent}" stroke="${stroke}" stroke-width="1.2"/>
+        <polygon points="10,39 12,32 7,17 15,21 22.5,11 30,21 38,17 33,32 35,39" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+        <polygon points="22.5,17 26.5,23.5 22.5,29.5 18.5,23.5" fill="${accent}"/>
+        <line x1="12" y1="35" x2="33" y2="35" stroke="${accent}" stroke-width="1.5"/>
+      `;
+      break;
+  }
+  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-shogun">${defs}${shadow}${shape}</svg>`;
+}
+
+function renderCrystalPiece(type, isWhite, uid) {
+  const stop1 = isWhite ? '#f8fafc' : '#334155';
+  const stop2 = isWhite ? '#cbd5e1' : '#1e293b';
+  const stop3 = isWhite ? '#94a3b8' : '#0f172a';
+  const stroke = isWhite ? '#1e293b' : '#020617';
+  const facet = isWhite ? '#ffffff' : '#64748b';
+  const fillUrl = `url(#grad_${uid})`;
+  const defs = `
+    <defs>
+      <linearGradient id="grad_${uid}" x1="10%" y1="5%" x2="90%" y2="95%">
+        <stop offset="0%" stop-color="${stop1}" />
+        <stop offset="50%" stop-color="${stop2}" />
+        <stop offset="100%" stop-color="${stop3}" />
+      </linearGradient>
+    </defs>
+  `;
+  const shadow = `<ellipse cx="22.5" cy="40.2" rx="13.8" ry="2" fill="rgba(0,0,0,0.26)" />`;
+  let shape = '';
+  switch (type) {
+    case 'p':
+      shape = `
+        <polygon points="22.5,8.5 28,14 25.5,20 31.5,35 34,39 11,39 13.5,35 19.5,20 17,14" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.55" stroke-linejoin="round"/>
+        <line x1="22.5" y1="8.5" x2="22.5" y2="39" stroke="${facet}" stroke-width="1.2" opacity="0.75"/>
+        <line x1="13.5" y1="35" x2="31.5" y2="35" stroke="${facet}" stroke-width="1.2"/>
+      `;
+      break;
+    case 'r':
+      shape = `
+        <polygon points="12,10 33,10 30,17 31,34 34.5,39 10.5,39 14,34 15,17" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.55" stroke-linejoin="round"/>
+        <line x1="18.5" y1="10" x2="18.5" y2="39" stroke="${facet}" stroke-width="1.15" opacity="0.7"/>
+        <line x1="26.5" y1="10" x2="26.5" y2="39" stroke="${facet}" stroke-width="1.15" opacity="0.7"/>
+        <line x1="14" y1="34" x2="31" y2="34" stroke="${facet}" stroke-width="1.2"/>
+      `;
+      break;
+    case 'n':
+      shape = `
+        <polygon points="12,39 15.5,24 10,21 13,11 22.5,7.5 31.5,13.5 33.5,26 32.5,39" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.55" stroke-linejoin="round"/>
+        <polyline points="22.5,7.5 21,21 32.5,39" fill="none" stroke="${facet}" stroke-width="1.2" opacity="0.75"/>
+        <circle cx="17" cy="14" r="1.3" fill="${facet}"/>
+      `;
+      break;
+    case 'b':
+      shape = `
+        <polygon points="22.5,7 30.5,19 29,34 34,39 11,39 16,34 14.5,19" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.55" stroke-linejoin="round"/>
+        <line x1="22.5" y1="7" x2="22.5" y2="39" stroke="${facet}" stroke-width="1.2" opacity="0.75"/>
+        <line x1="14.5" y1="19" x2="30.5" y2="19" stroke="${facet}" stroke-width="1.2" opacity="0.75"/>
+      `;
+      break;
+    case 'q':
+      shape = `
+        <polygon points="10.5,39 13,33 8.5,14 17,22 22.5,8 28,22 36.5,14 32,33 34.5,39" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.55" stroke-linejoin="round"/>
+        <line x1="22.5" y1="8" x2="22.5" y2="39" stroke="${facet}" stroke-width="1.2" opacity="0.75"/>
+        <line x1="13" y1="33" x2="32" y2="33" stroke="${facet}" stroke-width="1.2"/>
+      `;
+      break;
+    case 'k':
+      shape = `
+        <line x1="22.5" y1="5" x2="22.5" y2="11" stroke="${stroke}" stroke-width="2.1" stroke-linecap="round"/>
+        <line x1="19.5" y1="8" x2="25.5" y2="8" stroke="${stroke}" stroke-width="2.1" stroke-linecap="round"/>
+        <polygon points="10.5,39 12.5,32 9.5,17 17.5,21 22.5,11 27.5,21 35.5,17 32.5,32 34.5,39" fill="${fillUrl}" stroke="${stroke}" stroke-width="1.55" stroke-linejoin="round"/>
+        <line x1="22.5" y1="11" x2="22.5" y2="39" stroke="${facet}" stroke-width="1.2" opacity="0.75"/>
+        <line x1="12.5" y1="32" x2="32.5" y2="32" stroke="${facet}" stroke-width="1.2"/>
+      `;
+      break;
+  }
+  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-crystal">${defs}${shadow}${shape}</svg>`;
 }
 
 function renderMinimalistPiece(type, isWhite, defs, fillUrl, strokeColor, innerStroke) {

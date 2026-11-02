@@ -11,7 +11,7 @@ import {
   renderPieceSVG,
   soundEngine,
   detectOpeningName
-} from '/pieces.js?v=6';
+} from '/pieces.js?v=8';
 import {
   evaluateBoardForBar,
   findBestMove,
@@ -249,17 +249,40 @@ function buildDragonShowcaseBanner() {
   const container = document.getElementById('dragon-showcase-pieces');
   if (!container) return;
   const showcase = [
-    { type: 'p', color: 'b' },
-    { type: 'r', color: 'w' },
-    { type: 'n', color: 'b' },
-    { type: 'q', color: 'w' },
-    { type: 'k', color: 'b' }
+    { setId: 'staunton', type: 'n', color: 'w', label: 'Championship Staunton' },
+    { setId: 'imperial', type: 'k', color: 'w', label: 'Imperial Brass & Onyx' },
+    { setId: 'shogun', type: 'n', color: 'w', label: 'Royal Shogun Armor' },
+    { setId: 'minimal', type: 'q', color: 'w', label: 'Architectural Bauhaus' },
+    { setId: 'crystal', type: 'b', color: 'w', label: 'Nordic Faceted Crystal' },
+    { setId: 'neon', type: 'r', color: 'b', label: 'Cyber Rim Tournament' }
   ];
+  const subEl = document.getElementById('active-skin-subtitle');
+  const currentSetObj = PIECE_SETS[userSettings.pieceSet] || PIECE_SETS.staunton;
+  if (subEl) {
+    subEl.textContent = `Đang dùng: ${currentSetObj.name}`;
+  }
   container.innerHTML = showcase
     .map(
-      (item) => `<div class="rc-showcase-piece">${renderPieceSVG(item.type, item.color, 'imperial')}</div>`
+      (item) => `
+      <button type="button" class="rc-showcase-piece ${userSettings.pieceSet === item.setId ? 'active' : ''}" data-quick-set="${item.setId}" data-tooltip="${item.label}" aria-label="${item.label}">
+        ${renderPieceSVG(item.type, item.color, item.setId)}
+      </button>
+    `
     )
     .join('');
+
+  container.querySelectorAll('[data-quick-set]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const setId = btn.getAttribute('data-quick-set');
+      userSettings.pieceSet = setId;
+      saveJSON(STORAGE_KEYS.SETTINGS, userSettings);
+      buildDragonShowcaseBanner();
+      buildCustomizationStudio();
+      renderBoard();
+      soundEngine.play('move');
+      showToast(`Đã đổi sang bộ quân cờ: ${PIECE_SETS[setId]?.name || setId}`);
+    });
+  });
 }
 
 // ============================================================================
@@ -1563,6 +1586,7 @@ function buildCustomizationStudio() {
       userSettings.pieceSet = btn.getAttribute('data-piece-set');
       saveJSON(STORAGE_KEYS.SETTINGS, userSettings);
       buildCustomizationStudio();
+      buildDragonShowcaseBanner();
       renderBoard();
       soundEngine.play('move');
     });
@@ -1820,17 +1844,11 @@ function bindUIEvents() {
     showToast(`Đã chuyển sang giao diện ${UI_THEMES[userSettings.uiTheme].name}.`);
   });
 
-  // Dragon Dynasty Collection Showcase Button
+  // Open Skin Studio Button
   document.getElementById('btn-dragon-collection')?.addEventListener('click', () => {
-    userSettings.pieceSet = 'imperial';
-    userSettings.boardTheme = 'royal_gold';
-    saveJSON(STORAGE_KEYS.SETTINGS, userSettings);
-    applySettingsToDOM();
-    buildCustomizationStudio();
-    renderBoard();
     setRightTab('customize');
-    soundEngine.play('castle');
-    showToast('Đã trang bị bộ sưu tập Dragon Dynasty Legendary Set.');
+    soundEngine.play('move');
+    showToast('Đã mở Kho Skin: Chọn từ 8 Bàn cờ, 6 Bộ Quân cờ & 4 Giao diện nền.');
   });
 
   // Mode Switcher Pills
