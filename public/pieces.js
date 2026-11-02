@@ -424,53 +424,24 @@ export function renderCapturedPieceSVG(type, color = 'w') {
 }
 
 // ============================================================================
-// CUSTOM ILLUSTRATED VECTOR PORTRAIT AVATARS (8 FANTASY GRANDMASTER PORTRAITS)
+// HIGH-DETAIL ILLUSTRATED GRANDMASTER PORTRAIT AVATARS
 // ============================================================================
-const PORTRAIT_THEMES = {
-  A: { bg1: '#1e1b4b', bg2: '#4c1d95', hair: '#e2e8f0', skin: '#fde68a', visor: '#a855f7', accent: '#38bdf8' },
-  B: { bg1: '#0f172a', bg2: '#1e293b', hair: '#0f172a', skin: '#fed7aa', visor: '#6366f1', accent: '#f43f5e' },
-  C: { bg1: '#31102f', bg2: '#701a75', hair: '#f8fafc', skin: '#fef3c7', visor: '#ec4899', accent: '#f59e0b' },
-  D: { bg1: '#042f2e', bg2: '#115e59', hair: '#cbd5e1', skin: '#fde68a', visor: '#14b8a6', accent: '#38bdf8' },
-  E: { bg1: '#27171c', bg2: '#7f1d1d', hair: '#1e293b', skin: '#fed7aa', visor: '#ef4444', accent: '#fbbf24' },
-  F: { bg1: '#172554', bg2: '#1d4ed8', hair: '#f1f5f9', skin: '#fde68a', visor: '#60a5fa', accent: '#a855f7' },
-  G: { bg1: '#1c1917', bg2: '#44403c', hair: '#fbbf24', skin: '#fef3c7', visor: '#eab308', accent: '#f97316' },
-  K: { bg1: '#090d16', bg2: '#312e81', hair: '#111827', skin: '#fde68a', visor: '#8b5cf6', accent: '#ec4899' }
+const PORTRAIT_ASSETS = {
+  A: { src: '/assets/avatar-silver.png', filter: 'none' },
+  B: { src: '/assets/avatar-dark.png',   filter: 'hue-rotate(15deg) saturate(1.15)' },
+  C: { src: '/assets/avatar-silver.png', filter: 'hue-rotate(310deg) saturate(1.2)' },
+  D: { src: '/assets/avatar-silver.png', filter: 'hue-rotate(150deg) saturate(1.15)' },
+  E: { src: '/assets/avatar-dark.png',   filter: 'hue-rotate(330deg) saturate(1.25)' },
+  F: { src: '/assets/avatar-silver.png', filter: 'hue-rotate(200deg) saturate(1.2)' },
+  G: { src: '/assets/avatar-dark.png',   filter: 'sepia(0.28) saturate(1.35) brightness(1.06)' },
+  K: { src: '/assets/avatar-dark.png',   filter: 'none' }
 };
 
 export function renderAvatarSVG(code = 'K') {
-  const key = PORTRAIT_THEMES[code] ? code : 'K';
-  const p = PORTRAIT_THEMES[key];
-  const uid = `av_${key}`;
-  const isSilverQueen = key === 'A' || key === 'C' || key === 'F';
-  const hairPath = isSilverQueen
-    ? `<path d="M14 54C14 34 17 11 32 10C47 11 50 34 50 54C46 42 44 26 41 21C38 17 35 16 32 16C29 16 26 17 23 21C20 26 18 42 14 54Z" fill="${p.hair}" />
-       <path d="M18 25C18 15 24 9 32 9C40 9 46 15 46 25C43 19 38 16 32 18C26 16 21 19 18 25Z" fill="${p.hair}" />`
-    : `<path d="M18 27C16 15 23 8 32 8C41 8 48 15 46 27C44 20 40 16 36 19L32 14L28 19C24 16 20 20 18 27Z" fill="${p.hair}" />`;
-
-  return `
-    <svg class="rc-avatar-svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="${uid}_bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="${p.bg1}" />
-          <stop offset="100%" stop-color="${p.bg2}" />
-        </linearGradient>
-        <linearGradient id="${uid}_armor" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="${p.visor}" />
-          <stop offset="100%" stop-color="${p.accent}" />
-        </linearGradient>
-      </defs>
-      <rect width="64" height="64" rx="32" fill="url(#${uid}_bg)" />
-      <circle cx="32" cy="32" r="29" stroke="url(#${uid}_armor)" stroke-opacity="0.45" stroke-width="1.5" />
-      <path d="M10 60C12 46 21 41 32 41C43 41 52 46 54 60" fill="#0f172a" stroke="url(#${uid}_armor)" stroke-width="2" />
-      <path d="M24 42L32 54L40 42" fill="url(#${uid}_armor)" fill-opacity="0.65" />
-      <rect x="28" y="34" width="8" height="9" rx="3" fill="${p.skin}" />
-      <path d="M21 24C21 17 25.5 13 32 13C38.5 13 43 17 43 24C43 31 38 37 32 37C26 37 21 31 21 24Z" fill="${p.skin}" />
-      <ellipse cx="27.5" cy="26" rx="2.2" ry="1.3" fill="${p.accent}" />
-      <ellipse cx="36.5" cy="26" rx="2.2" ry="1.3" fill="${p.accent}" />
-      ${hairPath}
-      <path d="M23 13L27 7L32 11L37 7L41 13" stroke="${p.accent}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
-  `;
+  const key = PORTRAIT_ASSETS[code] ? code : 'K';
+  const p = PORTRAIT_ASSETS[key];
+  const styleAttr = p.filter !== 'none' ? ` style="filter:${p.filter}"` : '';
+  return `<img class="rc-avatar-img" src="${p.src}" alt="" draggable="false"${styleAttr} />`;
 }
 
 // ============================================================================
@@ -681,7 +652,14 @@ function renderMinimalistPiece(type, isWhite, defs, fillUrl, strokeColor, innerS
 }
 
 export function renderPieceSVG(type, color, pieceSet = 'staunton') {
-  return getStauntonPaths(type.toLowerCase(), color === 'w', pieceSet);
+  const normType = String(type || 'p').toLowerCase();
+  const isWhite = color === 'w';
+  if (pieceSet === 'minimal') {
+    return getStauntonPaths(normType, isWhite, 'minimal');
+  }
+  const setFolder = ['staunton', 'imperial', 'neon', 'crystal'].includes(pieceSet) ? pieceSet : 'staunton';
+  const pieceKey = `${isWhite ? 'w' : 'b'}${normType.toUpperCase()}`;
+  return `<div class="chess-piece-3d piece-set-${setFolder}"><img class="chess-piece-img" src="/assets/pieces/${setFolder}/${pieceKey}.png" alt="" draggable="false" /></div>`;
 }
 
 // ============================================================================

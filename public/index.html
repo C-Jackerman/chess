@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=4" />
+  <link rel="stylesheet" href="/styles.css?v=5" />
 </head>
 <body>
   <!-- Global SVG Filters for 3D Sculpted Chess Pieces -->
@@ -45,19 +45,7 @@
       <!-- Brand Logo -->
       <div class="rc-brand">
         <div class="rc-brand-emblem">
-          <svg viewBox="0 0 36 36" width="32" height="32" fill="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="brandChessGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#f0abfc" />
-                <stop offset="50%" stop-color="#a855f7" />
-                <stop offset="100%" stop-color="#4f46e5" />
-              </linearGradient>
-            </defs>
-            <path d="M18 3L21.5 8.5L27 6L24.5 13H11.5L9 6L14.5 8.5L18 3Z" fill="url(#brandChessGrad)" stroke="#f5d0fe" stroke-width="1.3" stroke-linejoin="round"/>
-            <path d="M12.5 13H23.5L22 25H14L12.5 13Z" fill="url(#brandChessGrad)" stroke="#e9d5ff" stroke-width="1.3" stroke-linejoin="round"/>
-            <path d="M9 25H27L29.5 31H6.5L9 25Z" fill="url(#brandChessGrad)" stroke="#f5d0fe" stroke-width="1.3" stroke-linejoin="round"/>
-            <rect x="5" y="31" width="26" height="2.5" rx="1.25" fill="#e879f9" />
-          </svg>
+          <img src="/assets/brand-logo.png" class="rc-brand-logo-img" alt="" draggable="false" />
         </div>
         <span class="rc-brand-title">ROYAL CHESS</span>
       </div>
@@ -428,27 +416,6 @@
             </svg>
             <span>Toàn màn hình</span>
           </button>
-
-          <!-- Extra utility buttons (Flip Board & New Game) with tooltips -->
-          <button type="button" id="btn-flip-board" class="rc-dock-btn rc-dock-compact" data-tooltip="Xoay hướng bàn cờ 180 độ" aria-label="Lật bàn">
-            <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="m17 2 4 4-4 4" />
-              <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
-              <path d="m7 22-4-4 4-4" />
-              <path d="M21 13v1a4 4 0 0 1-4 4H3" />
-            </svg>
-            <span>Lật bàn</span>
-          </button>
-
-          <button type="button" id="btn-new-game" class="rc-dock-btn rc-dock-compact" data-tooltip="Khởi tạo ván cờ mới" aria-label="Ván mới">
-            <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-              <path d="M3 3v5h5" />
-              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-              <path d="M16 16h5v5" />
-            </svg>
-            <span>Ván mới</span>
-          </button>
         </div>
 
       </div>
@@ -486,6 +453,22 @@
               <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </button>
+            <button type="button" id="btn-flip-board" class="dock-tab" data-tooltip="Xoay hướng bàn cờ 180 độ" aria-label="Lật bàn">
+              <svg class="rc-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m17 2 4 4-4 4" />
+                <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+                <path d="m7 22-4-4 4-4" />
+                <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+              </svg>
+            </button>
+            <button type="button" id="btn-new-game" class="dock-tab" data-tooltip="Khởi tạo ván cờ mới" aria-label="Ván mới">
+              <svg class="rc-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                <path d="M16 16h5v5" />
               </svg>
             </button>
           </div>
@@ -986,7 +969,7 @@
         <label class="field-label">Danh hiệu</label>
         <div class="title-picker-grid" id="title-picker-grid"></div>
 
-        <label class="field-label">Chân dung Đại Kiện Tượng (SVG Vector)</label>
+        <label class="field-label">Chân dung Đại Kiện Tượng</label>
         <div class="avatar-picker-grid" id="avatar-picker-grid"></div>
       </div>
       <div class="modal-footer">
@@ -1000,6 +983,6 @@
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script type="module" src="/app.js?v=4"></script>
+  <script type="module" src="/app.js?v=5"></script>
 </body>
 </html>

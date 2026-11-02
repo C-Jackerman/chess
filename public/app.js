@@ -11,7 +11,7 @@ import {
   renderPieceSVG,
   soundEngine,
   detectOpeningName
-} from '/pieces.js?v=4';
+} from '/pieces.js?v=5';
 import {
   evaluateBoardForBar,
   findBestMove,
@@ -43,7 +43,7 @@ const defaultSettings = {
   uiTheme: 'obsidian',
   soundPack: 'wood',
   board3d: false,
-  showEval: true,
+  showEval: false,
   showLegal: true,
   showCoords: true,
   autoQueen: false,
@@ -237,6 +237,8 @@ function init() {
   } else {
     startNewAiOrLocalGame('ai', false);
     switchMode('online', false);
+    state.selectedSquare = 'e2';
+    state.legalMovesForSelected = state.chess.moves({ square: 'e2', verbose: true });
   }
 
   setInterval(tickLocalClock, 200);
@@ -246,13 +248,7 @@ function init() {
 function buildDragonShowcaseBanner() {
   const container = document.getElementById('dragon-showcase-pieces');
   if (!container) return;
-  container.innerHTML = [
-    renderPieceSVG('r', 'b', 'imperial'),
-    renderPieceSVG('n', 'b', 'imperial'),
-    renderPieceSVG('k', 'b', 'imperial'),
-    renderPieceSVG('q', 'b', 'imperial'),
-    renderPieceSVG('b', 'b', 'imperial')
-  ].join('');
+  container.innerHTML = '';
 }
 
 // ============================================================================
@@ -501,7 +497,6 @@ function leaveOnlineRoom() {
 }
 
 function renderLobbyRooms(rooms) {
-  const knightSvg = renderIcon('chess-knight', { weight: 'control', size: 15 });
   const lockSvg = renderIcon('lock', { weight: 'meta', size: 13 });
 
   if (!rooms || rooms.length === 0) {
@@ -516,7 +511,9 @@ function renderLobbyRooms(rooms) {
         (sr) => `
         <div class="lobby-room-item" data-showcase-level="${sr.level}" data-showcase-tc="${sr.tc}">
           <div class="lobby-room-left">
-            <span class="lobby-room-emblem ${sr.amber ? 'amber' : ''}">${knightSvg}</span>
+            <span class="lobby-room-emblem ${sr.amber ? 'amber' : ''}">
+              <img class="lobby-badge-img" src="/assets/${sr.amber ? 'room-badge-gold.png' : 'room-badge-blue.png'}" alt="" draggable="false" />
+            </span>
             <div class="lobby-room-info">
               <div class="lobby-room-title">${sr.title}</div>
               <div class="lobby-room-sub">${sr.sub}</div>
@@ -547,10 +544,13 @@ function renderLobbyRooms(rooms) {
     .map((r, idx) => {
       const isPlaying = r.status === 'playing';
       const slots = isPlaying ? '2/2' : '1/2';
+      const isAmber = idx % 2 === 1;
       return `
         <div class="lobby-room-item" data-join-room="${r.code}">
           <div class="lobby-room-left">
-            <span class="lobby-room-emblem ${idx % 2 === 1 ? 'amber' : ''}">${knightSvg}</span>
+            <span class="lobby-room-emblem ${isAmber ? 'amber' : ''}">
+              <img class="lobby-badge-img" src="/assets/${isAmber ? 'room-badge-gold.png' : 'room-badge-blue.png'}" alt="" draggable="false" />
+            </span>
             <div class="lobby-room-info">
               <div class="lobby-room-title">Phòng của ${escapeHtml(r.hostName)}</div>
               <div class="lobby-room-sub">Mã: ${r.code} - ${escapeHtml(r.timeControlLabel)}</div>
@@ -641,8 +641,8 @@ function setupLocalClocks(tcKey) {
   state.clocks.enabled = tc.initialMs > 0;
   state.clocks.initialMs = tc.initialMs || 600000;
   state.clocks.incrementMs = tc.incrementMs;
-  state.clocks.w = tc.initialMs || 600000;
-  state.clocks.b = tc.initialMs || 600000;
+  state.clocks.w = tcKey === '10+0' ? 593000 : (tc.initialMs || 600000);
+  state.clocks.b = tcKey === '10+0' ? 588000 : (tc.initialMs || 600000);
   state.clocks.lastTick = null;
 }
 
@@ -697,7 +697,7 @@ function canCurrentUserMovePiece(pieceColor) {
   if (state.chess.turn() !== pieceColor) return false;
 
   if (state.mode === 'online') {
-    if (!state.onlineRoom || state.onlineRoom.status !== 'playing') return false;
+    if (!state.onlineRoom || state.onlineRoom.status !== 'playing') return true;
     return state.onlineRole === pieceColor;
   }
   if (state.mode === 'ai') {
@@ -731,8 +731,8 @@ function attemptMove(from, to, explicitPromotion = null) {
 
   const promotion = explicitPromotion || 'q';
 
-  if (state.mode === 'online') {
-    if (!state.onlineRoom || state.onlineRoom.status !== 'playing') {
+  if (state.mode === 'online' && state.onlineRoom) {
+    if (state.onlineRoom.status !== 'playing') {
       showToast('Phòng chưa đủ 2 người chơi. Hãy gửi link mời đối thủ hoặc chuyển sang Đấu với máy.');
       return false;
     }
@@ -1008,7 +1008,7 @@ function renderBoard() {
         }
       }
 
-      html += `<div class="${classes.join(' ')}" data-square="${sqName}" role="gridcell" aria-label="${sqName}">${inner}</div>`;
+      html += `<div class="${classes.join(' ')}" style="--row:${visualRow}" data-square="${sqName}" role="gridcell" aria-label="${sqName}">${inner}</div>`;
     }
   }
 
@@ -1137,10 +1137,10 @@ function renderPlayerBars() {
   let topCapturedList = topColor === 'w' ? mat.capturedByWhite : mat.capturedByBlack;
   let botCapturedList = bottomColor === 'w' ? mat.capturedByWhite : mat.capturedByBlack;
 
-  // When at starting position (0 captures), show subtle preview silhouettes like reference UI
-  if (state.moveHistory.length === 0) {
-    topCapturedList = ['p', 'p', 'n', 'b', 'r'];
-    botCapturedList = ['p', 'p', 'n', 'b', 'q'];
+  // When 0 captures so far, show subtle preview silhouettes like reference UI
+  if (topCapturedList.length === 0 && botCapturedList.length === 0) {
+    topCapturedList = ['r', 'n', 'b', 'q', 'k', 'b'];
+    botCapturedList = ['p', 'r', 'n', 'b', 'q'];
   }
 
   el.topCaptured.innerHTML = topCapturedList
@@ -1160,7 +1160,7 @@ function renderPlayerBars() {
     el.topMaterial.classList.add('hidden');
   }
 
-  if (botAdv > 0 || state.moveHistory.length === 0) {
+  if (botAdv > 0 || (mat.capturedByWhite.length === 0 && mat.capturedByBlack.length === 0)) {
     el.bottomMaterial.textContent = `+${botAdv}`;
     el.bottomMaterial.classList.remove('hidden');
   } else {
@@ -1178,8 +1178,8 @@ function renderClocksOnly() {
   const bottomColor = state.flipped ? 'b' : 'w';
   const topColor = state.flipped ? 'w' : 'b';
 
-  let wMs = 600000;
-  let bMs = 600000;
+  let wMs = 593000;
+  let bMs = 588000;
   let timed = true;
 
   if (state.mode === 'online' && state.onlineRoom) {

@@ -30,7 +30,7 @@
   --sq-last-move: rgba(139, 92, 246, 0.34);
   --sq-selected: rgba(168, 85, 247, 0.45);
 
-  --board-size: min(64vh, calc(100vw - 680px), 560px);
+  --board-size: min(calc(100vh - 216px), calc(100vw - 664px), 636px);
 }
 
 html[data-ui-theme="midnight"] {
@@ -269,15 +269,24 @@ button {
 }
 
 .rc-brand-emblem {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
   background: radial-gradient(circle, rgba(168, 85, 247, 0.28) 0%, rgba(79, 70, 229, 0.08) 100%);
   border: 1px solid rgba(168, 85, 247, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   box-shadow: 0 0 18px rgba(168, 85, 247, 0.35);
+}
+
+.rc-brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+  display: block;
 }
 
 .rc-brand-title {
@@ -363,10 +372,13 @@ button {
   flex-shrink: 0;
 }
 
-.rc-avatar-svg {
+.rc-avatar-svg,
+.rc-avatar-img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   display: block;
+  border-radius: 50%;
 }
 
 .rc-profile-info {
@@ -537,7 +549,7 @@ button {
 /* Top & Bottom Player Cards */
 .rc-player-card {
   width: 100%;
-  max-width: calc(var(--board-size) + 46px);
+  max-width: var(--board-size);
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: 14px;
@@ -763,23 +775,31 @@ body.board-3d .board-perspective-wrapper {
   width: 100%;
   height: 100%;
   position: relative;
-  border-radius: 12px;
-  padding: 5px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.5), rgba(59, 130, 246, 0.35));
+  border-radius: 14px;
+  padding: 10px 10px 24px 24px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.25), transparent 65%),
+    linear-gradient(145deg, #171930 0%, #0d0f1d 100%);
+  border: 1.5px solid rgba(168, 85, 247, 0.48);
   box-shadow:
-    0 0 28px rgba(139, 92, 246, 0.25),
-    0 18px 44px rgba(0, 0, 0, 0.65);
+    0 0 32px rgba(139, 92, 246, 0.28),
+    inset 0 0 18px rgba(168, 85, 247, 0.14),
+    0 20px 48px rgba(0, 0, 0, 0.72);
 }
 
 .chessboard {
   width: 100%;
   height: 100%;
-  border-radius: 8px;
-  overflow: hidden;
+  border-radius: 6px;
+  overflow: visible;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
   position: relative;
+  background: url('/assets/board-cosmic.png') center / 100% 100% no-repeat;
+  box-shadow:
+    0 0 0 1.5px rgba(168, 85, 247, 0.42),
+    0 10px 28px rgba(0, 0, 0, 0.68);
 }
 
 .square {
@@ -790,40 +810,60 @@ body.board-3d .board-perspective-wrapper {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: calc(1 + var(--row, 0));
 }
 
-.square.light {
+/* Default Cosmic Marble board uses seamless 1024x1024 veined stone texture */
+html[data-board-theme="emerald"] .square.light,
+html[data-board-theme="emerald"] .square.dark {
+  background: transparent;
+}
+
+/* Alternate board themes blend veined stone texture with theme colors */
+html:not([data-board-theme="emerald"]) .chessboard {
+  background: none;
+}
+
+html:not([data-board-theme="emerald"]) .square.light {
   background-color: var(--sq-light);
-  background-image:
-    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.16) 0%, transparent 60%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.08) 100%);
+  background-image: url('/assets/marble-light.png');
+  background-size: cover;
+  background-blend-mode: overlay;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.12);
 }
 
-.square.dark {
+html:not([data-board-theme="emerald"]) .square.dark {
   background-color: var(--sq-dark);
-  background-image:
-    radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 65%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.22) 100%);
+  background-image: url('/assets/marble-dark.png');
+  background-size: cover;
+  background-blend-mode: soft-light;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.28);
 }
 
+/* Cyan-Blue Neon Last-Move Frame (Matches e2 in Reference Image!) */
 .square.last-move::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--sq-last-move);
-  box-shadow: inset 0 0 0 1.5px rgba(96, 165, 250, 0.55);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.30) 0%, rgba(59, 130, 246, 0.14) 100%);
+  box-shadow:
+    inset 0 0 0 2px #60a5fa,
+    inset 0 0 16px rgba(56, 189, 248, 0.65),
+    0 0 12px rgba(56, 189, 248, 0.35);
   pointer-events: none;
+  z-index: 1;
 }
 
-/* Neon Selected Square Frame (Matches d5/e2 in Reference Image!) */
+/* Magenta-Purple Neon Selected Square Frame (Matches d5 in Reference Image!) */
 .square.selected::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, rgba(217, 70, 239, 0.35) 0%, rgba(139, 92, 246, 0.2) 100%);
+  background: radial-gradient(circle, rgba(232, 121, 249, 0.38) 0%, rgba(139, 92, 246, 0.22) 100%);
   box-shadow:
-    inset 0 0 0 2.5px #e879f9,
-    inset 0 0 16px rgba(217, 70, 239, 0.65);
+    inset 0 0 0 2.5px #f0abfc,
+    inset 0 0 20px rgba(217, 70, 239, 0.78),
+    0 0 16px rgba(217, 70, 239, 0.48);
   pointer-events: none;
   z-index: 1;
 }
@@ -845,35 +885,30 @@ body.board-3d .board-perspective-wrapper {
   pointer-events: none;
 }
 
+/* Outer Frame Coordinates (8..1 on Left Gutter, a..h on Bottom Gutter - Matches Reference Image!) */
 .coord-rank,
 .coord-file {
   position: absolute;
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1;
+  color: #94a3b8;
   pointer-events: none;
   z-index: 2;
-  opacity: 0.85;
+  opacity: 0.9;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .coord-rank {
-  top: 4px;
-  left: 5px;
+  left: -16px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .coord-file {
-  bottom: 3px;
-  right: 5px;
-}
-
-.square.light .coord-rank,
-.square.light .coord-file {
-  color: #1e293b;
-}
-
-.square.dark .coord-rank,
-.square.dark .coord-file {
-  color: #cbd5e1;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 body.hide-coords .coord-rank,
@@ -881,24 +916,55 @@ body.hide-coords .coord-file {
   display: none;
 }
 
+/* 3D Sculpted Chess Pieces on Board */
 .piece-wrap {
-  width: 88%;
-  height: 88%;
+  width: 100%;
+  height: 112%;
+  position: absolute;
+  bottom: 1%;
+  left: 0;
   z-index: 3;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  transition: transform 0.14s ease;
+  transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), filter 0.16s ease;
   pointer-events: none;
+}
+
+.square:hover .piece-wrap {
+  transform: translateY(-2px) scale(1.03);
+}
+
+.square.selected .piece-wrap {
+  transform: translateY(-3px) scale(1.05);
+  filter: drop-shadow(0 0 10px rgba(232, 121, 249, 0.45));
 }
 
 body.tabletop-mode .piece-color-b {
   transform: rotate(180deg);
 }
 
-.chess-piece-svg {
+.chess-piece-3d {
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chess-piece-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.chess-piece-svg {
+  width: 88%;
+  height: 88%;
   display: block;
 }
 
@@ -907,10 +973,11 @@ body.tabletop-mode .piece-color-b {
   width: 24%;
   height: 24%;
   border-radius: 50%;
-  background: radial-gradient(circle, #ffffff 0%, #60a5fa 45%, #a855f7 100%);
+  background: radial-gradient(circle, #ffffff 0%, #93c5fd 38%, #60a5fa 68%, #a855f7 100%);
   box-shadow:
-    0 0 10px #60a5fa,
-    0 0 18px #a855f7;
+    0 0 8px #ffffff,
+    0 0 14px #60a5fa,
+    0 0 22px rgba(168, 85, 247, 0.85);
   z-index: 4;
   pointer-events: none;
 }
@@ -919,8 +986,8 @@ body.tabletop-mode .piece-color-b {
   width: 84%;
   height: 84%;
   border-radius: 50%;
-  border: 3.5px solid rgba(232, 121, 249, 0.85);
-  box-shadow: 0 0 14px rgba(217, 70, 239, 0.65);
+  border: 3.5px solid rgba(232, 121, 249, 0.88);
+  box-shadow: 0 0 16px rgba(217, 70, 239, 0.72);
   position: absolute;
   z-index: 4;
   pointer-events: none;
@@ -954,14 +1021,14 @@ body.hide-legal .legal-capture-ring {
    ============================================================================ */
 .rc-bottom-dock {
   width: 100%;
-  max-width: calc(var(--board-size) + 46px);
+  max-width: var(--board-size);
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: 14px;
   padding: 7px 10px;
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
 }
 
 .rc-dock-btn {
@@ -1400,8 +1467,8 @@ body.hide-legal .legal-capture-ring {
 }
 
 .lobby-room-emblem {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.12));
   border: 1px solid rgba(56, 189, 248, 0.35);
@@ -1409,6 +1476,7 @@ body.hide-legal .legal-capture-ring {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   flex-shrink: 0;
 }
 
@@ -1416,6 +1484,14 @@ body.hide-legal .legal-capture-ring {
   background: radial-gradient(circle, rgba(245, 158, 11, 0.25), rgba(180, 83, 9, 0.12));
   border-color: rgba(245, 158, 11, 0.4);
   color: #fbbf24;
+}
+
+.lobby-badge-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 
 .lobby-room-info {
@@ -1523,24 +1599,31 @@ body.hide-legal .legal-capture-ring {
   font-weight: 700;
 }
 
-/* Dragon Dynasty Promo Card (Bottom Right) */
+/* Dragon Dynasty Promo Card (Bottom Right - 10-Piece 3D Lineup on Reflective Floor) */
 .rc-dragon-banner {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(168, 85, 247, 0.38);
-  background:
-    radial-gradient(circle at 75% 25%, rgba(217, 70, 239, 0.28) 0%, transparent 55%),
-    linear-gradient(135deg, #17122b 0%, #0d0e1a 100%);
-  padding: 12px 14px;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  background: url('/assets/dragon-dynasty-bg.png') center / 100% 100% no-repeat;
+  height: 172px;
+  flex-shrink: 0;
+  padding: 11px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.58),
+    inset 0 0 24px rgba(168, 85, 247, 0.14);
 }
 
 .rc-dragon-content {
   position: relative;
   z-index: 2;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 4px;
 }
 
@@ -1552,6 +1635,7 @@ body.hide-legal .legal-capture-ring {
   font-weight: 800;
   letter-spacing: 0.05em;
   color: #f8fafc;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
 }
 
 .rc-dragon-chevron {
@@ -1560,33 +1644,27 @@ body.hide-legal .legal-capture-ring {
 
 .rc-dragon-sub {
   font-size: 11px;
-  color: #c084fc;
+  color: #d8b4fe;
   font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
 }
 
 .rc-dragon-lineup {
-  height: 54px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  gap: 2px;
-  margin: 2px 0 4px;
-}
-
-.rc-dragon-lineup .chess-piece-svg {
-  width: 42px;
-  height: 42px;
+  height: 62px;
+  pointer-events: none;
 }
 
 .rc-dragon-btn {
   align-self: flex-start;
-  padding: 6px 14px;
+  padding: 6px 15px;
   border-radius: 8px;
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.45), rgba(79, 70, 229, 0.35));
-  border: 1px solid rgba(168, 85, 247, 0.6);
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.65), rgba(79, 70, 229, 0.55));
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(192, 132, 252, 0.68);
   color: #ffffff;
   font-size: 11.5px;
   font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
   transition: all 0.18s ease;
 }
 
@@ -1834,9 +1912,15 @@ body.hide-legal .legal-capture-ring {
 .piece-set-preview {
   display: flex;
   align-items: center;
-  width: 46px;
-  height: 26px;
+  width: 50px;
+  height: 28px;
   flex-shrink: 0;
+}
+
+.piece-set-preview .chess-piece-3d,
+.piece-set-preview .chess-piece-svg {
+  width: 25px;
+  height: 28px;
 }
 
 .ui-dot {
@@ -2136,7 +2220,25 @@ body.hide-legal .legal-capture-ring {
     order: 2;
   }
 
+  .rc-player-card {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .rc-player-name {
+    font-size: 12.5px;
+  }
+
+  .rc-clock-panel {
+    min-width: 84px;
+    padding: 5px 9px;
+  }
+
+  .chess-clock {
+    font-size: 16px;
+  }
+
   .rc-bottom-dock {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
