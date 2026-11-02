@@ -126,7 +126,10 @@ const OUT_DIR = process.argv[3] || '';
         bottomDockW: getRectW('.rc-bottom-dock')
       };
 
-      // 5. Accessibility & Icon Check
+      // 5. Accessibility, Scrollbar & Icon Check
+      const colorSchemeDark = window.getComputedStyle(document.documentElement).colorScheme === 'dark';
+      const playPane = document.getElementById('tab-pane-play');
+      const playPaneVerticalOverflowPx = playPane ? Math.max(0, playPane.scrollHeight - playPane.clientHeight) : 0;
       const svgIcons = document.querySelectorAll('svg.rc-icon').length;
       const inlineSvgRaster = document.querySelectorAll('svg image').length;
       const unlabeledButtons = Array.from(document.querySelectorAll('button'))
@@ -142,6 +145,8 @@ const OUT_DIR = process.argv[3] || '';
       return {
         viewport: { width: vw, height: window.innerHeight },
         horizontalOverflowPx,
+        colorSchemeDark,
+        playPaneVerticalOverflowPx,
         emojiCount: emojis.length,
         emojis: emojis.slice(0, 10),
         visibleRasterImgs: imgs.length,
