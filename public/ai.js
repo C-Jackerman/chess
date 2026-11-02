@@ -276,3 +276,4 @@ export function computeCapturedAndMaterial(chess) {
     blackAdvantage: Math.max(0, blackMat - whiteMat)
   };
 }
+

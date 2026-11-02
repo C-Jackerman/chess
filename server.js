@@ -328,7 +328,7 @@ io.on('connection', (socket) => {
       socketId: socket.id,
       playerId: payload.playerId || socket.id,
       name: (payload.name || 'Kỳ Thủ').slice(0, 24),
-      avatar: payload.avatar || '👑',
+      avatar: payload.avatar || '♔',
       title: (payload.title || 'PRO').slice(0, 10)
     };
     currentPlayerId = player.playerId;
@@ -364,7 +364,7 @@ io.on('connection', (socket) => {
       socketId: socket.id,
       playerId: payload.playerId || socket.id,
       name: (payload.name || 'Kỳ Thủ').slice(0, 24),
-      avatar: payload.avatar || '⚡',
+      avatar: payload.avatar || '♘',
       title: (payload.title || 'PRO').slice(0, 10)
     };
     currentPlayerId = player.playerId;
@@ -436,7 +436,7 @@ io.on('connection', (socket) => {
       socketId: socket.id,
       playerId: payload.playerId || socket.id,
       name: (payload.name || 'Kỳ Thủ').slice(0, 24),
-      avatar: payload.avatar || '⚔️',
+      avatar: payload.avatar || '♚',
       title: (payload.title || 'PRO').slice(0, 10)
     };
     currentPlayerId = player.playerId;
@@ -788,7 +788,7 @@ io.on('connection', (socket) => {
     const msg = {
       id: Date.now() + '-' + Math.random(),
       sender: (payload.name || 'Kỳ Thủ').slice(0, 24),
-      avatar: payload.avatar || '♟️',
+      avatar: payload.avatar || '♙',
       text,
       time: Date.now()
     };
@@ -882,3 +882,4 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`♔ Royal Chess Arena Server running on http://localhost:${PORT}`);
 });
+

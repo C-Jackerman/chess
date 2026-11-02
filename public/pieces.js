@@ -161,9 +161,9 @@ export const UI_THEMES = {
 };
 
 export const AVATAR_LIST = [
-  '👑', '♔', '♕', '♞', '🦁', '🐉',
-  '🦅', '⚡', '🔥', '💎', '🦊', '🐯',
-  '🥷', '🧙‍♂️', '🤖', '🌟'
+  '♔', '♕', '♖', '♗', '♘', '♙',
+  '♚', '♛', '♜', '♝', '♞', '♟',
+  '◆', '❖', '✦', '❂'
 ];
 
 export const TITLE_LIST = [
@@ -483,3 +483,4 @@ export function detectOpeningName(moveHistory) {
   }
   return `Trung cuộc • Nước thứ ${Math.ceil(moveHistory.length / 2)}`;
 }
+

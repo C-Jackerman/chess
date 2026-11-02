@@ -30,7 +30,7 @@ function generatePlayerId() {
 const defaultProfile = {
   playerId: generatePlayerId(),
   name: 'Kỳ Thủ ' + Math.floor(100 + Math.random() * 899),
-  avatar: '👑',
+  avatar: '♔',
   title: 'GM'
 };
 
@@ -50,6 +50,9 @@ const defaultSettings = {
 
 let userProfile = loadJSON(STORAGE_KEYS.PROFILE, defaultProfile);
 if (!userProfile.playerId) userProfile.playerId = generatePlayerId();
+if (!['♔','♕','♖','♗','♘','♙','♚','♛','♜','♝','♞','♟','◆','❖','✦','❂'].includes(userProfile.avatar)) {
+  userProfile.avatar = '♔';
+}
 saveJSON(STORAGE_KEYS.PROFILE, userProfile);
 
 let userSettings = { ...defaultSettings, ...loadJSON(STORAGE_KEYS.SETTINGS, defaultSettings) };
@@ -243,7 +246,7 @@ function initSocketConnection() {
   });
 
   socket.on('lobby:update', ({ rooms = [], onlineCount = 1 } = {}) => {
-    el.onlineCountText.textContent = `${onlineCount} trực tuyến`;
+    el.onlineCountText.textContent = `${onlineCount} online`;
     renderLobbyRooms(rooms);
   });
 
@@ -261,7 +264,7 @@ function initSocketConnection() {
 
   socket.on('game:restarted', (room) => {
     el.gameoverModal.classList.add('hidden');
-    showToast('🔄 Ván tái đấu đã bắt đầu! Hai bên đổi màu quân.');
+    showToast('Ván tái đấu đã bắt đầu. Hai bên đổi màu quân.');
     if (room.players.w?.playerId === userProfile.playerId) {
       state.onlineRole = 'w';
       state.flipped = false;
@@ -305,7 +308,7 @@ function handleOnlineRoomJoined(room, role) {
   el.activeRoomBox.classList.remove('hidden');
   el.activeRoomCode.textContent = room.code;
   el.activeRoomRole.textContent =
-    role === 'w' ? '⚪ Quân Trắng' : role === 'b' ? '⚫ Quân Đen' : '👁️ Khán Giả';
+    role === 'w' ? 'Quân Trắng' : role === 'b' ? 'Quân Đen' : 'Khán giả';
 
   // Update URL without reload so user can copy address bar directly
   const url = new URL(window.location.href);
@@ -346,11 +349,11 @@ function syncOnlineRoomState(room, latestMove = null) {
   const myColor = state.onlineRole;
   if (room.drawOfferBy && room.drawOfferBy !== myColor && (myColor === 'w' || myColor === 'b')) {
     state.pendingOfferType = 'draw';
-    el.incomingOfferText.textContent = '🤝 Đối thủ đề nghị Hòa cờ!';
+    el.incomingOfferText.textContent = 'Đối thủ đề nghị hòa cờ';
     el.incomingOfferBanner.classList.remove('hidden');
   } else if (room.undoRequestBy && room.undoRequestBy !== myColor && (myColor === 'w' || myColor === 'b')) {
     state.pendingOfferType = 'undo';
-    el.incomingOfferText.textContent = '↩️ Đối thủ xin đi lại 1 nước!';
+    el.incomingOfferText.textContent = 'Đối thủ xin đi lại 1 nước';
     el.incomingOfferBanner.classList.remove('hidden');
   } else {
     state.pendingOfferType = null;
@@ -470,21 +473,21 @@ function leaveOnlineRoom() {
 function renderLobbyRooms(rooms) {
   el.lobbyRoomCount.textContent = rooms.length;
   if (rooms.length === 0) {
-    el.lobbyRoomsList.innerHTML = `<div class="empty-lobby-msg">Chưa có phòng chờ. Hãy bấm <b>Tạo Phòng Solo</b> để mở bàn ngay!</div>`;
+    el.lobbyRoomsList.innerHTML = `<div class="empty-lobby-msg">Chưa có phòng chờ. Bấm <b>Tạo phòng</b> để mời bạn bè.</div>`;
     return;
   }
 
   el.lobbyRoomsList.innerHTML = rooms
     .map((r) => {
       const isPlaying = r.status === 'playing';
-      const btnText = isPlaying ? '👁️ Xem' : '⚔️ Vào Chiến';
+      const btnText = isPlaying ? 'Xem' : 'Vào phòng';
       return `
         <div class="lobby-room-item">
           <div class="lobby-room-info">
-            <div class="lobby-room-title">${escapeHtml(r.hostAvatar || '♔')} ${escapeHtml(r.hostName)}</div>
-            <div class="lobby-room-sub">Mã: <b>${r.code}</b> • ${escapeHtml(r.timeControlLabel)}</div>
+            <div class="lobby-room-title">${escapeHtml(r.hostName)}</div>
+            <div class="lobby-room-sub">Mã: <b>${r.code}</b> · ${escapeHtml(r.timeControlLabel)}</div>
           </div>
-          <button type="button" class="btn-primary btn-xs" data-join-room="${r.code}">${btnText}</button>
+          <button type="button" class="btn-secondary btn-xs" data-join-room="${r.code}">${btnText}</button>
         </div>
       `;
     })
@@ -1137,20 +1140,20 @@ function getPlayersDisplayInfo() {
     const rb = state.onlineRoom.players.b;
     return {
       w: rw
-        ? { name: rw.name, avatar: rw.avatar, title: rw.title, connected: rw.connected }
-        : { name: 'Đang chờ Kỳ Thủ...', avatar: '⏳', title: 'SOLO', connected: false },
+        ? { name: rw.name, avatar: rw.avatar || '♔', title: rw.title, connected: rw.connected }
+        : { name: 'Đang chờ đối thủ...', avatar: '♙', title: 'SOLO', connected: false },
       b: rb
-        ? { name: rb.name, avatar: rb.avatar, title: rb.title, connected: rb.connected }
-        : { name: 'Đang chờ Kỳ Thủ...', avatar: '⏳', title: 'SOLO', connected: false }
+        ? { name: rb.name, avatar: rb.avatar || '♚', title: rb.title, connected: rb.connected }
+        : { name: 'Đang chờ đối thủ...', avatar: '♟', title: 'SOLO', connected: false }
     };
   }
 
   if (state.mode === 'ai') {
     const aiNames = {
-      1: { name: 'Bot Tập Sự', title: '800', avatar: '🌱' },
-      2: { name: 'Kỳ Thủ CLB AI', title: '1250', avatar: '⚔️' },
-      3: { name: 'Kiện Tượng AI', title: '1650', avatar: '🏆' },
-      4: { name: 'Đại Kiện Tượng AI', title: 'GM', avatar: '🤖' }
+      1: { name: 'AI Tập Sự', title: '800', avatar: '♟' },
+      2: { name: 'AI Câu Lạc Bộ', title: '1250', avatar: '♞' },
+      3: { name: 'AI Kiện Tượng', title: '1650', avatar: '♜' },
+      4: { name: 'AI Đại Kiện Tượng', title: 'GM', avatar: '♚' }
     };
     const bot = aiNames[state.aiLevel] || aiNames[3];
     const me = {
@@ -1167,13 +1170,13 @@ function getPlayersDisplayInfo() {
   return {
     w: {
       name: `${userProfile.name} (Trắng)`,
-      avatar: userProfile.avatar,
+      avatar: '♔',
       title: userProfile.title,
       connected: true
     },
     b: {
       name: 'Kỳ Thủ 2 (Đen)',
-      avatar: '⚔️',
+      avatar: '♚',
       title: 'SOLO',
       connected: true
     }
@@ -1194,16 +1197,16 @@ function renderStatusBanner() {
   }
 
   if (state.aiThinking) {
-    el.turnText.textContent = '🤖 AI đang suy nghĩ...';
+    el.turnText.textContent = 'AI đang suy nghĩ...';
     el.turnPill.classList.remove('in-check');
     return;
   }
 
   if (c.inCheck()) {
-    el.turnText.textContent = `⚠️ CHIẾU TƯỚNG! Lượt ${turn === 'w' ? 'Trắng' : 'Đen'}`;
+    el.turnText.textContent = `Chiếu tướng · Lượt ${turn === 'w' ? 'Trắng' : 'Đen'}`;
     el.turnPill.classList.add('in-check');
   } else {
-    el.turnText.textContent = `Lượt ${turn === 'w' ? 'Trắng' : 'Đen'} đi`;
+    el.turnText.textContent = `Lượt ${turn === 'w' ? 'Trắng' : 'Đen'}`;
     el.turnPill.classList.remove('in-check');
   }
 }
@@ -1408,13 +1411,13 @@ function openPromotionModal(from, to, color) {
 
 function showGameOverModal(result) {
   if (!result) return;
-  el.gameoverIcon.textContent = result.winner === 'draw' ? '🤝' : '🏆';
+  el.gameoverIcon.textContent = result.winner === 'draw' ? '½' : '♔';
   el.gameoverTitle.textContent =
     result.winner === 'draw'
-      ? 'Ván Đấu Hòa Cờ!'
+      ? 'Ván đấu Hòa cờ'
       : result.winner === 'w'
-      ? 'Quân Trắng Chiến Thắng!'
-      : 'Quân Đen Chiến Thắng!';
+      ? 'Quân Trắng chiến thắng'
+      : 'Quân Đen chiến thắng';
   el.gameoverSubtitle.textContent = result.message || '';
   el.gameoverModal.classList.remove('hidden');
 }
@@ -2105,3 +2108,4 @@ function escapeHtml(str) {
 
 // Boot application
 init();
+
