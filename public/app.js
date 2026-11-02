@@ -11,7 +11,7 @@ import {
   renderPieceSVG,
   soundEngine,
   detectOpeningName
-} from '/pieces.js?v=5';
+} from '/pieces.js?v=6';
 import {
   evaluateBoardForBar,
   findBestMove,
@@ -248,7 +248,18 @@ function init() {
 function buildDragonShowcaseBanner() {
   const container = document.getElementById('dragon-showcase-pieces');
   if (!container) return;
-  container.innerHTML = '';
+  const showcase = [
+    { type: 'p', color: 'b' },
+    { type: 'r', color: 'w' },
+    { type: 'n', color: 'b' },
+    { type: 'q', color: 'w' },
+    { type: 'k', color: 'b' }
+  ];
+  container.innerHTML = showcase
+    .map(
+      (item) => `<div class="rc-showcase-piece">${renderPieceSVG(item.type, item.color, 'imperial')}</div>`
+    )
+    .join('');
 }
 
 // ============================================================================
@@ -498,13 +509,15 @@ function leaveOnlineRoom() {
 
 function renderLobbyRooms(rooms) {
   const lockSvg = renderIcon('lock', { weight: 'meta', size: 13 });
+  const knightIcon = renderIcon('chess-knight', { weight: 'control', size: 15 });
+  const trophyIcon = renderIcon('trophy', { weight: 'control', size: 15 });
 
   if (!rooms || rooms.length === 0) {
     el.lobbyRoomCount.textContent = '3';
     const showcaseRooms = [
-      { title: 'Phòng của DragonSlayer', sub: '10 phút - Cờ nhanh', slots: '2/2', level: 4, tc: '10+0', amber: false },
-      { title: 'Blitz Masters', sub: '5 phút - Cờ siêu tốc', slots: '1/2', level: 3, tc: '5+0', amber: true },
-      { title: 'Newbie Friendly', sub: '15 phút - Cờ nhanh', slots: '1/2', level: 2, tc: '15+10', amber: true }
+      { title: 'Phòng của DragonSlayer', sub: '10 phút · Cờ nhanh', slots: '2/2', level: 4, tc: '10+0', amber: false },
+      { title: 'Blitz Masters', sub: '5 phút · Cờ siêu tốc', slots: '1/2', level: 3, tc: '5+0', amber: true },
+      { title: 'Newbie Friendly', sub: '15 phút · Cờ nhanh', slots: '1/2', level: 2, tc: '15+10', amber: true }
     ];
     el.lobbyRoomsList.innerHTML = showcaseRooms
       .map(
@@ -512,7 +525,7 @@ function renderLobbyRooms(rooms) {
         <div class="lobby-room-item" data-showcase-level="${sr.level}" data-showcase-tc="${sr.tc}">
           <div class="lobby-room-left">
             <span class="lobby-room-emblem ${sr.amber ? 'amber' : ''}">
-              <img class="lobby-badge-img" src="/assets/${sr.amber ? 'room-badge-gold.png' : 'room-badge-blue.png'}" alt="" draggable="false" />
+              ${sr.amber ? trophyIcon : knightIcon}
             </span>
             <div class="lobby-room-info">
               <div class="lobby-room-title">${sr.title}</div>
@@ -549,11 +562,11 @@ function renderLobbyRooms(rooms) {
         <div class="lobby-room-item" data-join-room="${r.code}">
           <div class="lobby-room-left">
             <span class="lobby-room-emblem ${isAmber ? 'amber' : ''}">
-              <img class="lobby-badge-img" src="/assets/${isAmber ? 'room-badge-gold.png' : 'room-badge-blue.png'}" alt="" draggable="false" />
+              ${isAmber ? trophyIcon : knightIcon}
             </span>
             <div class="lobby-room-info">
               <div class="lobby-room-title">Phòng của ${escapeHtml(r.hostName)}</div>
-              <div class="lobby-room-sub">Mã: ${r.code} - ${escapeHtml(r.timeControlLabel)}</div>
+              <div class="lobby-room-sub">Mã: ${r.code} · ${escapeHtml(r.timeControlLabel)}</div>
             </div>
           </div>
           <div class="lobby-room-right">
@@ -1032,7 +1045,7 @@ function renderArrows() {
     arrows.push({
       from: state.hintArrow.from,
       to: state.hintArrow.to,
-      color: '#a855f7'
+      color: '#10b981'
     });
   }
 
@@ -1044,10 +1057,10 @@ function renderArrows() {
   const defs = `
     <defs>
       <marker id="arrowhead-gold" markerWidth="4.5" markerHeight="4.5" refX="2.7" refY="2.25" orient="auto">
-        <polygon points="0 0, 4.5 2.25, 0 4.5" fill="rgba(245, 158, 11, 0.88)" />
+        <polygon points="0 0, 4.5 2.25, 0 4.5" fill="rgba(212, 168, 83, 0.9)" />
       </marker>
       <marker id="arrowhead-hint" markerWidth="4.5" markerHeight="4.5" refX="2.7" refY="2.25" orient="auto">
-        <polygon points="0 0, 4.5 2.25, 0 4.5" fill="rgba(217, 70, 239, 0.92)" />
+        <polygon points="0 0, 4.5 2.25, 0 4.5" fill="rgba(16, 185, 129, 0.92)" />
       </marker>
     </defs>
   `;
@@ -1065,8 +1078,8 @@ function renderArrows() {
     const tx = start.x + dx * ratio;
     const ty = start.y + dy * ratio;
 
-    const isHint = arr.color === '#a855f7';
-    const stroke = isHint ? 'rgba(217, 70, 239, 0.9)' : 'rgba(245, 158, 11, 0.85)';
+    const isHint = arr.color === '#10b981';
+    const stroke = isHint ? 'rgba(16, 185, 129, 0.9)' : 'rgba(212, 168, 83, 0.85)';
     const marker = isHint ? 'url(#arrowhead-hint)' : 'url(#arrowhead-gold)';
 
     paths += `
@@ -1727,9 +1740,9 @@ function setRightTab(tabName) {
 
   const titles = {
     play: 'Chơi cờ',
-    moves: 'Biên bản ván đấu',
-    chat: 'Trò chuyện trực tiếp',
-    customize: 'Tùy chỉnh giao diện'
+    moves: 'Biên bản',
+    chat: 'Trò chuyện',
+    customize: 'Tùy chỉnh'
   };
   const headingEl = document.getElementById('right-panel-heading');
   if (headingEl && titles[mapped]) headingEl.textContent = titles[mapped];

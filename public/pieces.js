@@ -6,157 +6,157 @@
 export const BOARD_THEMES = {
   emerald: {
     id: 'emerald',
-    name: 'Midnight Cosmic Marble',
-    subtitle: 'Đá cẩm thạch vũ trụ (Mặc định)',
-    light: '#8d95b0',
-    dark: '#23263a',
-    border: '#312e59',
-    coordLight: '#cbd5e1',
-    coordDark: '#94a3b8',
-    lastMove: 'rgba(139, 92, 246, 0.36)',
-    selected: 'rgba(168, 85, 247, 0.52)'
-  },
-  royal_gold: {
-    id: 'royal_gold',
-    name: 'Onyx & Imperial Gold',
-    subtitle: 'Hắc ngọc & Hoàng kim',
-    light: '#e6d3a3',
-    dark: '#2c2419',
-    border: '#b48a3e',
-    coordLight: '#2c2419',
-    coordDark: '#e6d3a3',
-    lastMove: 'rgba(212, 175, 55, 0.42)',
-    selected: 'rgba(245, 158, 11, 0.58)'
-  },
-  cyberpunk: {
-    id: 'cyberpunk',
-    name: 'Midnight Cyberpunk',
-    subtitle: 'Neon tương lai',
-    light: '#272c4d',
-    dark: '#111428',
-    border: '#6366f1',
-    coordLight: '#38bdf8',
-    coordDark: '#c084fc',
-    lastMove: 'rgba(56, 189, 248, 0.34)',
-    selected: 'rgba(192, 132, 252, 0.52)'
-  },
-  wood: {
-    id: 'wood',
-    name: 'Walnut Grandmaster',
-    subtitle: 'Gỗ óc chó thượng hạng',
-    light: '#ead6b3',
-    dark: '#9e6f46',
-    border: '#3d2616',
-    coordLight: '#9e6f46',
-    coordDark: '#ead6b3',
-    lastMove: 'rgba(245, 158, 11, 0.42)',
-    selected: 'rgba(217, 119, 6, 0.58)'
-  },
-  ocean: {
-    id: 'ocean',
-    name: 'Oceanic Glass',
-    subtitle: 'Đại dương pha lê',
-    light: '#c9dced',
-    dark: '#35587a',
-    border: '#1b3147',
-    coordLight: '#35587a',
-    coordDark: '#c9dced',
-    lastMove: 'rgba(56, 189, 248, 0.42)',
-    selected: 'rgba(14, 165, 233, 0.58)'
+    name: 'Championship Walnut',
+    subtitle: 'Gỗ óc chó & Ngà voi giải đấu',
+    light: '#e8dfd1',
+    dark: '#7c5c40',
+    border: '#1c1814',
+    coordLight: '#7c5c40',
+    coordDark: '#e8dfd1',
+    lastMove: 'rgba(212, 168, 83, 0.34)',
+    selected: 'rgba(212, 168, 83, 0.50)'
   },
   marble: {
     id: 'marble',
     name: 'Tournament Classic',
     subtitle: 'Chuẩn giải đấu quốc tế',
-    light: '#dee3e6',
-    dark: '#5d7c66',
-    border: '#243328',
-    coordLight: '#5d7c66',
-    coordDark: '#dee3e6',
-    lastMove: 'rgba(132, 204, 22, 0.42)',
-    selected: 'rgba(16, 185, 129, 0.55)'
+    light: '#ebecd0',
+    dark: '#5d8246',
+    border: '#1c2419',
+    coordLight: '#5d8246',
+    coordDark: '#ebecd0',
+    lastMove: 'rgba(234, 179, 8, 0.36)',
+    selected: 'rgba(234, 179, 8, 0.52)'
+  },
+  royal_gold: {
+    id: 'royal_gold',
+    name: 'Architectural Slate',
+    subtitle: 'Đá phiến & Bạch kim',
+    light: '#dde2e8',
+    dark: '#4b5869',
+    border: '#181c22',
+    coordLight: '#4b5869',
+    coordDark: '#dde2e8',
+    lastMove: 'rgba(212, 168, 83, 0.34)',
+    selected: 'rgba(212, 168, 83, 0.48)'
+  },
+  wood: {
+    id: 'wood',
+    name: 'Rosewood & Maple',
+    subtitle: 'Gỗ cẩm lai & Phong trắng',
+    light: '#f0dec2',
+    dark: '#8d4e35',
+    border: '#26150e',
+    coordLight: '#8d4e35',
+    coordDark: '#f0dec2',
+    lastMove: 'rgba(245, 158, 11, 0.36)',
+    selected: 'rgba(217, 119, 6, 0.50)'
+  },
+  ocean: {
+    id: 'ocean',
+    name: 'Nordic Fjord',
+    subtitle: 'Xanh biển Bắc Âu',
+    light: '#d8e3eb',
+    dark: '#3d5a73',
+    border: '#15222e',
+    coordLight: '#3d5a73',
+    coordDark: '#d8e3eb',
+    lastMove: 'rgba(56, 189, 248, 0.34)',
+    selected: 'rgba(14, 165, 233, 0.48)'
+  },
+  cyberpunk: {
+    id: 'cyberpunk',
+    name: 'Carbon Monolith',
+    subtitle: 'Đen tuyền tối giản',
+    light: '#b8c0cc',
+    dark: '#2c323d',
+    border: '#121418',
+    coordLight: '#2c323d',
+    coordDark: '#b8c0cc',
+    lastMove: 'rgba(212, 168, 83, 0.32)',
+    selected: 'rgba(212, 168, 83, 0.48)'
   },
   sakura: {
     id: 'sakura',
-    name: 'Crimson Amethyst',
-    subtitle: 'Hồng ngọc hoàng gia',
-    light: '#d8c7d9',
-    dark: '#4a2342',
-    border: '#702459',
-    coordLight: '#4a2342',
-    coordDark: '#d8c7d9',
-    lastMove: 'rgba(236, 72, 153, 0.4)',
-    selected: 'rgba(244, 63, 94, 0.55)'
+    name: 'Burgundy Club',
+    subtitle: 'Đỏ rượu vang cổ điển',
+    light: '#e6dcd5',
+    dark: '#6e3438',
+    border: '#241113',
+    coordLight: '#6e3438',
+    coordDark: '#e6dcd5',
+    lastMove: 'rgba(212, 168, 83, 0.36)',
+    selected: 'rgba(212, 168, 83, 0.50)'
   },
   nordic: {
     id: 'nordic',
-    name: 'Nordic Frost',
-    subtitle: 'Băng giá Bắc Âu',
-    light: '#d5e3ec',
-    dark: '#466675',
-    border: '#1f333d',
-    coordLight: '#466675',
-    coordDark: '#d5e3ec',
-    lastMove: 'rgba(45, 212, 191, 0.4)',
-    selected: 'rgba(20, 184, 166, 0.55)'
+    name: 'Alpine Sage',
+    subtitle: 'Xanh xô thơm dịu mắt',
+    light: '#e2e6df',
+    dark: '#586e5e',
+    border: '#1a211c',
+    coordLight: '#586e5e',
+    coordDark: '#e2e6df',
+    lastMove: 'rgba(212, 168, 83, 0.34)',
+    selected: 'rgba(212, 168, 83, 0.50)'
   }
 };
 
 export const PIECE_SETS = {
   staunton: {
     id: 'staunton',
-    name: 'Royal Sculpted 3D',
-    subtitle: 'Hoàng gia chạm khắc vàng & bạc'
+    name: 'Championship Staunton',
+    subtitle: 'Chuẩn giải đấu FIDE cổ điển'
   },
   imperial: {
     id: 'imperial',
-    name: 'Dragon Dynasty',
-    subtitle: 'Huyền thoại Long Tộc'
-  },
-  neon: {
-    id: 'neon',
-    name: 'Cyber Neon Glow',
-    subtitle: 'Quang phổ điện tử'
-  },
-  crystal: {
-    id: 'crystal',
-    name: '3D Faceted Crystal',
-    subtitle: 'Lăng kính pha lê'
+    name: 'Imperial Brass & Onyx',
+    subtitle: 'Hoàng kim & Hắc ngọc chạm khắc'
   },
   minimal: {
     id: 'minimal',
-    name: 'Grandmaster Classic',
-    subtitle: 'Vector hình học chuẩn mực'
+    name: 'Architectural Geometric',
+    subtitle: 'Vector hình học tối giản'
+  },
+  crystal: {
+    id: 'crystal',
+    name: 'Nordic Alabaster',
+    subtitle: 'Đá cẩm thạch Bắc Âu'
+  },
+  neon: {
+    id: 'neon',
+    name: 'High-Contrast Tournament',
+    subtitle: 'Tương phản cao dễ quan sát'
   }
 };
 
 export const UI_THEMES = {
   obsidian: {
     id: 'obsidian',
-    name: 'Midnight',
-    bg: '#0b0c15',
-    panel: '#121424',
-    text: '#f8fafc'
+    name: 'Carbon Studio',
+    bg: '#0b0c0e',
+    panel: '#121418',
+    text: '#f3f4f6'
   },
   midnight: {
     id: 'midnight',
-    name: 'Abyssal Blue',
-    bg: '#070d19',
-    panel: '#0f172a',
-    text: '#f1f5f9'
+    name: 'Nordic Slate',
+    bg: '#0d1117',
+    panel: '#161b22',
+    text: '#f0f6fc'
   },
   espresso: {
     id: 'espresso',
-    name: 'Royal Ember',
-    bg: '#140c14',
-    panel: '#1f1220',
-    text: '#fdf2f8'
+    name: 'Warm Walnut',
+    bg: '#110f0d',
+    panel: '#1a1613',
+    text: '#f5f0eb'
   },
   alabaster: {
     id: 'alabaster',
-    name: 'Obsidian Slate',
-    bg: '#111318',
-    panel: '#191c24',
+    name: 'Graphite Matte',
+    bg: '#121316',
+    panel: '#181a1f',
     text: '#f3f4f6'
   }
 };
@@ -177,17 +177,10 @@ export const TITLE_LIST = [
 export const ROYAL_ICONS = {
   // Brand & Custom Chess Icons
   'royal-logo': `
-    <defs>
-      <linearGradient id="rcLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#f0abfc" />
-        <stop offset="50%" stop-color="#a855f7" />
-        <stop offset="100%" stop-color="#6366f1" />
-      </linearGradient>
-    </defs>
-    <path d="M12 2L14.5 5.5L18 4L16.5 8.5H7.5L6 4L9.5 5.5L12 2Z" fill="url(#rcLogoGrad)" stroke="#f5d0fe" stroke-width="1.4"/>
-    <path d="M8.5 8.5H15.5L14.5 16.5H9.5L8.5 8.5Z" fill="url(#rcLogoGrad)" stroke="#e9d5ff" stroke-width="1.4"/>
-    <path d="M6.5 16.5H17.5L19 20.5H5L6.5 16.5Z" fill="url(#rcLogoGrad)" stroke="#f5d0fe" stroke-width="1.4"/>
-    <line x1="4" y1="22" x2="20" y2="22" stroke="#f0abfc" stroke-width="2"/>
+    <path d="M12 2.5L14.5 6L18 4.5L16.5 9H7.5L6 4.5L9.5 6L12 2.5Z" fill="#d4a853" stroke="#f3f4f6" stroke-width="1.4"/>
+    <path d="M8.5 9H15.5L14.5 16.5H9.5L8.5 9Z" fill="#d4a853" fill-opacity="0.85" stroke="#f3f4f6" stroke-width="1.4"/>
+    <path d="M6.5 16.5H17.5L19 20H5L6.5 16.5Z" fill="#d4a853" stroke="#f3f4f6" stroke-width="1.4"/>
+    <line x1="4.5" y1="21.5" x2="19.5" y2="21.5" stroke="#d4a853" stroke-width="2"/>
   `,
   'home-play': `
     <path d="M3 10.5L12 3l9 7.5" />
@@ -424,178 +417,187 @@ export function renderCapturedPieceSVG(type, color = 'w') {
 }
 
 // ============================================================================
-// HIGH-DETAIL ILLUSTRATED GRANDMASTER PORTRAIT AVATARS
+// ARCHITECTURAL GRANDMASTER CREST AVATARS (100% VECTOR SVG)
 // ============================================================================
-const PORTRAIT_ASSETS = {
-  A: { src: '/assets/avatar-silver.png', filter: 'none' },
-  B: { src: '/assets/avatar-dark.png',   filter: 'hue-rotate(15deg) saturate(1.15)' },
-  C: { src: '/assets/avatar-silver.png', filter: 'hue-rotate(310deg) saturate(1.2)' },
-  D: { src: '/assets/avatar-silver.png', filter: 'hue-rotate(150deg) saturate(1.15)' },
-  E: { src: '/assets/avatar-dark.png',   filter: 'hue-rotate(330deg) saturate(1.25)' },
-  F: { src: '/assets/avatar-silver.png', filter: 'hue-rotate(200deg) saturate(1.2)' },
-  G: { src: '/assets/avatar-dark.png',   filter: 'sepia(0.28) saturate(1.35) brightness(1.06)' },
-  K: { src: '/assets/avatar-dark.png',   filter: 'none' }
+const CREST_PALETTES = {
+  A: { bg: '#181c24', border: '#64748b', accent: '#cbd5e1', icon: 'knight' },
+  B: { bg: '#1c1914', border: '#b48a3e', accent: '#e2b968', icon: 'crown' },
+  C: { bg: '#141e1b', border: '#10b981', accent: '#6ee7b7', icon: 'rook' },
+  D: { bg: '#1e1618', border: '#e11d48', accent: '#fda4af', icon: 'queen' },
+  E: { bg: '#161b26', border: '#38bdf8', accent: '#bae6fd', icon: 'bishop' },
+  F: { bg: '#1d1a16', border: '#d97706', accent: '#fcd34d', icon: 'knight' },
+  G: { bg: '#17191e', border: '#94a3b8', accent: '#f1f5f9', icon: 'rook' },
+  K: { bg: '#1b1812', border: '#d4a853', accent: '#f3d28c', icon: 'crown' }
 };
 
 export function renderAvatarSVG(code = 'K') {
-  const key = PORTRAIT_ASSETS[code] ? code : 'K';
-  const p = PORTRAIT_ASSETS[key];
-  const styleAttr = p.filter !== 'none' ? ` style="filter:${p.filter}"` : '';
-  return `<img class="rc-avatar-img" src="${p.src}" alt="" draggable="false"${styleAttr} />`;
+  const p = CREST_PALETTES[code] || CREST_PALETTES.K;
+  let emblem = '';
+  if (p.icon === 'crown') {
+    emblem = `<path d="M8 25L10.5 14L15 19L20 11L25 19L29.5 14L32 25H8Z" fill="${p.accent}" fill-opacity="0.22" stroke="${p.accent}" stroke-width="1.75" stroke-linejoin="round"/><line x1="9" y1="28.5" x2="31" y2="28.5" stroke="${p.accent}" stroke-width="2" stroke-linecap="round"/>`;
+  } else if (p.icon === 'knight') {
+    emblem = `<path d="M13 28L14.5 19.5L11.5 18.5L13.5 11.5L21 8.5L26.5 12C28 16 27.5 22.5 25.5 28H13Z" fill="${p.accent}" fill-opacity="0.22" stroke="${p.accent}" stroke-width="1.75" stroke-linejoin="round"/><circle cx="18.5" cy="13.5" r="1.2" fill="${p.accent}"/>`;
+  } else if (p.icon === 'rook') {
+    emblem = `<path d="M12 11V15H14.5V12.5H17.5V15H22.5V12.5H25.5V15H28V11M13.5 15V26H26.5V15M11 28.5H29" fill="${p.accent}" fill-opacity="0.2" stroke="${p.accent}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>`;
+  } else {
+    emblem = `<circle cx="20" cy="11" r="2" fill="${p.accent}"/><path d="M12.5 27.5C12.5 19 16 14 20 13C24 14 27.5 19 27.5 27.5H12.5Z" fill="${p.accent}" fill-opacity="0.22" stroke="${p.accent}" stroke-width="1.75" stroke-linejoin="round"/>`;
+  }
+  return `
+    <svg class="rc-avatar-svg" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <rect x="1" y="1" width="38" height="38" rx="19" fill="${p.bg}" stroke="${p.border}" stroke-width="1.5"/>
+      ${emblem}
+    </svg>
+  `;
 }
 
 // ============================================================================
-// CUSTOM 3D-SHADED SVG CHESS PIECES (ROYAL 3D, DRAGON DYNASTY, CYBER, CRYSTAL)
+// CHAMPIONSHIP STAUNTON VECTOR PIECES (HIGH-CRAFT CYLINDRICAL SHADING)
 // ============================================================================
 function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
   const uid = `${styleVariant}_${type}_${isWhite ? 'w' : 'b'}`;
 
-  let fillUrl = `url(#grad_${uid})`;
-  let rimUrl = `url(#rim_${uid})`;
-  let strokeColor = isWhite ? '#b48a3e' : '#c09a4b';
-  let strokeWidth = '1.45';
-  let innerStroke = isWhite ? '#d4af37' : '#f59e0b';
-  let extraFilter = 'filter="url(#piece-shadow)"';
-
-  // Default: 'staunton' -> Royal Sculpted 3D (Pearl Ivory & Gold vs Obsidian & Gold, matching reference image!)
-  let stop1 = isWhite ? '#ffffff' : '#374151';
-  let stop2 = isWhite ? '#e5e0d5' : '#181824';
-  let stop3 = isWhite ? '#b8ad99' : '#09090f';
+  // Default: Championship Staunton (Warm Alabaster Ivory vs Satin Ebony Obsidian)
+  let stop1 = isWhite ? '#ffffff' : '#434956';
+  let stop2 = isWhite ? '#f4efe4' : '#242830';
+  let stop3 = isWhite ? '#d5cab8' : '#101216';
+  let strokeColor = isWhite ? '#1e2228' : '#0a0c0f';
+  let innerStroke = isWhite ? '#2c313a' : '#d6c5a9';
+  let strokeWidth = '1.5';
 
   if (styleVariant === 'imperial') {
-    // Dragon Dynasty (Crimson Gold & Obsidian Dragon scale)
-    stop1 = isWhite ? '#fef3c7' : '#450a0a';
-    stop2 = isWhite ? '#f59e0b' : '#1c0609';
-    stop3 = isWhite ? '#92400e' : '#090204';
-    strokeColor = isWhite ? '#78350f' : '#f59e0b';
-    innerStroke = isWhite ? '#fef08a' : '#ef4444';
-    strokeWidth = '1.6';
-  } else if (styleVariant === 'neon') {
-    stop1 = isWhite ? '#0e7490' : '#4c1d95';
-    stop2 = isWhite ? '#083344' : '#2e1065';
-    stop3 = isWhite ? '#04131a' : '#0f0524';
-    strokeColor = isWhite ? '#22d3ee' : '#e879f9';
-    innerStroke = isWhite ? '#67e8f9' : '#f472b6';
-    strokeWidth = '1.9';
-  } else if (styleVariant === 'crystal') {
-    stop1 = isWhite ? '#f0f9ff' : '#312e81';
-    stop2 = isWhite ? '#bae6fd' : '#1e1b4b';
-    stop3 = isWhite ? '#38bdf8' : '#090721';
-    strokeColor = isWhite ? '#0284c7' : '#818cf8';
-    innerStroke = isWhite ? '#e0f2fe' : '#c7d2fe';
+    // Imperial Brass & Onyx
+    stop1 = isWhite ? '#fff8e7' : '#3a2e21';
+    stop2 = isWhite ? '#e8ca88' : '#1e1710';
+    stop3 = isWhite ? '#b88c3b' : '#0d0a07';
+    strokeColor = isWhite ? '#2a1f10' : '#090705';
+    innerStroke = isWhite ? '#4a3519' : '#e5c168';
     strokeWidth = '1.5';
+  } else if (styleVariant === 'crystal') {
+    // Nordic Alabaster & Slate
+    stop1 = isWhite ? '#ffffff' : '#475569';
+    stop2 = isWhite ? '#e2e8f0' : '#273244';
+    stop3 = isWhite ? '#cbd5e1' : '#111722';
+    strokeColor = isWhite ? '#1e293b' : '#090d14';
+    innerStroke = isWhite ? '#334155' : '#cbd5e1';
+    strokeWidth = '1.5';
+  } else if (styleVariant === 'neon') {
+    // High-Contrast Tournament
+    stop1 = isWhite ? '#ffffff' : '#383d47';
+    stop2 = isWhite ? '#f8fafc' : '#1d2026';
+    stop3 = isWhite ? '#e2e8f0' : '#0b0d10';
+    strokeColor = '#0f172a';
+    innerStroke = isWhite ? '#1e293b' : '#eab308';
+    strokeWidth = '1.65';
   }
 
   const defs = `
     <defs>
-      <linearGradient id="grad_${uid}" x1="18%" y1="8%" x2="82%" y2="92%">
+      <linearGradient id="grad_${uid}" x1="14%" y1="10%" x2="86%" y2="85%">
         <stop offset="0%" stop-color="${stop1}" />
-        <stop offset="48%" stop-color="${stop2}" />
+        <stop offset="52%" stop-color="${stop2}" />
         <stop offset="100%" stop-color="${stop3}" />
-      </linearGradient>
-      <linearGradient id="rim_${uid}" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#fde68a" stop-opacity="0.85" />
-        <stop offset="50%" stop-color="#d97706" stop-opacity="0.95" />
-        <stop offset="100%" stop-color="#fef3c7" stop-opacity="0.85" />
       </linearGradient>
     </defs>
   `;
 
   if (styleVariant === 'minimal') {
-    return renderMinimalistPiece(type, isWhite, defs, fillUrl, strokeColor, innerStroke);
+    return renderMinimalistPiece(type, isWhite, defs, `url(#grad_${uid})`, strokeColor, innerStroke);
   }
 
+  const fillUrl = `url(#grad_${uid})`;
+  const shadowEllipse = `<ellipse cx="22.5" cy="40.2" rx="14.2" ry="2.2" fill="rgba(0,0,0,0.28)" />`;
   let body = '';
+
   switch (type) {
     case 'p':
       body = `
-        <ellipse cx="22.5" cy="39" rx="12.5" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
-        <path d="M 22.5,8.5 C 19.2,8.5 16.5,11.2 16.5,14.5 C 16.5,16.9 18,19 20.1,19.8 C 17,21.6 15.2,24.8 15.2,28.5 C 15.2,30.8 17.2,32.2 17.2,32.2 L 12.5,36.8 L 32.5,36.8 L 27.8,32.2 C 27.8,32.2 29.8,30.8 29.8,28.5 C 29.8,24.8 28,21.6 24.9,19.8 C 27,19 28.5,16.9 28.5,14.5 C 28.5,11.2 25.8,8.5 22.5,8.5 z"
-          fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" />
-        <path d="M 11,36.8 L 34,36.8 C 35,36.8 35.5,37.8 35.5,39.2 L 9.5,39.2 C 9.5,37.8 10,36.8 11,36.8 z"
-          fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" />
-        <!-- 3D Specular Filigree -->
-        <path d="M 22.5,11.5 L 24.2,14.5 L 22.5,17.5 L 20.8,14.5 Z" fill="${innerStroke}" fill-opacity="0.7" stroke="none" />
-        <path d="M 15.5,34.2 L 29.5,34.2" stroke="${innerStroke}" stroke-width="1.35" stroke-linecap="round" fill="none" />
+        ${shadowEllipse}
+        <path d="M 22.5,9 C 19.0,9 16.3,11.7 16.3,15 C 16.3,17.4 17.8,19.5 19.9,20.4 C 16.8,22.2 15.0,25.5 15.0,29.2 C 15.0,31.4 16.9,32.8 16.9,32.8 L 12.2,37.2 L 32.8,37.2 L 28.1,32.8 C 28.1,32.8 30.0,31.4 30.0,29.2 C 30.0,25.5 28.2,22.2 25.1,20.4 C 27.2,19.5 28.7,17.4 28.7,15 C 28.7,11.7 26.0,9 22.5,9 z"
+          fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 10.5,37.2 L 34.5,37.2 C 35.4,37.2 36,38.1 36,39.5 L 9,39.5 C 9,38.1 9.6,37.2 10.5,37.2 z"
+          fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linejoin="round" />
+        <path d="M 18.2,20.4 L 26.8,20.4" stroke="${innerStroke}" stroke-width="1.25" stroke-linecap="round" fill="none" />
+        <path d="M 15.2,34.6 L 29.8,34.6" stroke="${innerStroke}" stroke-width="1.25" stroke-linecap="round" fill="none" />
       `;
       break;
 
     case 'r':
       body = `
-        <ellipse cx="22.5" cy="39.2" rx="13.5" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
+        ${shadowEllipse}
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M 9,39 L 36,39 L 36,36 L 9,36 L 9,39 z" />
-          <path d="M 12,36 L 12,32 L 33,32 L 33,36 L 12,36 z" />
+          <path d="M 9,39.5 L 36,39.5 L 36,36.2 L 9,36.2 L 9,39.5 z" />
+          <path d="M 12,36.2 L 12,32.2 L 33,32.2 L 33,36.2 L 12,36.2 z" />
           <path d="M 14,29.5 L 14,16.5 L 31,16.5 L 31,29.5 L 14,29.5 z" />
           <path d="M 14,16.5 L 11,14 L 34,14 L 31,16.5 L 14,16.5 z" />
-          <path d="M 11,14 L 11,8.5 L 15.5,8.5 L 15.5,11 L 20,11 L 20,8.5 L 25,8.5 L 25,11 L 29.5,11 L 29.5,8.5 L 34,8.5 L 34,14" />
-          <path d="M 12,32 L 14,29.5 L 31,29.5 L 33,32 L 12,32 z" />
-          <path d="M 22.5,18.5 L 25,23 L 22.5,27.5 L 20,23 Z" fill="${innerStroke}" fill-opacity="0.55" stroke="none" />
-          <path d="M 15,19 L 30,19" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
-          <path d="M 15,27.5 L 30,27.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <path d="M 11,14 L 11,8.8 L 15.5,8.8 L 15.5,11.2 L 20,11.2 L 20,8.8 L 25,8.8 L 25,11.2 L 29.5,11.2 L 29.5,8.8 L 34,8.8 L 34,14" />
+          <path d="M 12,32.2 L 14,29.5 L 31,29.5 L 33,32.2 L 12,32.2 z" />
+          <path d="M 15,19 L 30,19" stroke="${innerStroke}" stroke-width="1.25" fill="none" />
+          <path d="M 15,27.2 L 30,27.2" stroke="${innerStroke}" stroke-width="1.25" fill="none" />
         </g>
       `;
       break;
 
     case 'n':
       body = `
-        <ellipse cx="23.5" cy="39.2" rx="13.5" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
+        ${shadowEllipse}
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18" />
+          <path d="M 22,10 C 32.5,11 38.5,18 38,39.2 L 14.5,39.2 C 14.5,30 24.5,32.5 22.8,18" />
           <path d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10" />
-          <circle cx="15.5" cy="14.5" r="1.4" fill="${innerStroke}" stroke="none" />
-          <path d="M 26,15 C 31,18 33,25 33,35" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
-          <path d="M 11.5,37 L 36.5,37" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
+          <circle cx="15.2" cy="14.2" r="1.25" fill="${innerStroke}" stroke="none" />
+          <path d="M 9.5,15.5 C 9,17 8,18.2 7.5,19" stroke="${innerStroke}" stroke-width="1.15" fill="none" />
+          <path d="M 26.5,14.5 C 31.2,17.8 33.2,24.8 33.2,35.5" stroke="${innerStroke}" stroke-width="1.25" fill="none" />
+          <path d="M 14.5,36.8 L 37.8,36.8" stroke="${innerStroke}" stroke-width="1.25" fill="none" />
         </g>
       `;
       break;
 
     case 'b':
       body = `
-        <ellipse cx="22.5" cy="39.2" rx="13.5" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
+        ${shadowEllipse}
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 9,36 C 12.39,35.03 19.11,36.43 22.5,34 C 25.89,36.43 32.61,35.03 36,36 C 36,36 37.65,36.54 39,38 C 38.32,38.97 37.35,38.99 36,38.5 C 32.61,37.53 25.89,38.96 22.5,37.5 C 19.11,38.96 12.39,37.53 9,38.5 C 7.646,38.99 6.677,38.97 6,38 C 7.354,36.06 9,36 9,36 z" />
           <path d="M 15,32 C 17.5,34.5 27.5,34.5 30,32 C 30.5,30.5 30,30 30,30 C 30,27.5 27.5,26 27.5,26 C 33,24.5 33.5,14.5 22.5,10.5 C 11.5,14.5 12,24.5 17.5,26 C 17.5,26 15,27.5 15,30 C 15,30 14.5,30.5 15,32 z" />
-          <circle cx="22.5" cy="7.8" r="2.3" fill="${rimUrl}" />
-          <path d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15 L 22.5,21 M 19.5,18 L 25.5,18" stroke="${innerStroke}" stroke-width="1.45" fill="none" />
+          <circle cx="22.5" cy="8" r="2.2" fill="${fillUrl}" />
+          <path d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15.5 L 22.5,20.5 M 20,18 L 25,18" stroke="${innerStroke}" stroke-width="1.35" fill="none" />
         </g>
       `;
       break;
 
     case 'q':
       body = `
-        <ellipse cx="22.5" cy="39.2" rx="14" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
+        ${shadowEllipse}
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 9,26 C 17.5,24.5 30,24.5 36,26 L 38.5,13.5 L 31,25 L 30.7,10.9 L 25.5,24.5 L 22.5,10 L 19.5,24.5 L 14.3,10.9 L 14,25 L 6.5,13.5 L 9,26 z" />
           <path d="M 9,26 C 9,28 10.5,28 11.5,30 C 12.5,31.5 12.5,31 12,33.5 C 10.5,34.5 11,36 11,36 C 9.5,37.5 11,38.5 11,38.5 C 17.5,39.5 27.5,39.5 34,38.5 C 34,38.5 35.5,37.5 34,36 C 34,36 34.5,34.5 33,33.5 C 32.5,31 32.5,31.5 33.5,30 C 34.5,28 36,28 36,26 C 27.5,24.5 17.5,24.5 9,26 z" />
-          <circle cx="6" cy="12" r="2" fill="${rimUrl}" />
-          <circle cx="14" cy="9" r="2" fill="${rimUrl}" />
-          <circle cx="22.5" cy="7.8" r="2.3" fill="${rimUrl}" />
-          <circle cx="31" cy="9" r="2" fill="${rimUrl}" />
-          <circle cx="39" cy="12" r="2" fill="${rimUrl}" />
-          <path d="M 11.5,30 C 15,29 30,29 33.5,30" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
-          <path d="M 12,33.5 C 18,32.5 27,32.5 33,33.5" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
+          <circle cx="6" cy="12" r="1.9" fill="${fillUrl}" />
+          <circle cx="14" cy="9" r="1.9" fill="${fillUrl}" />
+          <circle cx="22.5" cy="8" r="2.1" fill="${fillUrl}" />
+          <circle cx="31" cy="9" r="1.9" fill="${fillUrl}" />
+          <circle cx="39" cy="12" r="1.9" fill="${fillUrl}" />
+          <path d="M 11.5,30 C 18,28.5 27,28.5 33.5,30" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <path d="M 12,33.5 C 18.5,32 26.5,32 33,33.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <path d="M 11.5,36.8 C 18.5,35.5 26.5,35.5 33.5,36.8" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
         </g>
       `;
       break;
 
     case 'k':
       body = `
-        <ellipse cx="22.5" cy="39.2" rx="14" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
+        ${shadowEllipse}
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M 22.5,11.63 L 22.5,5.5" stroke="${innerStroke}" stroke-width="2.4" />
-          <path d="M 19.5,8 L 25.5,8" stroke="${innerStroke}" stroke-width="2.4" />
-          <path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" fill="${rimUrl}" />
+          <path d="M 22.5,11.63 L 22.5,5.5" stroke="${strokeColor}" stroke-width="2.2" />
+          <path d="M 19.5,8.2 L 25.5,8.2" stroke="${strokeColor}" stroke-width="2.2" />
+          <path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" fill="${fillUrl}" />
           <path d="M 11.5,37 C 17,40.5 27,40.5 32.5,37 L 32.5,30 C 32.5,30 41.5,25.5 38.5,19.5 C 34.5,13 25,16 22.5,23.5 L 22.5,27 L 22.5,23.5 C 19,16 9.5,13 6.5,19.5 C 3.5,25.5 11.5,29.5 11.5,29.5 L 11.5,37 z" />
-          <path d="M 11.5,30 C 17,27 27,27 32.5,30" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
-          <path d="M 11.5,33.5 C 17,30.5 27,30.5 32.5,33.5" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
-          <path d="M 11.5,37 C 17,34 27,34 32.5,37" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
+          <path d="M 11.5,30 C 17,27 27,27 32.5,30" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <path d="M 11.5,33.5 C 17,30.5 27,30.5 32.5,33.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <path d="M 11.5,37 C 17,34 27,34 32.5,37" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
         </g>
       `;
       break;
   }
 
-  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-${styleVariant}" ${extraFilter}>${defs}${body}</svg>`;
+  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-${styleVariant}">${defs}${body}</svg>`;
 }
 
 function renderMinimalistPiece(type, isWhite, defs, fillUrl, strokeColor, innerStroke) {
@@ -654,12 +656,7 @@ function renderMinimalistPiece(type, isWhite, defs, fillUrl, strokeColor, innerS
 export function renderPieceSVG(type, color, pieceSet = 'staunton') {
   const normType = String(type || 'p').toLowerCase();
   const isWhite = color === 'w';
-  if (pieceSet === 'minimal') {
-    return getStauntonPaths(normType, isWhite, 'minimal');
-  }
-  const setFolder = ['staunton', 'imperial', 'neon', 'crystal'].includes(pieceSet) ? pieceSet : 'staunton';
-  const pieceKey = `${isWhite ? 'w' : 'b'}${normType.toUpperCase()}`;
-  return `<div class="chess-piece-3d piece-set-${setFolder}"><img class="chess-piece-img" src="/assets/pieces/${setFolder}/${pieceKey}.png" alt="" draggable="false" /></div>`;
+  return getStauntonPaths(normType, isWhite, pieceSet);
 }
 
 // ============================================================================

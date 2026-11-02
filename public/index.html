@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=5" />
+  <link rel="stylesheet" href="/styles.css?v=6" />
 </head>
 <body>
   <!-- Global SVG Filters for 3D Sculpted Chess Pieces -->
@@ -45,9 +45,16 @@
       <!-- Brand Logo -->
       <div class="rc-brand">
         <div class="rc-brand-emblem">
-          <img src="/assets/brand-logo.png" class="rc-brand-logo-img" alt="" draggable="false" />
+          <svg class="rc-icon rc-brand-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 20h14" />
+            <path d="M7 17h10l-1-9H8l-1 9z" />
+            <path d="M6 8h12V4h-2.5v2h-2V4h-3v2h-2V4H6v4z" />
+          </svg>
         </div>
-        <span class="rc-brand-title">ROYAL CHESS</span>
+        <div class="rc-brand-copy">
+          <span class="rc-brand-title">ROYAL CHESS</span>
+          <span class="rc-brand-sub">CHAMPIONSHIP ARENA</span>
+        </div>
       </div>
 
       <!-- Primary Navigation Menu (Stroke weight: 1.85px) -->
@@ -204,7 +211,7 @@
                 <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
               </svg>
             </span>
-            <span id="sidebar-theme-name">Midnight</span>
+            <span id="sidebar-theme-name">Carbon Studio</span>
           </span>
           <svg class="rc-icon rc-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="9 18 15 12 9 6" />
@@ -924,25 +931,26 @@
         </div>
       </div>
 
-      <!-- BOTTOM FEATURED PROMO BANNER: DRAGON DYNASTY (Matches Reference Image!) -->
+      <!-- BOTTOM FEATURED COLLECTION CARD: IMPERIAL STAUNTON -->
       <div class="rc-dragon-banner">
-        <div class="rc-dragon-glow"></div>
         <div class="rc-dragon-content">
-          <div class="rc-dragon-head">
-            <svg class="rc-icon rc-dragon-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polyline points="13 17 18 12 13 7" />
-              <polyline points="6 17 11 12 6 7" />
-            </svg>
-            <span>DRAGON DYNASTY</span>
+          <div class="rc-dragon-top">
+            <div>
+              <div class="rc-dragon-head">
+                <svg class="rc-icon rc-dragon-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" />
+                </svg>
+                <span>IMPERIAL STAUNTON</span>
+              </div>
+              <div class="rc-dragon-sub">FIDE Tournament Vector Set</div>
+            </div>
+            <button type="button" id="btn-dragon-collection" class="rc-dragon-btn">
+              <span>Trang bị</span>
+            </button>
           </div>
-          <div class="rc-dragon-sub">Legendary Chess Set</div>
 
-          <!-- Vector Preview Showcase of the Dragon Dynasty Pieces -->
+          <!-- Vector Preview Showcase of the Imperial Staunton Pieces -->
           <div class="rc-dragon-lineup" id="dragon-showcase-pieces" aria-hidden="true"></div>
-
-          <button type="button" id="btn-dragon-collection" class="rc-dragon-btn">
-            <span>Xem bộ sưu tập</span>
-          </button>
         </div>
       </div>
     </aside>
@@ -983,6 +991,6 @@
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script type="module" src="/app.js?v=5"></script>
+  <script type="module" src="/app.js?v=6"></script>
 </body>
 </html>
