@@ -38,10 +38,25 @@
   --radius-md: 8px;
   --radius-lg: 12px;
 
-  /* Elevation Tokens */
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.28);
-  --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.42);
-  --shadow-board: 0 16px 40px rgba(0, 0, 0, 0.62);
+  /* Elevation & Physical Lighting Tokens (Overhead Studio Light + Recessed Wells) */
+  --shadow-sm:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 10px rgba(0, 0, 0, 0.38),
+    0 1px 3px rgba(0, 0, 0, 0.28);
+  --shadow-md:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.65),
+    0 14px 34px -4px rgba(0, 0, 0, 0.58),
+    0 4px 10px rgba(0, 0, 0, 0.42);
+  --shadow-inset:
+    inset 0 2px 5px rgba(0, 0, 0, 0.72),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-board:
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.24),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.78),
+    0 4px 0 rgba(10, 8, 6, 0.96),
+    0 26px 56px -6px rgba(0, 0, 0, 0.88),
+    0 10px 24px rgba(0, 0, 0, 0.68);
 
   /* Default Board Theme: Championship Walnut */
   --sq-light: #e8dfd1;
@@ -313,13 +328,15 @@ select:focus-visible,
    COLUMN 1: LEFT NAVIGATION SIDEBAR
    ============================================================================ */
 .rc-left-sidebar {
-  background: var(--bg-panel);
+  background-color: var(--bg-panel);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(0, 0, 0, 0.22) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 14px 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow: var(--shadow-md);
 }
 
 .rc-brand {
@@ -413,13 +430,15 @@ select:focus-visible,
 /* Sidebar Player Profile Box */
 .rc-sidebar-profile {
   margin-top: auto;
-  background: var(--bg-card);
+  background-color: var(--bg-card);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(0, 0, 0, 0.18) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  box-shadow: var(--shadow-sm);
 }
 
 .rc-profile-top {
@@ -528,13 +547,15 @@ select:focus-visible,
 
 /* Sidebar Theme Box */
 .rc-theme-box {
-  background: var(--bg-card);
+  background-color: var(--bg-card);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(0, 0, 0, 0.18) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 9px 11px;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  box-shadow: var(--shadow-sm);
 }
 
 .rc-theme-label {
@@ -551,6 +572,7 @@ select:focus-visible,
   border-radius: var(--radius-md);
   background: var(--bg-inset);
   border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-inset);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -591,7 +613,8 @@ select:focus-visible,
    COLUMN 2: CENTER CHESS ARENA (PRIMARY FOCAL STAGE)
    ============================================================================ */
 .rc-center-arena {
-  background: var(--bg-panel);
+  background-color: var(--bg-panel);
+  background-image: radial-gradient(ellipse at 50% 45%, rgba(212, 168, 83, 0.08) 0%, rgba(0, 0, 0, 0.42) 85%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 12px 18px;
@@ -600,6 +623,10 @@ select:focus-visible,
   align-items: center;
   justify-content: space-between;
   min-width: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 0 48px rgba(0, 0, 0, 0.46),
+    0 18px 42px rgba(0, 0, 0, 0.62);
 }
 
 .rc-arena-frame {
@@ -616,7 +643,8 @@ select:focus-visible,
 .rc-player-card {
   width: 100%;
   max-width: var(--board-size);
-  background: var(--bg-card);
+  background-color: var(--bg-card);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.22) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 8px 14px;
@@ -624,11 +652,15 @@ select:focus-visible,
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  box-shadow: var(--shadow-sm);
   transition: border-color 0.18s ease, background-color 0.18s ease;
 }
 
 .rc-player-card.active-turn {
   border-color: var(--accent-border);
+  box-shadow:
+    inset 0 1px 0 rgba(212, 168, 83, 0.22),
+    0 8px 20px rgba(0, 0, 0, 0.45);
 }
 
 .rc-player-left {
@@ -739,11 +771,15 @@ select:focus-visible,
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
+  box-shadow: var(--shadow-inset);
 }
 
 .rc-player-card.active-turn .rc-clock-panel {
   border-color: var(--accent-border);
   background: #14171d;
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(212, 168, 83, 0.16);
 }
 
 .rc-clock-row {
@@ -800,9 +836,12 @@ select:focus-visible,
 .eval-bar-container {
   width: 14px;
   height: var(--board-size);
-  background: #1c2026;
+  background: #16191f;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.68),
+    0 8px 20px rgba(0, 0, 0, 0.48);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -813,7 +852,8 @@ select:focus-visible,
 
 .eval-fill-white {
   width: 100%;
-  background: #e8ecf2;
+  background: linear-gradient(90deg, #dce2ec 0%, #f4f7fb 50%, #cfd7e3 100%);
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.4);
   transition: height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -847,9 +887,10 @@ body.board-3d .board-perspective-wrapper {
   height: 100%;
   position: relative;
   border-radius: var(--radius-lg);
-  padding: 10px;
-  background: var(--board-border);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 12px;
+  background-color: var(--board-border);
+  background-image: linear-gradient(155deg, rgba(255, 255, 255, 0.14) 0%, rgba(0, 0, 0, 0.16) 48%, rgba(0, 0, 0, 0.52) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: var(--shadow-board);
 }
 
@@ -862,7 +903,19 @@ body.board-3d .board-perspective-wrapper {
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
   position: relative;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55);
+  box-shadow:
+    0 0 0 1.5px rgba(212, 168, 83, 0.34),
+    0 0 0 3px rgba(0, 0, 0, 0.78),
+    inset 0 2px 8px rgba(0, 0, 0, 0.42);
+}
+
+.chessboard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 42%, rgba(255, 250, 235, 0.06) 0%, transparent 58%, rgba(0, 0, 0, 0.24) 100%);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .square {
@@ -878,12 +931,22 @@ body.board-3d .board-perspective-wrapper {
 
 .square.light {
   background-color: var(--sq-light);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.14) 0%, rgba(0, 0, 0, 0.05) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 1px 0 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    inset -1px 0 0 rgba(0, 0, 0, 0.08);
 }
 
 .square.dark {
   background-color: var(--sq-dark);
-  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.12);
+  background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0.18) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    inset 1px 0 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    inset -1px 0 0 rgba(0, 0, 0, 0.22);
 }
 
 /* Warm Tournament Gold Last-Move & Selected Highlights */
@@ -1053,13 +1116,15 @@ body.hide-legal .legal-capture-ring {
 .rc-bottom-dock {
   width: 100%;
   max-width: var(--board-size);
-  background: var(--bg-card);
+  background-color: var(--bg-card);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.22) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 6px 8px;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 6px;
+  box-shadow: var(--shadow-sm);
 }
 
 .rc-dock-btn {
@@ -1107,13 +1172,15 @@ body.hide-legal .legal-capture-ring {
 .rc-right-card {
   flex: 1;
   min-height: 0;
-  background: var(--bg-panel);
+  background-color: var(--bg-panel);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(0, 0, 0, 0.22) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  box-shadow: var(--shadow-md);
 }
 
 .rc-right-header {
@@ -1210,6 +1277,7 @@ body.hide-legal .legal-capture-ring {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   flex-shrink: 0;
+  box-shadow: var(--shadow-inset);
 }
 
 .mode-pill {
@@ -1228,7 +1296,10 @@ body.hide-legal .legal-capture-ring {
 
 .mode-pill.active {
   color: #0b0c0e;
-  background: var(--accent-primary);
+  background: linear-gradient(180deg, #e7c270 0%, #c8963c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 2px 5px rgba(0, 0, 0, 0.45);
 }
 
 .rc-mode-section {
@@ -1254,7 +1325,8 @@ body.hide-legal .legal-capture-ring {
 
 .rc-select-card {
   position: relative;
-  background: var(--bg-card);
+  background-color: var(--bg-card);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.18) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 6px 9px;
@@ -1262,6 +1334,7 @@ body.hide-legal .legal-capture-ring {
   align-items: center;
   gap: 7px;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
   transition: border-color 0.15s ease;
 }
 
@@ -1322,19 +1395,22 @@ body.hide-legal .legal-capture-ring {
   width: 100%;
   padding: 8px 14px;
   border-radius: var(--radius-md);
-  background: var(--accent-primary);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(180deg, #e7c270 0%, #c8963c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.28),
+    0 6px 16px rgba(0, 0, 0, 0.48);
   color: #0b0c0e;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition: filter 0.15s ease, transform 0.15s ease;
 }
 
 .rc-cta-primary:hover {
-  background: var(--accent-primary-hover);
+  filter: brightness(1.06);
 }
 
 .rc-cta-primary:active {
@@ -1363,8 +1439,10 @@ body.hide-legal .legal-capture-ring {
   width: 100%;
   padding: 7px 14px;
   border-radius: var(--radius-md);
-  background: var(--bg-card);
+  background-color: var(--bg-card);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(0, 0, 0, 0.22) 100%);
   border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-sm);
   color: var(--text-main);
   display: flex;
   align-items: center;
@@ -1401,6 +1479,7 @@ body.hide-legal .legal-capture-ring {
   border-radius: var(--radius-md);
   background: var(--bg-inset);
   border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-inset);
   color: var(--text-main);
   font-size: 12.5px;
   font-weight: 600;
@@ -1483,7 +1562,8 @@ body.hide-legal .legal-capture-ring {
 }
 
 .lobby-room-item {
-  background: var(--bg-card);
+  background-color: var(--bg-card);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(0, 0, 0, 0.18) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 6px 9px;
@@ -1492,6 +1572,7 @@ body.hide-legal .legal-capture-ring {
   justify-content: space-between;
   gap: 8px;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
@@ -1645,6 +1726,7 @@ body.hide-legal .legal-capture-ring {
   background: linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-inset) 100%);
   padding: 9px 12px;
   flex-shrink: 0;
+  box-shadow: var(--shadow-md);
 }
 
 .rc-dragon-content {
@@ -1683,7 +1765,7 @@ body.hide-legal .legal-capture-ring {
 
 .rc-dragon-lineup {
   height: 46px;
-  background: var(--bg-card);
+  background: var(--bg-inset);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 3px 6px;
@@ -1692,6 +1774,7 @@ body.hide-legal .legal-capture-ring {
   gap: 4px;
   align-items: center;
   justify-items: center;
+  box-shadow: var(--shadow-inset);
 }
 
 .rc-showcase-piece {

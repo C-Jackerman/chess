@@ -11,7 +11,7 @@ import {
   renderPieceSVG,
   soundEngine,
   detectOpeningName
-} from '/pieces.js?v=8';
+} from '/pieces.js?v=9';
 import {
   evaluateBoardForBar,
   findBestMove,

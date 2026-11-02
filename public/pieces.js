@@ -456,52 +456,61 @@ export function renderAvatarSVG(code = 'K') {
 }
 
 // ============================================================================
-// CHAMPIONSHIP STAUNTON VECTOR PIECES (HIGH-CRAFT CYLINDRICAL SHADING)
+// CHAMPIONSHIP STAUNTON VECTOR PIECES (3D VOLUMETRIC CYLINDRICAL SHADING)
 // ============================================================================
 function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
   const uid = `${styleVariant}_${type}_${isWhite ? 'w' : 'b'}`;
 
-  // Default: Championship Staunton (Warm Alabaster Ivory vs Satin Ebony Obsidian)
-  let stop1 = isWhite ? '#ffffff' : '#434956';
-  let stop2 = isWhite ? '#f4efe4' : '#242830';
-  let stop3 = isWhite ? '#d5cab8' : '#101216';
-  let strokeColor = isWhite ? '#1e2228' : '#0a0c0f';
-  let innerStroke = isWhite ? '#2c313a' : '#d6c5a9';
+  // Default: Championship Staunton (Turned Boxwood Ivory vs Weighted Ebony)
+  let stop0 = isWhite ? '#ffffff' : '#646e82';
+  let stop1 = isWhite ? '#fbf8f1' : '#3d4350';
+  let stop2 = isWhite ? '#e8decb' : '#22262e';
+  let stop3 = isWhite ? '#bfb097' : '#101217';
+  let stop4 = isWhite ? '#d6c8b2' : '#1c2029';
+  let strokeColor = isWhite ? '#1a1d22' : '#07080a';
+  let innerStroke = isWhite ? '#524739' : '#d6c5a9';
+  let specColor = isWhite ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.28)';
   let strokeWidth = '1.5';
 
   if (styleVariant === 'imperial') {
-    // Imperial Brass & Onyx
-    stop1 = isWhite ? '#fff8e7' : '#3a2e21';
-    stop2 = isWhite ? '#e8ca88' : '#1e1710';
-    stop3 = isWhite ? '#b88c3b' : '#0d0a07';
-    strokeColor = isWhite ? '#2a1f10' : '#090705';
-    innerStroke = isWhite ? '#4a3519' : '#e5c168';
-    strokeWidth = '1.5';
-  } else if (styleVariant === 'crystal') {
-    // Nordic Alabaster & Slate
-    stop1 = isWhite ? '#ffffff' : '#475569';
-    stop2 = isWhite ? '#e2e8f0' : '#273244';
-    stop3 = isWhite ? '#cbd5e1' : '#111722';
-    strokeColor = isWhite ? '#1e293b' : '#090d14';
-    innerStroke = isWhite ? '#334155' : '#cbd5e1';
+    // Imperial 24K Burnished Brass & Carved Black Onyx
+    stop0 = isWhite ? '#fffdf5' : '#57442e';
+    stop1 = isWhite ? '#fae3a4' : '#33271a';
+    stop2 = isWhite ? '#dfb45b' : '#1b140d';
+    stop3 = isWhite ? '#9c6e21' : '#0b0805';
+    stop4 = isWhite ? '#c9983e' : '#241a10';
+    strokeColor = isWhite ? '#261a0b' : '#060503';
+    innerStroke = isWhite ? '#593d14' : '#e6be6a';
+    specColor = isWhite ? 'rgba(255, 252, 230, 0.9)' : 'rgba(245, 208, 125, 0.35)';
     strokeWidth = '1.5';
   } else if (styleVariant === 'neon') {
-    // High-Contrast Tournament
-    stop1 = isWhite ? '#ffffff' : '#383d47';
-    stop2 = isWhite ? '#f8fafc' : '#1d2026';
-    stop3 = isWhite ? '#e2e8f0' : '#0b0d10';
-    strokeColor = '#0f172a';
-    innerStroke = isWhite ? '#1e293b' : '#eab308';
+    // Cyber Rim High-Contrast Tournament
+    stop0 = isWhite ? '#ffffff' : '#475061';
+    stop1 = isWhite ? '#f8fafc' : '#262b36';
+    stop2 = isWhite ? '#cbd5e1' : '#14171d';
+    stop3 = isWhite ? '#94a3b8' : '#090b0e';
+    stop4 = isWhite ? '#cbd5e1' : '#161a22';
+    strokeColor = '#090d14';
+    innerStroke = isWhite ? '#0f172a' : '#fbbf24';
+    specColor = isWhite ? 'rgba(255, 255, 255, 0.92)' : 'rgba(251, 191, 36, 0.42)';
     strokeWidth = '1.65';
   }
 
   const defs = `
     <defs>
-      <linearGradient id="grad_${uid}" x1="14%" y1="10%" x2="86%" y2="85%">
-        <stop offset="0%" stop-color="${stop1}" />
-        <stop offset="52%" stop-color="${stop2}" />
-        <stop offset="100%" stop-color="${stop3}" />
+      <linearGradient id="grad_${uid}" x1="12%" y1="14%" x2="88%" y2="86%">
+        <stop offset="0%" stop-color="${stop0}" />
+        <stop offset="22%" stop-color="${stop1}" />
+        <stop offset="56%" stop-color="${stop2}" />
+        <stop offset="86%" stop-color="${stop3}" />
+        <stop offset="100%" stop-color="${stop4}" />
       </linearGradient>
+      <radialGradient id="dome_${uid}" cx="32%" cy="28%" r="68%">
+        <stop offset="0%" stop-color="${stop0}" />
+        <stop offset="45%" stop-color="${stop1}" />
+        <stop offset="85%" stop-color="${stop3}" />
+        <stop offset="100%" stop-color="${stop4}" />
+      </radialGradient>
     </defs>
   `;
 
@@ -516,10 +525,14 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
   }
 
   const fillUrl = `url(#grad_${uid})`;
-  const shadowEllipse = `<ellipse cx="22.5" cy="40.2" rx="14.2" ry="2.2" fill="rgba(0,0,0,0.28)" />`;
+  const domeUrl = `url(#dome_${uid})`;
+  const shadowEllipse = `
+    <ellipse cx="23.2" cy="40.8" rx="15.2" ry="2.8" fill="rgba(0,0,0,0.42)" />
+    <ellipse cx="22.5" cy="40.1" rx="13.4" ry="1.9" fill="rgba(0,0,0,0.62)" />
+  `;
   const imperialGem =
     styleVariant === 'imperial'
-      ? `<circle cx="22.5" cy="23.5" r="1.6" fill="${isWhite ? '#d97706' : '#fbbf24'}" stroke="none"/>`
+      ? `<circle cx="22.5" cy="23.5" r="1.75" fill="${isWhite ? '#d97706' : '#fbbf24'}" stroke="${strokeColor}" stroke-width="0.8"/>`
       : '';
   let body = '';
 
@@ -527,27 +540,35 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
     case 'p':
       body = `
         ${shadowEllipse}
-        <path d="M 22.5,9 C 19.0,9 16.3,11.7 16.3,15 C 16.3,17.4 17.8,19.5 19.9,20.4 C 16.8,22.2 15.0,25.5 15.0,29.2 C 15.0,31.4 16.9,32.8 16.9,32.8 L 12.2,37.2 L 32.8,37.2 L 28.1,32.8 C 28.1,32.8 30.0,31.4 30.0,29.2 C 30.0,25.5 28.2,22.2 25.1,20.4 C 27.2,19.5 28.7,17.4 28.7,15 C 28.7,11.7 26.0,9 22.5,9 z"
-          fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M 10.5,37.2 L 34.5,37.2 C 35.4,37.2 36,38.1 36,39.5 L 9,39.5 C 9,38.1 9.6,37.2 10.5,37.2 z"
-          fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linejoin="round" />
-        <path d="M 18.2,20.4 L 26.8,20.4" stroke="${innerStroke}" stroke-width="1.25" stroke-linecap="round" fill="none" />
-        <path d="M 15.2,34.6 L 29.8,34.6" stroke="${innerStroke}" stroke-width="1.25" stroke-linecap="round" fill="none" />
+        <g filter="url(#piece-shadow)">
+          <path d="M 22.5,9 C 19.0,9 16.3,11.7 16.3,15 C 16.3,17.4 17.8,19.5 19.9,20.4 C 16.8,22.2 15.0,25.5 15.0,29.2 C 15.0,31.4 16.9,32.8 16.9,32.8 L 12.2,37.2 L 32.8,37.2 L 28.1,32.8 C 28.1,32.8 30.0,31.4 30.0,29.2 C 30.0,25.5 28.2,22.2 25.1,20.4 C 27.2,19.5 28.7,17.4 28.7,15 C 28.7,11.7 26.0,9 22.5,9 z"
+            fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="22.5" cy="14.8" r="5.9" fill="${domeUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" />
+          <path d="M 10.5,37.2 L 34.5,37.2 C 35.4,37.2 36,38.1 36,39.5 L 9,39.5 C 9,38.1 9.6,37.2 10.5,37.2 z"
+            fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linejoin="round" />
+          <path d="M 18.6,12.2 A 4.5,4.5 0 0 1 22.2,10.5" stroke="${specColor}" stroke-width="1.35" stroke-linecap="round" fill="none" />
+          <path d="M 19.2,22.5 C 17.5,25 16.8,28.5 17.2,31.5" stroke="${specColor}" stroke-width="1.25" stroke-linecap="round" fill="none" />
+          <path d="M 18.2,20.4 L 26.8,20.4" stroke="${innerStroke}" stroke-width="1.3" stroke-linecap="round" fill="none" />
+          <path d="M 15.2,34.6 L 29.8,34.6" stroke="${innerStroke}" stroke-width="1.3" stroke-linecap="round" fill="none" />
+          <path d="M 11.5,38.1 L 33.5,38.1" stroke="${specColor}" stroke-width="1" stroke-linecap="round" fill="none" />
+        </g>
       `;
       break;
 
     case 'r':
       body = `
         ${shadowEllipse}
-        <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
+        <g filter="url(#piece-shadow)" fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 9,39.5 L 36,39.5 L 36,36.2 L 9,36.2 L 9,39.5 z" />
           <path d="M 12,36.2 L 12,32.2 L 33,32.2 L 33,36.2 L 12,36.2 z" />
           <path d="M 14,29.5 L 14,16.5 L 31,16.5 L 31,29.5 L 14,29.5 z" />
           <path d="M 14,16.5 L 11,14 L 34,14 L 31,16.5 L 14,16.5 z" />
           <path d="M 11,14 L 11,8.8 L 15.5,8.8 L 15.5,11.2 L 20,11.2 L 20,8.8 L 25,8.8 L 25,11.2 L 29.5,11.2 L 29.5,8.8 L 34,8.8 L 34,14" />
           <path d="M 12,32.2 L 14,29.5 L 31,29.5 L 33,32.2 L 12,32.2 z" />
+          <path d="M 16.3,17.8 L 16.3,28.2" stroke="${specColor}" stroke-width="1.4" fill="none" />
           <path d="M 15,19 L 30,19" stroke="${innerStroke}" stroke-width="1.25" fill="none" />
           <path d="M 15,27.2 L 30,27.2" stroke="${innerStroke}" stroke-width="1.25" fill="none" />
+          <path d="M 11,37.5 L 34,37.5" stroke="${specColor}" stroke-width="1" fill="none" />
         </g>
       `;
       break;
@@ -555,13 +576,15 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
     case 'n':
       body = `
         ${shadowEllipse}
-        <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
+        <g filter="url(#piece-shadow)" fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 22,10 C 32.5,11 38.5,18 38,39.2 L 14.5,39.2 C 14.5,30 24.5,32.5 22.8,18" />
           <path d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10" />
-          <circle cx="15.2" cy="14.2" r="1.25" fill="${innerStroke}" stroke="none" />
+          <path d="M 13.2,13.5 C 10.5,17.5 8.2,22.2 8.2,25.2" stroke="${specColor}" stroke-width="1.35" fill="none" />
+          <path d="M 24.2,12.2 C 30.2,14.8 34.2,21.5 34.8,35.2" stroke="${specColor}" stroke-width="1.25" fill="none" />
+          <circle cx="15.2" cy="14.2" r="1.3" fill="${innerStroke}" stroke="none" />
           <path d="M 9.5,15.5 C 9,17 8,18.2 7.5,19" stroke="${innerStroke}" stroke-width="1.15" fill="none" />
           <path d="M 26.5,14.5 C 31.2,17.8 33.2,24.8 33.2,35.5" stroke="${innerStroke}" stroke-width="1.25" fill="none" />
-          <path d="M 14.5,36.8 L 37.8,36.8" stroke="${innerStroke}" stroke-width="1.25" fill="none" />
+          <path d="M 14.5,36.8 L 37.8,36.8" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
         </g>
       `;
       break;
@@ -569,10 +592,11 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
     case 'b':
       body = `
         ${shadowEllipse}
-        <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
+        <g filter="url(#piece-shadow)" fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 9,36 C 12.39,35.03 19.11,36.43 22.5,34 C 25.89,36.43 32.61,35.03 36,36 C 36,36 37.65,36.54 39,38 C 38.32,38.97 37.35,38.99 36,38.5 C 32.61,37.53 25.89,38.96 22.5,37.5 C 19.11,38.96 12.39,37.53 9,38.5 C 7.646,38.99 6.677,38.97 6,38 C 7.354,36.06 9,36 9,36 z" />
-          <path d="M 15,32 C 17.5,34.5 27.5,34.5 30,32 C 30.5,30.5 30,30 30,30 C 30,27.5 27.5,26 27.5,26 C 33,24.5 33.5,14.5 22.5,10.5 C 11.5,14.5 12,24.5 17.5,26 C 17.5,26 15,27.5 15,30 C 15,30 14.5,30.5 15,32 z" />
-          <circle cx="22.5" cy="8" r="2.2" fill="${fillUrl}" />
+          <path d="M 15,32 C 17.5,34.5 27.5,34.5 30,32 C 30.5,30.5 30,30 30,30 C 30,27.5 27.5,26 27.5,26 C 33,24.5 33.5,14.5 22.5,10.5 C 11.5,14.5 12,24.5 17.5,26 C 17.5,26 15,27.5 15,30 C 15,30 14.5,30.5 15,32 z" fill="${domeUrl}" />
+          <circle cx="22.5" cy="8" r="2.2" fill="${domeUrl}" />
+          <path d="M 16.2,23.5 C 15.2,18.5 17.5,14.2 21.2,12.2" stroke="${specColor}" stroke-width="1.35" fill="none" />
           <path d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15.5 L 22.5,20.5 M 20,18 L 25,18" stroke="${innerStroke}" stroke-width="1.35" fill="none" />
         </g>
       `;
@@ -581,14 +605,15 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
     case 'q':
       body = `
         ${shadowEllipse}
-        <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
+        <g filter="url(#piece-shadow)" fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 9,26 C 17.5,24.5 30,24.5 36,26 L 38.5,13.5 L 31,25 L 30.7,10.9 L 25.5,24.5 L 22.5,10 L 19.5,24.5 L 14.3,10.9 L 14,25 L 6.5,13.5 L 9,26 z" />
           <path d="M 9,26 C 9,28 10.5,28 11.5,30 C 12.5,31.5 12.5,31 12,33.5 C 10.5,34.5 11,36 11,36 C 9.5,37.5 11,38.5 11,38.5 C 17.5,39.5 27.5,39.5 34,38.5 C 34,38.5 35.5,37.5 34,36 C 34,36 34.5,34.5 33,33.5 C 32.5,31 32.5,31.5 33.5,30 C 34.5,28 36,28 36,26 C 27.5,24.5 17.5,24.5 9,26 z" />
-          <circle cx="6" cy="12" r="1.9" fill="${fillUrl}" />
-          <circle cx="14" cy="9" r="1.9" fill="${fillUrl}" />
-          <circle cx="22.5" cy="8" r="2.1" fill="${fillUrl}" />
-          <circle cx="31" cy="9" r="1.9" fill="${fillUrl}" />
-          <circle cx="39" cy="12" r="1.9" fill="${fillUrl}" />
+          <circle cx="6" cy="12" r="1.9" fill="${domeUrl}" />
+          <circle cx="14" cy="9" r="1.9" fill="${domeUrl}" />
+          <circle cx="22.5" cy="8" r="2.1" fill="${domeUrl}" />
+          <circle cx="31" cy="9" r="1.9" fill="${domeUrl}" />
+          <circle cx="39" cy="12" r="1.9" fill="${domeUrl}" />
+          <path d="M 14.3,12.5 L 14.1,23.2 M 22.5,11.5 L 21.2,23.2" stroke="${specColor}" stroke-width="1.2" fill="none" />
           <path d="M 11.5,30 C 18,28.5 27,28.5 33.5,30" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
           <path d="M 12,33.5 C 18.5,32 26.5,32 33,33.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
           <path d="M 11.5,36.8 C 18.5,35.5 26.5,35.5 33.5,36.8" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
@@ -600,11 +625,12 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
     case 'k':
       body = `
         ${shadowEllipse}
-        <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
+        <g filter="url(#piece-shadow)" fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 22.5,11.63 L 22.5,5.5" stroke="${strokeColor}" stroke-width="2.2" />
           <path d="M 19.5,8.2 L 25.5,8.2" stroke="${strokeColor}" stroke-width="2.2" />
-          <path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" fill="${fillUrl}" />
+          <path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" fill="${domeUrl}" />
           <path d="M 11.5,37 C 17,40.5 27,40.5 32.5,37 L 32.5,30 C 32.5,30 41.5,25.5 38.5,19.5 C 34.5,13 25,16 22.5,23.5 L 22.5,27 L 22.5,23.5 C 19,16 9.5,13 6.5,19.5 C 3.5,25.5 11.5,29.5 11.5,29.5 L 11.5,37 z" />
+          <path d="M 9.2,20.5 C 11.5,16.2 16.8,17.2 19.8,22.2" stroke="${specColor}" stroke-width="1.35" fill="none" />
           <path d="M 11.5,30 C 17,27 27,27 32.5,30" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
           <path d="M 11.5,33.5 C 17,30.5 27,30.5 32.5,33.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
           <path d="M 11.5,37 C 17,34 27,34 32.5,37" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
@@ -682,7 +708,7 @@ function renderShogunPiece(type, isWhite, uid) {
       `;
       break;
   }
-  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-shogun">${defs}${shadow}${shape}</svg>`;
+  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-shogun">${defs}${shadow}<g filter="url(#piece-shadow)">${shape}</g></svg>`;
 }
 
 function renderCrystalPiece(type, isWhite, uid) {
@@ -750,7 +776,7 @@ function renderCrystalPiece(type, isWhite, uid) {
       `;
       break;
   }
-  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-crystal">${defs}${shadow}${shape}</svg>`;
+  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-crystal">${defs}${shadow}<g filter="url(#piece-shadow)">${shape}</g></svg>`;
 }
 
 function renderMinimalistPiece(type, isWhite, defs, fillUrl, strokeColor, innerStroke) {
@@ -803,7 +829,8 @@ function renderMinimalistPiece(type, isWhite, defs, fillUrl, strokeColor, innerS
       `;
       break;
   }
-  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-minimal">${defs}${shape}</svg>`;
+  const shadow = `<ellipse cx="22.5" cy="40.2" rx="13.8" ry="2" fill="rgba(0,0,0,0.38)" />`;
+  return `<svg viewBox="0 0 45 45" class="chess-piece-svg piece-minimal">${defs}${shadow}<g filter="url(#piece-shadow)">${shape}</g></svg>`;
 }
 
 export function renderPieceSVG(type, color, pieceSet = 'staunton') {

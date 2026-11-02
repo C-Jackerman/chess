@@ -8,14 +8,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=8" />
+  <link rel="stylesheet" href="/styles.css?v=9" />
 </head>
 <body>
   <!-- Global SVG Filters for 3D Sculpted Chess Pieces -->
   <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
     <defs>
-      <filter id="piece-shadow" x="-25%" y="-20%" width="150%" height="155%">
-        <feDropShadow dx="0" dy="3.2" stdDeviation="2.2" flood-color="rgba(0,0,0,0.68)" />
+      <filter id="piece-shadow" x="-30%" y="-20%" width="160%" height="165%">
+        <feDropShadow dx="0" dy="1.4" stdDeviation="0.85" flood-color="rgba(0,0,0,0.68)" />
+        <feDropShadow dx="1.1" dy="3.6" stdDeviation="1.9" flood-color="rgba(0,0,0,0.48)" />
       </filter>
     </defs>
   </svg>
@@ -991,6 +992,6 @@
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script type="module" src="/app.js?v=8"></script>
+  <script type="module" src="/app.js?v=9"></script>
 </body>
 </html>
