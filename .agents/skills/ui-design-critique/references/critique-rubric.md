@@ -52,3 +52,4 @@ Always fix issues in this strict order:
 1. **P0 (Structural / Blocking)**: Blurry/artifacted assets, broken layout alignment, horizontal overflow, broken game/UI interactions, or competing focal points.
 2. **P1 (Visual / Systemic)**: AI-slop purple/neon aesthetics, card-in-card nesting bloat, wrapping toolbar labels, or missing tabular numerals.
 3. **P2 (Polish / Refinement)**: Hairline border opacity (`0.07` vs `0.10`), tooltip offset, and subtle icon hover transitions.
+

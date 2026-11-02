@@ -16,3 +16,4 @@ This catalog defines the 16 most common "AI-generated UI" anti-patterns (synthes
 | **10** | **Board / Canvas Coordinates Colliding with Content** | Placing high-opacity labels on top of piece bases creates visual clutter. | Keep coordinate labels subtle (`10px`, `font-weight: 600`, low-glare contrast) tucked cleanly into corner gutters (`4px` inset) or a dedicated `18px` frame rim. |
 | **11** | **Unbounded Animation / Bouncy Keyframes** | Bouncing icons and glowing pulses distract players during concentration-heavy tasks. | Limit transitions to `140ms–200ms cubic-bezier(0.25, 1, 0.5, 1)` communicating direct hover/active causality. |
 | **12** | **Missing `:focus-visible` Keyboard States** | Removing `outline` without providing a `:focus-visible` ring breaks keyboard navigation. | Define `:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }` globally. |
+
