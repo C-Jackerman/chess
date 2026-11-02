@@ -306,6 +306,7 @@ function handleOnlineRoomJoined(room, role) {
 
   updateModeTabsUI('online');
   el.activeRoomBox.classList.remove('hidden');
+  document.getElementById('lobby-match-controls')?.classList.add('hidden');
   el.activeRoomCode.textContent = room.code;
   el.activeRoomRole.textContent =
     role === 'w' ? 'Quân Trắng' : role === 'b' ? 'Quân Đen' : 'Khán giả';
@@ -457,6 +458,7 @@ function leaveOnlineRoom() {
   state.onlineRoom = null;
   state.onlineRole = null;
   el.activeRoomBox.classList.add('hidden');
+  document.getElementById('lobby-match-controls')?.classList.remove('hidden');
   el.waitingOverlay.classList.add('hidden');
   el.incomingOfferBanner.classList.add('hidden');
 
@@ -1840,7 +1842,7 @@ function bindUIEvents() {
     if (best) {
       state.hintArrow = { from: best.from, to: best.to };
       renderArrows();
-      showToast(`💡 Gợi ý nước đi tốt nhất: ${best.san} (${best.from.toUpperCase()} → ${best.to.toUpperCase()})`);
+      showToast(`Gợi ý nước đi: ${best.san} (${best.from.toUpperCase()} → ${best.to.toUpperCase()})`);
     }
   });
 

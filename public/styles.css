@@ -1969,14 +1969,12 @@ body.tabletop-mode .piece-wrap.piece-color-b {
   }
 }
 
-@media (max-width: 480px) {
-  .brand-text h1 {
-    font-size: 12px;
-    letter-spacing: 0.6px;
-    white-space: nowrap;
+@media (max-width: 540px) {
+  .brand-text {
+    display: none;
   }
   .mode-pill {
-    padding: 5px 8px;
+    padding: 5px 9px;
     font-size: 11px;
   }
   .chess-clock {
