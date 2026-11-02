@@ -190,7 +190,7 @@ function getLobbyRooms() {
         code: room.code,
         roomName: room.roomName,
         hostName: `${room.players.w?.name || 'Trắng'} vs ${room.players.b?.name || 'Đen'}`,
-        hostAvatar: room.players.w?.avatar || '♔',
+        hostAvatar: room.players.w?.avatar || 'K',
         hostTitle: 'LIVE',
         status: 'playing',
         timeControl: room.timeControl,
@@ -328,7 +328,7 @@ io.on('connection', (socket) => {
       socketId: socket.id,
       playerId: payload.playerId || socket.id,
       name: (payload.name || 'Kỳ Thủ').slice(0, 24),
-      avatar: payload.avatar || '♔',
+      avatar: payload.avatar || 'K',
       title: (payload.title || 'PRO').slice(0, 10)
     };
     currentPlayerId = player.playerId;
@@ -364,7 +364,7 @@ io.on('connection', (socket) => {
       socketId: socket.id,
       playerId: payload.playerId || socket.id,
       name: (payload.name || 'Kỳ Thủ').slice(0, 24),
-      avatar: payload.avatar || '♘',
+      avatar: payload.avatar || 'A',
       title: (payload.title || 'PRO').slice(0, 10)
     };
     currentPlayerId = player.playerId;
@@ -436,7 +436,7 @@ io.on('connection', (socket) => {
       socketId: socket.id,
       playerId: payload.playerId || socket.id,
       name: (payload.name || 'Kỳ Thủ').slice(0, 24),
-      avatar: payload.avatar || '♚',
+      avatar: payload.avatar || 'B',
       title: (payload.title || 'PRO').slice(0, 10)
     };
     currentPlayerId = player.playerId;
@@ -788,7 +788,7 @@ io.on('connection', (socket) => {
     const msg = {
       id: Date.now() + '-' + Math.random(),
       sender: (payload.name || 'Kỳ Thủ').slice(0, 24),
-      avatar: payload.avatar || '♙',
+      avatar: payload.avatar || 'K',
       text,
       time: Date.now()
     };
@@ -803,7 +803,7 @@ io.on('connection', (socket) => {
     if (!room) return;
 
     io.to(room.code).emit('room:reaction', {
-      emoji: String(payload.emoji || '👏').slice(0, 16),
+      emoji: String(payload.emoji || 'GG').slice(0, 16),
       sender: (payload.name || 'Kỳ Thủ').slice(0, 24),
       color:
         room.players.w?.playerId === currentPlayerId
@@ -880,6 +880,6 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`♔ Royal Chess Arena Server running on http://localhost:${PORT}`);
+  console.log(`Royal Chess Arena Server running on http://localhost:${PORT}`);
 });
 

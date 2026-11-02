@@ -3,559 +3,1003 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#302e2b" />
-  <title>Royal Chess — Đấu Trường Cờ Vua Trực Tuyến</title>
+  <meta name="theme-color" content="#0b0c15" />
+  <title>Royal Chess - Nền Tảng Cờ Vua Trực Tuyến</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=3" />
+  <link rel="stylesheet" href="/styles.css?v=4" />
 </head>
 <body>
-  <!-- Piece Drop Shadow Filter -->
+  <!-- Global SVG Filters for 3D Sculpted Chess Pieces -->
   <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
     <defs>
-      <filter id="piece-shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="2" stdDeviation="1.4" flood-color="rgba(0,0,0,0.4)" />
+      <filter id="piece-shadow" x="-25%" y="-20%" width="150%" height="155%">
+        <feDropShadow dx="0" dy="3.2" stdDeviation="2.2" flood-color="rgba(0,0,0,0.68)" />
       </filter>
     </defs>
   </svg>
 
-  <!-- Hidden legacy hooks for compatibility -->
+  <!-- Hidden compatibility hooks -->
   <div class="hidden" aria-hidden="true">
-    <span id="profile-card-avatar">K</span>
-    <span id="profile-card-title">GM</span>
-    <span id="profile-card-name">Kỳ Thủ</span>
-    <span id="profile-mode-label"></span>
-    <button type="button" id="btn-edit-profile-inline"></button>
+    <span id="header-avatar">K</span>
+    <span id="header-username">Kỳ Thủ</span>
+    <span id="profile-mode-label">Chế độ: Solo Online 1v1</span>
+    <span id="online-count-text">1 online</span>
+    <span id="opening-name-display">Thế trận Khởi đầu</span>
+    <div id="turn-status-pill"><span id="turn-dot"></span><span id="turn-status-text">Lượt Trắng</span></div>
   </div>
 
   <!-- ========================================================================
-       CHESS.COM INSPIRED 2-COLUMN PLAY LAYOUT (BOARD STAGE + UNIFIED SIDEBAR)
+       ROYAL CHESS 3-COLUMN MIDNIGHT GAMING PLATFORM LAYOUT
+       Left: Navigation & Profile Sidebar
+       Center: Player Cards, Luxury 8x8 Board & 6-Action Control Dock
+       Right: Match Setup, Live Open Lobby & Dragon Dynasty Collection Card
        ======================================================================== -->
-  <main class="chesscom-workspace" id="app-layout" data-mobile-view="board">
+  <div id="app-layout" class="rc-shell" data-mobile-view="board">
 
-    <!-- ==========================================
-         LEFT / CENTER STAGE: THE CHESSBOARD ARENA
-         ========================================== -->
-    <section class="board-column" id="arena-center">
-      <!-- TOP PLAYER BAR (OPPONENT) -->
-      <div class="player-strip player-top" id="player-bar-top">
-        <div class="player-left">
-          <div class="avatar-tile opponent-tile">
-            <span id="top-player-avatar">M</span>
-            <span class="conn-dot online" id="top-player-conn"></span>
-          </div>
-          <div class="player-meta">
-            <div class="player-title-row">
-              <span class="player-name" id="top-player-name">Đại Kiện Tượng AI</span>
-              <span class="rating-tag" id="top-player-title">1650</span>
-            </div>
-            <div class="captured-strip">
-              <span class="captured-pieces" id="top-captured-pieces"></span>
-              <span class="material-diff hidden" id="top-material-badge">+0</span>
-            </div>
-          </div>
+    <!-- ======================================================================
+         COLUMN 1: LEFT NAVIGATION SIDEBAR
+         ====================================================================== -->
+    <aside class="rc-left-sidebar" aria-label="Điều hướng chính">
+      <!-- Brand Logo -->
+      <div class="rc-brand">
+        <div class="rc-brand-emblem">
+          <svg viewBox="0 0 36 36" width="32" height="32" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="brandChessGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f0abfc" />
+                <stop offset="50%" stop-color="#a855f7" />
+                <stop offset="100%" stop-color="#4f46e5" />
+              </linearGradient>
+            </defs>
+            <path d="M18 3L21.5 8.5L27 6L24.5 13H11.5L9 6L14.5 8.5L18 3Z" fill="url(#brandChessGrad)" stroke="#f5d0fe" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M12.5 13H23.5L22 25H14L12.5 13Z" fill="url(#brandChessGrad)" stroke="#e9d5ff" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M9 25H27L29.5 31H6.5L9 25Z" fill="url(#brandChessGrad)" stroke="#f5d0fe" stroke-width="1.3" stroke-linejoin="round"/>
+            <rect x="5" y="31" width="26" height="2.5" rx="1.25" fill="#e879f9" />
+          </svg>
         </div>
-        <div class="clock-box" id="top-player-clock">10:00</div>
+        <span class="rc-brand-title">ROYAL CHESS</span>
       </div>
 
-      <!-- CHESSBOARD + EVALUATION BAR -->
-      <div class="board-stage" id="board-stage">
-        <div class="eval-bar-container" id="eval-bar-container">
-          <div class="eval-fill-white" id="eval-fill-white" style="height: 50%"></div>
-          <span class="eval-score-text" id="eval-score-text">0.0</span>
-        </div>
-
-        <div class="board-frame" id="board-frame">
-          <div class="chessboard" id="chessboard" role="grid" aria-label="Bàn cờ vua 8x8"></div>
-
-          <!-- Tactical Arrows & AI Hints -->
-          <svg class="board-arrows-svg" id="board-arrows-svg" viewBox="0 0 800 800" preserveAspectRatio="none"></svg>
-
-          <!-- Floating Text Reactions -->
-          <div class="reactions-overlay" id="reactions-overlay"></div>
-
-          <!-- Pawn Promotion Modal -->
-          <div class="board-modal hidden" id="promotion-modal">
-            <div class="modal-box">
-              <h3>Chọn quân phong cấp</h3>
-              <div class="promotion-options" id="promotion-options"></div>
-              <button type="button" class="btn-flat" id="btn-cancel-promotion">Hủy bỏ</button>
-            </div>
-          </div>
-
-          <!-- Waiting for Opponent Overlay -->
-          <div class="board-modal hidden" id="waiting-room-overlay">
-            <div class="modal-box">
-              <span class="status-tag">ĐANG CHỜ ĐỐI THỦ</span>
-              <h3>Phòng đấu đã sẵn sàng</h3>
-              <p>Gửi mã phòng hoặc sao chép liên kết bên dưới gửi cho bạn bè để bắt đầu solo 1v1:</p>
-              <div class="code-box" id="waiting-overlay-code">------</div>
-              <div class="modal-stack-btns">
-                <button type="button" class="btn-green-3d" id="btn-waiting-copy-link">
-                  Sao chép liên kết mời bạn bè
-                </button>
-                <button type="button" class="btn-dark-3d" id="btn-waiting-hide">
-                  Xem bàn cờ
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Draw / Undo Incoming Banner -->
-          <div class="incoming-offer-banner hidden" id="incoming-offer-banner">
-            <span id="incoming-offer-text">Đối thủ đề nghị hòa cờ</span>
-            <div class="offer-actions">
-              <button type="button" class="btn-accept" id="btn-offer-accept">Đồng ý</button>
-              <button type="button" class="btn-decline" id="btn-offer-decline">Từ chối</button>
-            </div>
-          </div>
-
-          <!-- Game Over Modal (Chess.com style result card) -->
-          <div class="board-modal hidden" id="gameover-modal">
-            <div class="modal-box gameover-box">
-              <div class="result-badge" id="gameover-icon">1 - 0</div>
-              <h2 id="gameover-title">Trắng Chiến Thắng</h2>
-              <p id="gameover-subtitle">Chiếu hết</p>
-              <div class="modal-stack-btns">
-                <button type="button" class="btn-green-3d" id="btn-gameover-rematch">
-                  Ván mới / Tái đấu
-                </button>
-                <button type="button" class="btn-dark-3d" id="btn-gameover-inspect">
-                  Phân tích bàn cờ
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- BOTTOM PLAYER BAR (YOU) -->
-      <div class="player-strip player-bottom" id="player-bar-bottom">
-        <div class="player-left">
-          <button type="button" class="avatar-tile user-tile" id="btn-open-profile" title="Đổi tên & hồ sơ">
-            <span id="bottom-player-avatar">K</span>
-            <span class="conn-dot online" id="bottom-player-conn"></span>
-          </button>
-          <div class="player-meta">
-            <div class="player-title-row">
-              <span class="player-name" id="bottom-player-name">Kỳ Thủ</span>
-              <span class="rating-tag" id="bottom-player-title">GM</span>
-              <button type="button" class="inline-edit-link" id="header-username" title="Đổi tên">Đổi tên</button>
-              <span class="hidden" id="header-avatar">K</span>
-            </div>
-            <div class="captured-strip">
-              <span class="captured-pieces" id="bottom-captured-pieces"></span>
-              <span class="material-diff hidden" id="bottom-material-badge">+0</span>
-            </div>
-          </div>
-        </div>
-        <div class="clock-box" id="bottom-player-clock">10:00</div>
-      </div>
-    </section>
-
-    <!-- ==========================================
-         RIGHT UNIFIED COMMAND SIDEBAR (CHESS.COM DOCK)
-         ========================================== -->
-    <aside class="sidebar-dock" id="panel-right">
-      <!-- Brand + Live Status Strip -->
-      <div class="dock-brand-bar">
-        <div class="dock-brand-title">
-          <strong>ROYAL CHESS</strong>
-          <span class="live-indicator" id="online-status-pill">
-            <span class="live-dot"></span>
-            <span id="online-count-text">1 online</span>
+      <!-- Primary Navigation Menu (Stroke weight: 1.85px) -->
+      <nav class="rc-nav-list">
+        <button type="button" class="rc-nav-item active" data-nav="play">
+          <span class="rc-nav-left">
+            <svg class="rc-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5" />
+              <path d="M5 9.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9.5" />
+              <path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+            <span>Chơi cờ</span>
           </span>
-        </div>
-        <div class="turn-status-pill" id="turn-status-pill">
-          <span class="turn-dot white" id="turn-dot"></span>
-          <span id="turn-status-text">Lượt Trắng</span>
-        </div>
-      </div>
+          <svg class="rc-icon rc-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
 
-      <!-- Main Sidebar Navigation Tabs (Pure Typography, Zero Icons) -->
-      <nav class="dock-tabs" role="tablist">
-        <button type="button" class="dock-tab active" data-tab="play" id="tab-btn-play">
-          Chơi cờ
+        <button type="button" class="rc-nav-item" data-nav="puzzles">
+          <span class="rc-nav-left">
+            <svg class="rc-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+            <span>Bài toán</span>
+          </span>
         </button>
-        <button type="button" class="dock-tab" data-tab="moves" id="tab-btn-moves">
-          Biên bản <span class="tab-counter" id="move-count-badge">0</span>
+
+        <button type="button" class="rc-nav-item" data-nav="learn">
+          <span class="rc-nav-left">
+            <svg class="rc-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </svg>
+            <span>Học tập</span>
+          </span>
         </button>
-        <button type="button" class="dock-tab" data-tab="chat" id="tab-btn-chat">
-          Trò chuyện
+
+        <button type="button" class="rc-nav-item" data-nav="community">
+          <span class="rc-nav-left">
+            <svg class="rc-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <span>Cộng đồng</span>
+          </span>
         </button>
-        <button type="button" class="dock-tab" data-tab="customize" id="tab-btn-customize">
-          Giao diện
+
+        <button type="button" class="rc-nav-item" data-nav="leaderboard">
+          <span class="rc-nav-left">
+            <svg class="rc-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+              <line x1="3" y1="20" x2="21" y2="20" />
+            </svg>
+            <span>Bảng xếp hạng</span>
+          </span>
         </button>
-        <button type="button" class="hidden" id="btn-open-customize"></button>
+
+        <button type="button" class="rc-nav-item" data-nav="shop">
+          <span class="rc-nav-left">
+            <svg class="rc-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            <span>Cửa hàng</span>
+          </span>
+        </button>
+
+        <button type="button" class="rc-nav-item" data-nav="events">
+          <span class="rc-nav-left">
+            <svg class="rc-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <span>Sự kiện</span>
+          </span>
+        </button>
       </nav>
 
-      <!-- ====================================================
-           TAB 1: PLAY & MATCHMAKING (CHESS.COM PLAY MENU)
-           ==================================================== -->
-      <div class="dock-pane active" id="tab-pane-play">
-        <!-- Segmented Mode Selector -->
-        <div class="mode-selector-bar" id="panel-lobby">
-          <button type="button" class="mode-pill active" data-mode="online" id="btn-mode-online">
-            Online 1v1
-          </button>
-          <button type="button" class="mode-pill" data-mode="ai" id="btn-mode-ai">
-            Đấu với Máy
-          </button>
-          <button type="button" class="mode-pill" data-mode="local" id="btn-mode-local">
-            2 Người
-          </button>
-        </div>
-
-        <!-- 1A. ONLINE 1V1 SECTION -->
-        <div class="mode-section" id="section-online-controls">
-          <!-- Active Room Card -->
-          <div class="active-room-box hidden" id="active-room-box">
-            <div class="room-code-header">
-              <span>MÃ PHÒNG ĐẤU</span>
-              <span class="room-role-badge" id="active-room-role">Quân Trắng</span>
-            </div>
-            <div class="room-code-display" id="active-room-code">------</div>
-            <div class="room-share-actions">
-              <button type="button" class="btn-dark-3d btn-sm" id="btn-copy-code">
-                Sao chép mã
-              </button>
-              <button type="button" class="btn-green-3d btn-sm" id="btn-copy-link">
-                Sao chép link mời
-              </button>
-            </div>
-            <button type="button" class="btn-danger-flat full-width" id="btn-leave-room">
-              Rời phòng hiện tại
-            </button>
-          </div>
-
-          <!-- Matchmaking Setup -->
-          <div id="lobby-match-controls">
-            <div class="form-row-2">
-              <div class="form-group">
-                <label for="select-online-tc">Thời gian thi đấu</label>
-                <select id="select-online-tc" class="ui-select">
-                  <option value="1+0">1 phút (Siêu chớp)</option>
-                  <option value="2+1">2 | 1 (Siêu chớp)</option>
-                  <option value="3+0">3 phút (Cờ chớp)</option>
-                  <option value="3+2">3 | 2 (Cờ chớp)</option>
-                  <option value="5+0">5 phút (Cờ chớp)</option>
-                  <option value="10+0" selected>10 phút (Cờ nhanh)</option>
-                  <option value="15+10">15 | 10 (Tiêu chuẩn)</option>
-                  <option value="unlimited">Không giới hạn</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="select-online-color">Chọn màu quân</label>
-                <select id="select-online-color" class="ui-select">
-                  <option value="random" selected>Ngẫu nhiên</option>
-                  <option value="w">Quân Trắng</option>
-                  <option value="b">Quân Đen</option>
-                </select>
-              </div>
-            </div>
-
-            <button type="button" class="btn-green-3d btn-lg full-width" id="btn-quick-match">
-              Chơi ngay (Ghép trận nhanh)
-            </button>
-
-            <button type="button" class="btn-dark-3d full-width mt-8" id="btn-create-room">
-              Tạo phòng riêng & lấy link mời bạn bè
-            </button>
-
-            <div class="join-code-row mt-10">
-              <input
-                type="text"
-                id="input-room-code"
-                class="ui-input code-input"
-                placeholder="Nhập mã phòng 6 ký tự..."
-                maxlength="8"
-                autocomplete="off"
-              />
-              <button type="button" class="btn-dark-3d" id="btn-join-code">Vào phòng</button>
-            </div>
-          </div>
-
-          <!-- Open Rooms Lobby -->
-          <div class="lobby-list-wrap">
-            <div class="lobby-list-header">
-              <span>Sảnh phòng đang mở (<span id="lobby-room-count">0</span>)</span>
-              <button type="button" class="text-link-btn" id="btn-refresh-lobby">Làm mới</button>
-            </div>
-            <div class="lobby-rooms-list" id="lobby-rooms-list">
-              <div class="empty-lobby-msg">Chưa có phòng chờ. Bấm <b>Tạo phòng riêng</b> để mở bàn mới.</div>
+      <!-- Sidebar Player Profile Card -->
+      <div class="rc-sidebar-profile">
+        <div class="rc-profile-top">
+          <div id="profile-card-avatar" class="rc-avatar-frame" data-tooltip="Nhấn để đổi ảnh đại diện"></div>
+          <div class="rc-profile-info">
+            <div class="rc-profile-name" id="profile-card-name">Kỳ Thủ 531</div>
+            <div class="rc-profile-badges">
+              <span class="rc-gm-badge" id="profile-card-title">GM</span>
+              <span class="rc-elo-tag">
+                <svg class="rc-icon rc-crown-gold" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" />
+                </svg>
+                <span>1560</span>
+              </span>
             </div>
           </div>
         </div>
 
-        <!-- 1B. PLAY VS AI SECTION -->
-        <div class="mode-section hidden" id="section-ai-controls">
-          <div class="form-group">
-            <label>Chọn cấp độ Máy (AI Engine)</label>
-            <div class="ai-level-grid" id="ai-level-grid">
+        <!-- XP Progress Bar -->
+        <div class="rc-xp-row">
+          <div class="rc-xp-track">
+            <div class="rc-xp-fill" style="width: 82%"></div>
+          </div>
+          <span class="rc-xp-text">2450 / 3000</span>
+        </div>
+
+        <!-- 4 Icon-Only 36x36 Containers with Dark Glass Tooltips (Sections 54 & 55) -->
+        <div class="rc-profile-actions">
+          <button type="button" id="btn-sidebar-customize" class="rc-icon-box" data-tooltip="Tùy chỉnh bộ quân cờ" aria-label="Tùy chỉnh bộ quân cờ">
+            <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v3m-2-1.5h4" />
+              <path d="M9 9c0-1.7 1.3-3 3-3s3 1.3 3 3c0 1.4-.8 2.6-2 3l1.5 5H9.5L11 12c-1.2-.4-2-1.6-2-3z" />
+              <path d="M7 17h10l1 3H6l1-3z" />
+            </svg>
+          </button>
+
+          <button type="button" id="btn-sidebar-inbox" class="rc-icon-box has-badge" data-tooltip="Thông báo & Lời mời" aria-label="Thông báo">
+            <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </svg>
+            <span class="rc-notif-dot">1</span>
+          </button>
+
+          <button type="button" id="btn-edit-profile-inline" class="rc-icon-box" data-tooltip="Danh hiệu & Thành tích" aria-label="Danh hiệu">
+            <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </button>
+
+          <button type="button" id="btn-open-profile" class="rc-icon-box rc-anim-rotate" data-tooltip="Cài đặt hồ sơ kỳ thủ" aria-label="Cài đặt hồ sơ">
+            <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sidebar Theme Switcher Box -->
+      <div class="rc-theme-box">
+        <div class="rc-theme-label">Theme</div>
+        <button type="button" id="btn-cycle-ui-theme" class="rc-theme-selector" data-tooltip="Đổi không gian nền giao diện">
+          <span class="rc-theme-left">
+            <span class="rc-theme-orb">
+              <svg class="rc-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+              </svg>
+            </span>
+            <span id="sidebar-theme-name">Midnight</span>
+          </span>
+          <svg class="rc-icon rc-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="rc-copyright">2026 Royal Chess</div>
+    </aside>
+
+    <!-- ======================================================================
+         COLUMN 2: CENTER ARENA (PLAYER CARDS, 8x8 BOARD & CONTROL DOCK)
+         ====================================================================== -->
+    <main class="rc-center-arena">
+      <div class="rc-arena-frame">
+
+        <!-- TOP PLAYER CARD (Opponent) -->
+        <div class="rc-player-card" id="player-bar-top">
+          <div class="rc-player-left">
+            <div class="rc-player-avatar-wrap">
+              <div class="rc-player-avatar" id="top-player-avatar"></div>
+              <span class="conn-indicator online" id="top-player-conn"></span>
+            </div>
+            <div class="rc-player-details">
+              <div class="rc-player-headline">
+                <span class="rc-player-name" id="top-player-name">Kỳ Thủ 2 (Đen)</span>
+                <span class="rc-gm-badge" id="top-player-title">GM</span>
+                <span class="rc-elo-inline">
+                  <svg class="rc-icon rc-crown-gold" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" />
+                  </svg>
+                  <span>1582</span>
+                </span>
+                <span class="rc-flag-badge" aria-label="VN">
+                  <svg width="16" height="12" viewBox="0 0 20 14" fill="none" aria-hidden="true">
+                    <rect width="20" height="14" rx="2" fill="#da251d" />
+                    <polygon points="10,2.5 11.1,5.7 14.5,5.7 11.75,7.7 12.8,10.9 10,8.9 7.2,10.9 8.25,7.7 5.5,5.7 8.9,5.7" fill="#ffff00" />
+                  </svg>
+                </span>
+              </div>
+              <div class="rc-captured-strip">
+                <div class="captured-pieces" id="top-captured-pieces"></div>
+                <span class="material-badge hidden" id="top-material-badge">+0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="rc-clock-panel">
+            <div class="rc-clock-row">
+              <div class="chess-clock" id="top-player-clock">10:00</div>
+            </div>
+            <div class="rc-clock-bar"><div class="rc-clock-fill" style="width: 78%"></div></div>
+          </div>
+        </div>
+
+        <!-- BOARD STAGE + EVAL BAR -->
+        <div class="rc-board-stage">
+          <div class="eval-bar-container" id="eval-bar-container" data-tooltip="Thanh đánh giá thế cờ AI">
+            <div class="eval-fill-white" id="eval-fill-white" style="height: 50%"></div>
+            <span class="eval-score-text" id="eval-score-text">0.0</span>
+          </div>
+
+          <div class="board-perspective-wrapper" id="board-perspective-wrapper">
+            <div class="board-outer-frame" id="board-outer-frame">
+              <div id="chessboard" class="chessboard" role="grid" aria-label="Bàn cờ vua 8x8"></div>
+              <svg id="board-arrows-svg" class="board-arrows-svg" viewBox="0 0 800 800" preserveAspectRatio="none"></svg>
+              <div id="reactions-overlay" class="reactions-overlay"></div>
+
+              <!-- Pawn Promotion Modal -->
+              <div id="promotion-modal" class="board-overlay-modal hidden">
+                <div class="promo-card">
+                  <div class="promo-title">Phong cấp Tốt</div>
+                  <div class="promo-pieces-row" id="promotion-options"></div>
+                  <button type="button" id="btn-cancel-promotion" class="rc-btn-ghost btn-xs">Hủy</button>
+                </div>
+              </div>
+
+              <!-- Waiting for Opponent Overlay -->
+              <div id="waiting-room-overlay" class="board-overlay-modal hidden">
+                <div class="waiting-card">
+                  <div class="waiting-spinner"></div>
+                  <h3>Đang chờ đối thủ vào phòng</h3>
+                  <p>Gửi mã phòng hoặc đường dẫn bên dưới cho bạn bè để bắt đầu solo 1v1:</p>
+                  <div class="waiting-code-pill" id="waiting-overlay-code">------</div>
+                  <div class="waiting-btn-row">
+                    <button type="button" id="btn-waiting-copy-link" class="rc-btn-gradient">
+                      <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                      </svg>
+                      <span>Sao chép link mời</span>
+                    </button>
+                    <button type="button" id="btn-waiting-hide" class="rc-btn-glass">Đóng</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Incoming Draw / Undo Request Banner -->
+              <div id="incoming-offer-banner" class="incoming-offer-banner hidden">
+                <span id="incoming-offer-text">Đối thủ đề nghị hòa cờ</span>
+                <div class="offer-actions">
+                  <button type="button" id="btn-offer-accept" class="rc-btn-gradient btn-xs">Đồng ý</button>
+                  <button type="button" id="btn-offer-decline" class="rc-btn-glass btn-xs">Từ chối</button>
+                </div>
+              </div>
+
+              <!-- Game Over Result Modal -->
+              <div id="gameover-modal" class="board-overlay-modal hidden">
+                <div class="gameover-card">
+                  <div class="gameover-badge" id="gameover-icon">1 - 0</div>
+                  <h2 id="gameover-title">Chiến Thắng</h2>
+                  <p id="gameover-subtitle">Chiếu hết</p>
+                  <div class="gameover-actions">
+                    <button type="button" id="btn-gameover-rematch" class="rc-btn-gradient">Tái đấu ván mới</button>
+                    <button type="button" id="btn-gameover-inspect" class="rc-btn-glass">Xem lại bàn cờ</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM PLAYER CARD (Current Player) -->
+        <div class="rc-player-card active-turn" id="player-bar-bottom">
+          <div class="rc-player-left">
+            <div class="rc-player-avatar-wrap">
+              <div class="rc-player-avatar" id="bottom-player-avatar"></div>
+              <span class="conn-indicator online" id="bottom-player-conn"></span>
+            </div>
+            <div class="rc-player-details">
+              <div class="rc-player-headline">
+                <span class="rc-player-name" id="bottom-player-name">Kỳ Thủ 531 (Trắng)</span>
+                <span class="rc-gm-badge" id="bottom-player-title">GM</span>
+                <span class="rc-elo-inline">
+                  <svg class="rc-icon rc-crown-gold" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" />
+                  </svg>
+                  <span>1560</span>
+                </span>
+              </div>
+              <div class="rc-captured-strip">
+                <div class="captured-pieces" id="bottom-captured-pieces"></div>
+                <span class="material-badge hidden" id="bottom-material-badge">+0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="rc-clock-panel">
+            <div class="rc-clock-row">
+              <svg class="rc-icon rc-timer-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="10" y1="2" x2="14" y2="2" />
+                <line x1="12" y1="14" x2="15" y2="11" />
+                <circle cx="12" cy="14" r="8" />
+              </svg>
+              <div class="chess-clock" id="bottom-player-clock">10:00</div>
+            </div>
+            <div class="rc-clock-bar"><div class="rc-clock-fill rc-clock-fill-active" style="width: 85%"></div></div>
+          </div>
+        </div>
+
+        <!-- BOTTOM 6-ITEM CONTROL BAR (Matches Reference Image + Flip & New Game) -->
+        <div class="rc-bottom-dock" role="toolbar" aria-label="Điều khiển bàn cờ">
+          <button type="button" id="btn-undo" class="rc-dock-btn" data-tooltip="Hoàn tác / Xin đi lại 1 nước">
+            <svg class="rc-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 14 4 9l5-5" />
+              <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+            </svg>
+            <span>Hoàn tác</span>
+          </button>
+
+          <button type="button" id="btn-offer-draw" class="rc-dock-btn" data-tooltip="Đề nghị hòa cờ với đối thủ">
+            <svg class="rc-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <span>Đề nghị hòa</span>
+          </button>
+
+          <button type="button" id="btn-resign" class="rc-dock-btn rc-dock-danger" data-tooltip="Nhận thua ván đấu hiện tại">
+            <svg class="rc-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+              <line x1="4" y1="22" x2="4" y2="15" />
+            </svg>
+            <span>Bỏ cuộc</span>
+          </button>
+
+          <button type="button" id="btn-hint" class="rc-dock-btn rc-anim-glow" data-tooltip="AI phân tích & gợi ý nước đi tốt nhất">
+            <svg class="rc-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <line x1="15.5" y1="15.5" x2="21" y2="21" />
+              <path d="M9 8.5v4m0-2l2.5-2m-2.5 2l2.5 2" />
+            </svg>
+            <span>Phân tích</span>
+          </button>
+
+          <button type="button" id="btn-board-settings" class="rc-dock-btn rc-anim-rotate" data-tooltip="Cài đặt bàn cờ, quân cờ & âm thanh">
+            <svg class="rc-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span>Cài đặt bàn cờ</span>
+          </button>
+
+          <button type="button" id="btn-fullscreen" class="rc-dock-btn rc-anim-scale" data-tooltip="Toàn màn hình">
+            <svg class="rc-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 3 21 3 21 9" />
+              <polyline points="9 21 3 21 3 15" />
+              <line x1="21" y1="3" x2="14" y2="10" />
+              <line x1="3" y1="21" x2="10" y2="14" />
+            </svg>
+            <span>Toàn màn hình</span>
+          </button>
+
+          <!-- Extra utility buttons (Flip Board & New Game) with tooltips -->
+          <button type="button" id="btn-flip-board" class="rc-dock-btn rc-dock-compact" data-tooltip="Xoay hướng bàn cờ 180 độ" aria-label="Lật bàn">
+            <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m17 2 4 4-4 4" />
+              <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+              <path d="m7 22-4-4 4-4" />
+              <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+            </svg>
+            <span>Lật bàn</span>
+          </button>
+
+          <button type="button" id="btn-new-game" class="rc-dock-btn rc-dock-compact" data-tooltip="Khởi tạo ván cờ mới" aria-label="Ván mới">
+            <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+              <path d="M16 16h5v5" />
+            </svg>
+            <span>Ván mới</span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ======================================================================
+         COLUMN 3: RIGHT SIDEBAR (MATCH SETUP, LOBBY & DRAGON DYNASTY CARD)
+         ====================================================================== -->
+    <aside class="rc-right-sidebar" id="cc-sidebar-dock" aria-label="Bảng điều khiển trận đấu">
+      <div class="rc-right-card">
+        <!-- Top Header + Sub-View Icon Switcher -->
+        <div class="rc-right-header">
+          <h2 class="rc-right-title" id="right-panel-heading">Chơi cờ</h2>
+          <div class="rc-subtabs" role="tablist">
+            <button type="button" class="dock-tab active" data-tab="play" data-tooltip="Sảnh ghép trận">
+              <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+            </button>
+            <button type="button" class="dock-tab" data-tab="moves" data-tooltip="Biên bản nước đi & PGN">
+              <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              <span class="tab-badge" id="move-count-badge">0</span>
+            </button>
+            <button type="button" class="dock-tab" data-tab="chat" data-tooltip="Trò chuyện trực tiếp">
+              <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </button>
+            <button type="button" class="dock-tab rc-anim-rotate" data-tab="customize" data-tooltip="Tùy chỉnh bàn cờ & quân cờ">
+              <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             PANE 1: PLAY (MATCH SETUP & OPEN LOBBY — MATCHES REFERENCE IMAGE)
+             ================================================================== -->
+        <div class="tab-pane active" id="tab-pane-play">
+          <!-- 3-Way Segmented Mode Switcher -->
+          <div class="rc-mode-tabs" role="tablist">
+            <button type="button" class="mode-pill active" data-mode="online">Online 1v1</button>
+            <button type="button" class="mode-pill" data-mode="ai">Đấu với máy</button>
+            <button type="button" class="mode-pill" data-mode="local">2 Người</button>
+          </div>
+
+          <!-- ONLINE 1V1 SECTION -->
+          <div id="section-online-controls" class="rc-mode-section">
+            <div class="rc-section-label">Cài đặt trận đấu</div>
+
+            <!-- 2x2 Selector Cards Grid with SVG Icons & Rotating Chevrons -->
+            <div class="rc-settings-grid">
+              <!-- Card 1: Time Control -->
+              <label class="rc-select-card">
+                <span class="rc-select-icon">
+                  <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" />
+                    <polyline points="12 7 12 12 15 15" />
+                  </svg>
+                </span>
+                <span class="rc-select-body">
+                  <span class="rc-select-caption">Thời gian</span>
+                  <select id="select-online-tc" class="rc-native-select">
+                    <option value="10+0" selected>10 phút</option>
+                    <option value="5+0">5 phút</option>
+                    <option value="3+2">3 | 2</option>
+                    <option value="3+0">3 phút</option>
+                    <option value="15+10">15 | 10</option>
+                    <option value="1+0">1 phút</option>
+                    <option value="unlimited">Không giới hạn</option>
+                  </select>
+                  <span class="rc-select-sub" id="online-tc-sublabel">Cờ nhanh</span>
+                </span>
+                <svg class="rc-icon rc-select-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </label>
+
+              <!-- Card 2: Color Preference -->
+              <label class="rc-select-card">
+                <span class="rc-select-icon">
+                  <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M5 20a7 7 0 0 1 14 0" />
+                  </svg>
+                </span>
+                <span class="rc-select-body">
+                  <span class="rc-select-caption">Chọn màu</span>
+                  <select id="select-online-color" class="rc-native-select">
+                    <option value="random" selected>Ngẫu nhiên</option>
+                    <option value="w">Quân Trắng</option>
+                    <option value="b">Quân Đen</option>
+                  </select>
+                  <span class="rc-select-sub">Tự động phân</span>
+                </span>
+                <svg class="rc-icon rc-select-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </label>
+
+              <!-- Card 3: Rating Range -->
+              <label class="rc-select-card">
+                <span class="rc-select-icon">
+                  <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" />
+                    <polyline points="12 8 12 12 14.5 14.5" />
+                  </svg>
+                </span>
+                <span class="rc-select-body">
+                  <span class="rc-select-caption">Rating range</span>
+                  <select id="select-rating-range" class="rc-native-select">
+                    <option value="1000-2000" selected>1000 - 2000</option>
+                    <option value="800-1400">800 - 1400</option>
+                    <option value="1400-2200">1400 - 2200</option>
+                    <option value="any">Mọi cấp độ</option>
+                  </select>
+                </span>
+                <svg class="rc-icon rc-select-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </label>
+
+              <!-- Card 4: Match Mode -->
+              <label class="rc-select-card">
+                <span class="rc-select-icon">
+                  <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M16.5 18H7.5l1-6.5L6 11l1.5-5 5-2.5 4.5 2.5c1.5 2.5 1 7.5-.5 12z" />
+                    <path d="M6 21h12" />
+                  </svg>
+                </span>
+                <span class="rc-select-body">
+                  <span class="rc-select-caption">Chế độ</span>
+                  <select id="select-match-mode" class="rc-native-select">
+                    <option value="ranked" selected>Xếp hạng</option>
+                    <option value="casual">Giao hữu</option>
+                  </select>
+                </span>
+                <svg class="rc-icon rc-select-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </label>
+            </div>
+
+            <!-- Primary & Secondary Matchmaking Buttons -->
+            <div id="lobby-match-controls" class="rc-cta-stack">
+              <button type="button" id="btn-quick-match" class="rc-cta-primary">
+                <svg class="rc-icon rc-zap-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                <span class="rc-cta-text">
+                  <strong>Chơi ngay</strong>
+                  <small>Ghép trận nhanh</small>
+                </span>
+              </button>
+
+              <button type="button" id="btn-create-room" class="rc-cta-secondary">
+                <span class="rc-lock-badge">
+                  <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="4" y="11" width="16" height="10" rx="2" />
+                    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                    <circle cx="12" cy="16" r="1" />
+                  </svg>
+                </span>
+                <span class="rc-cta-text">
+                  <strong>Tạo phòng riêng</strong>
+                  <small>&amp; lấy link mời bạn bè</small>
+                </span>
+              </button>
+
+              <div class="rc-join-code-row">
+                <input type="text" id="input-room-code" class="rc-code-input" placeholder="Nhập mã phòng (VD: AB12CD)" maxlength="8" />
+                <button type="button" id="btn-join-code" class="rc-btn-glass">Vào phòng</button>
+              </div>
+            </div>
+
+            <!-- Active Room Banner (When inside an Online Room) -->
+            <div id="active-room-box" class="rc-active-room hidden">
+              <div class="rc-room-top">
+                <div>
+                  <div class="rc-room-caption">MÃ PHÒNG HIỆN TẠI</div>
+                  <div class="rc-room-code" id="active-room-code">------</div>
+                </div>
+                <span class="rc-role-pill" id="active-room-role">Quân Trắng</span>
+              </div>
+              <div class="rc-room-actions">
+                <button type="button" id="btn-copy-code" class="rc-btn-glass btn-xs">
+                  <svg class="rc-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  <span>Sao chép mã</span>
+                </button>
+                <button type="button" id="btn-copy-link" class="rc-btn-gradient btn-xs">
+                  <svg class="rc-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                  </svg>
+                  <span>Copy link mời</span>
+                </button>
+              </div>
+              <button type="button" id="btn-leave-room" class="rc-btn-leave">Rời khỏi phòng đấu</button>
+            </div>
+
+            <!-- Open Rooms Lobby Section -->
+            <div class="rc-lobby-block">
+              <div class="rc-lobby-head">
+                <span class="rc-section-label">Sảnh phòng đang mở (<span id="lobby-room-count">3</span>)</span>
+                <button type="button" id="btn-refresh-lobby" class="rc-refresh-btn" data-tooltip="Làm mới danh sách phòng" aria-label="Làm mới">
+                  <svg class="rc-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                    <path d="M16 16h5v5" />
+                  </svg>
+                </button>
+              </div>
+
+              <div id="lobby-rooms-list" class="rc-lobby-list"></div>
+
+              <button type="button" id="btn-view-all-rooms" class="rc-view-all-btn">
+                <span>Xem tất cả phòng</span>
+                <svg class="rc-icon rc-arrow-slide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- AI MODE CONTROLS -->
+          <div id="section-ai-controls" class="rc-mode-section hidden">
+            <div class="rc-section-label">Cấp độ Trí tuệ Nhân tạo</div>
+            <div class="rc-ai-grid" id="ai-level-grid">
               <button type="button" class="ai-lvl-btn" data-level="1">
                 <strong>Tập sự</strong>
-                <small>ELO 800</small>
+                <span>ELO 800</span>
               </button>
               <button type="button" class="ai-lvl-btn" data-level="2">
                 <strong>Câu lạc bộ</strong>
-                <small>ELO 1250</small>
+                <span>ELO 1250</span>
               </button>
               <button type="button" class="ai-lvl-btn active" data-level="3">
-                <strong>Kiện tượng</strong>
-                <small>ELO 1650</small>
+                <strong>Kiện tướng</strong>
+                <span>ELO 1650</span>
               </button>
               <button type="button" class="ai-lvl-btn" data-level="4">
-                <strong>Đại kiện tượng</strong>
-                <small>ELO 2100+</small>
+                <strong>Đại kiện tướng</strong>
+                <span>ELO 2100+</span>
               </button>
             </div>
-          </div>
 
-          <div class="form-row-2">
-            <div class="form-group">
-              <label for="select-ai-color">Bạn cầm quân</label>
-              <select id="select-ai-color" class="ui-select">
-                <option value="w" selected>Quân Trắng</option>
-                <option value="b">Quân Đen</option>
-                <option value="random">Ngẫu nhiên</option>
-              </select>
+            <div class="rc-settings-grid">
+              <label class="rc-select-card">
+                <span class="rc-select-icon">
+                  <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M5 20a7 7 0 0 1 14 0" />
+                  </svg>
+                </span>
+                <span class="rc-select-body">
+                  <span class="rc-select-caption">Bạn cầm quân</span>
+                  <select id="select-ai-color" class="rc-native-select">
+                    <option value="w" selected>Quân Trắng</option>
+                    <option value="b">Quân Đen</option>
+                    <option value="random">Ngẫu nhiên</option>
+                  </select>
+                </span>
+                <svg class="rc-icon rc-select-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </label>
+
+              <label class="rc-select-card">
+                <span class="rc-select-icon">
+                  <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" />
+                    <polyline points="12 7 12 12 15 15" />
+                  </svg>
+                </span>
+                <span class="rc-select-body">
+                  <span class="rc-select-caption">Đồng hồ</span>
+                  <select id="select-ai-tc" class="rc-native-select">
+                    <option value="unlimited" selected>Không giới hạn</option>
+                    <option value="10+0">10 phút</option>
+                    <option value="5+0">5 phút</option>
+                    <option value="3+2">3 | 2</option>
+                  </select>
+                </span>
+                <svg class="rc-icon rc-select-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </label>
             </div>
-            <div class="form-group">
-              <label for="select-ai-tc">Thời gian</label>
-              <select id="select-ai-tc" class="ui-select">
-                <option value="unlimited" selected>Không giới hạn</option>
-                <option value="10+0">10 phút</option>
-                <option value="5+0">5 phút</option>
-                <option value="3+2">3 | 2 chớp</option>
-              </select>
-            </div>
+
+            <button type="button" id="btn-start-ai" class="rc-cta-primary">
+              <svg class="rc-icon rc-zap-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              <span class="rc-cta-text">
+                <strong>Bắt đầu đấu với máy</strong>
+                <small>Trí tuệ nhân tạo Minimax</small>
+              </span>
+            </button>
           </div>
 
-          <button type="button" class="btn-green-3d btn-lg full-width" id="btn-start-ai">
-            Bắt đầu đấu với Máy
-          </button>
-        </div>
+          <!-- LOCAL 2-PLAYER CONTROLS -->
+          <div id="section-local-controls" class="rc-mode-section hidden">
+            <div class="rc-section-label">Chế độ 2 Người cùng thiết bị</div>
+            <label class="rc-select-card">
+              <span class="rc-select-icon">
+                <svg class="rc-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <polyline points="12 7 12 12 15 15" />
+                </svg>
+              </span>
+              <span class="rc-select-body">
+                <span class="rc-select-caption">Thời gian mỗi bên</span>
+                <select id="select-local-tc" class="rc-native-select">
+                  <option value="10+0" selected>10 phút</option>
+                  <option value="5+0">5 phút</option>
+                  <option value="3+2">3 | 2</option>
+                  <option value="15+10">15 | 10</option>
+                  <option value="unlimited">Không giới hạn</option>
+                </select>
+              </span>
+              <svg class="rc-icon rc-select-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </label>
 
-        <!-- 1C. 2 PLAYERS PASS & PLAY SECTION -->
-        <div class="mode-section hidden" id="section-local-controls">
-          <div class="form-group">
-            <label for="select-local-tc">Đồng hồ mỗi bên</label>
-            <select id="select-local-tc" class="ui-select">
-              <option value="10+0" selected>10 phút (Cờ nhanh)</option>
-              <option value="5+0">5 phút (Cờ chớp)</option>
-              <option value="3+2">3 | 2 (Cờ chớp)</option>
-              <option value="15+10">15 | 10 (Tiêu chuẩn)</option>
-              <option value="unlimited">Không giới hạn</option>
-            </select>
-          </div>
-
-          <div class="switch-list">
-            <label class="switch-row">
+            <label class="rc-toggle-row">
               <span>Tự động xoay bàn cờ sau mỗi nước</span>
-              <input type="checkbox" class="ui-switch" id="chk-auto-flip" />
+              <input type="checkbox" id="chk-auto-flip" />
             </label>
-            <label class="switch-row">
-              <span>Xoay ngược quân Đen 180° (Chơi đối diện)</span>
-              <input type="checkbox" class="ui-switch" id="chk-tabletop-mode" />
+            <label class="rc-toggle-row">
+              <span>Chế độ đặt máy trên bàn (Quân Đen xoay 180 độ)</span>
+              <input type="checkbox" id="chk-tabletop-mode" />
             </label>
-          </div>
 
-          <button type="button" class="btn-green-3d btn-lg full-width" id="btn-start-local">
-            Bắt đầu ván 2 người
-          </button>
-        </div>
-      </div>
-
-      <!-- ====================================================
-           TAB 2: GAME NOTATION & TACTICAL CONTROLS
-           ==================================================== -->
-      <div class="dock-pane" id="tab-pane-moves">
-        <!-- Opening Explorer Strip -->
-        <div class="opening-strip" id="opening-name-display">
-          Thế trận khởi đầu
-        </div>
-
-        <!-- Zebra-striped Algebraic Move Table -->
-        <div class="moves-table-wrap" id="moves-table-wrap">
-          <table class="moves-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Trắng</th>
-                <th>Đen</th>
-              </tr>
-            </thead>
-            <tbody id="moves-tbody">
-              <tr class="empty-moves-row">
-                <td colspan="3">Hãy đi nước cờ đầu tiên trên bàn cờ.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Replay Step Controls -->
-        <div class="replay-bar">
-          <button type="button" class="replay-btn" id="btn-step-first" title="Về đầu ván">Đầu</button>
-          <button type="button" class="replay-btn" id="btn-step-prev" title="Lùi 1 nước">Trước</button>
-          <button type="button" class="replay-btn" id="btn-step-next" title="Tiến 1 nước">Tiếp</button>
-          <button type="button" class="replay-btn" id="btn-step-last" title="Về hiện tại">Cuối</button>
-        </div>
-
-        <!-- Chess.com Style In-Panel Game Controls -->
-        <div class="game-control-grid">
-          <button type="button" class="ctrl-btn primary" id="btn-new-game">Ván mới</button>
-          <button type="button" class="ctrl-btn" id="btn-flip-board">Xoay bàn</button>
-          <button type="button" class="ctrl-btn" id="btn-hint">Gợi ý AI</button>
-          <button type="button" class="ctrl-btn" id="btn-undo">Đi lại</button>
-          <button type="button" class="ctrl-btn" id="btn-offer-draw">Cầu hòa</button>
-          <button type="button" class="ctrl-btn danger" id="btn-resign">Đầu hàng</button>
-        </div>
-
-        <!-- FEN / PGN Export Row -->
-        <div class="fen-tools-box">
-          <div class="fen-btn-row">
-            <button type="button" class="btn-flat btn-xs" id="btn-copy-fen">Copy FEN</button>
-            <button type="button" class="btn-flat btn-xs" id="btn-copy-pgn">Copy PGN</button>
-            <button type="button" class="btn-flat btn-xs" id="btn-load-fen-toggle">Nạp FEN</button>
-          </div>
-          <div class="fen-load-drawer hidden" id="fen-load-drawer">
-            <input type="text" id="input-custom-fen" class="ui-input" placeholder="Dán chuỗi FEN..." />
-            <button type="button" class="btn-green-3d btn-xs" id="btn-apply-fen">Nạp</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ====================================================
-           TAB 3: LIVE CHAT & QUICK PHRASES
-           ==================================================== -->
-      <div class="dock-pane" id="tab-pane-chat">
-        <div class="chat-messages" id="chat-messages">
-          <div class="chat-msg system">
-            <span>Phòng trò chuyện trực tiếp. Hãy giữ thái độ lịch sự khi thi đấu.</span>
+            <button type="button" id="btn-start-local" class="rc-cta-primary">
+              <svg class="rc-icon rc-zap-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              <span class="rc-cta-text">
+                <strong>Bắt đầu ván 2 người</strong>
+                <small>Đối kháng trực tiếp</small>
+              </span>
+            </button>
           </div>
         </div>
 
-        <div class="quick-chat-chips">
-          <button type="button" class="chat-chip" data-msg="Chúc bạn ván cờ hay!">Chúc may mắn</button>
-          <button type="button" class="chat-chip" data-msg="Nước đi rất cao!">Nước đi hay</button>
-          <button type="button" class="chat-chip" data-msg="Tái đấu thêm ván nữa nhé?">Tái đấu nhé</button>
-          <button type="button" class="chat-chip" data-msg="GG WP!">GG WP</button>
+        <!-- ==================================================================
+             PANE 2: MOVES HISTORY & PGN
+             ================================================================== -->
+        <div class="tab-pane" id="tab-pane-moves">
+          <div class="rc-replay-bar">
+            <button type="button" id="btn-step-first" class="rc-icon-box" data-tooltip="Về nước đầu tiên" aria-label="Nước đầu">
+              <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="11 17 6 12 11 7" />
+                <polyline points="18 17 13 12 18 7" />
+              </svg>
+            </button>
+            <button type="button" id="btn-step-prev" class="rc-icon-box" data-tooltip="Lùi 1 nước" aria-label="Lùi 1 nước">
+              <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <button type="button" id="btn-step-next" class="rc-icon-box" data-tooltip="Tiến 1 nước" aria-label="Tiến 1 nước">
+              <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+            <button type="button" id="btn-step-last" class="rc-icon-box" data-tooltip="Tới thế cờ hiện tại" aria-label="Hiện tại">
+              <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="13 17 18 12 13 7" />
+                <polyline points="6 17 11 12 6 7" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="moves-table-wrap" id="moves-table-wrap">
+            <table class="moves-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Trắng</th>
+                  <th>Đen</th>
+                </tr>
+              </thead>
+              <tbody id="moves-tbody">
+                <tr class="empty-moves-row">
+                  <td colspan="3">Hãy thực hiện nước đi đầu tiên trên bàn cờ.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="rc-pgn-tools">
+            <div class="rc-pgn-row">
+              <button type="button" id="btn-copy-fen" class="rc-btn-glass btn-xs">Sao chép FEN</button>
+              <button type="button" id="btn-copy-pgn" class="rc-btn-glass btn-xs">Sao chép PGN</button>
+              <button type="button" id="btn-load-fen-toggle" class="rc-btn-glass btn-xs">Nạp FEN</button>
+            </div>
+            <div id="fen-load-drawer" class="rc-fen-drawer hidden">
+              <input type="text" id="input-custom-fen" class="rc-code-input" placeholder="Dán chuỗi FEN thế cờ..." />
+              <button type="button" id="btn-apply-fen" class="rc-btn-gradient btn-xs">Áp dụng</button>
+            </div>
+          </div>
         </div>
 
-        <div class="quick-chat-chips">
-          <button type="button" class="chat-chip emoji-btn" data-emoji="Hay quá!">Hay quá</button>
-          <button type="button" class="chat-chip emoji-btn" data-emoji="Tuyệt vời!">Tuyệt vời</button>
-          <button type="button" class="chat-chip emoji-btn" data-emoji="Đang suy nghĩ...">Đang tính</button>
-          <button type="button" class="chat-chip emoji-btn" data-emoji="Cảm ơn!">Cảm ơn</button>
+        <!-- ==================================================================
+             PANE 3: LIVE CHAT
+             ================================================================== -->
+        <div class="tab-pane" id="tab-pane-chat">
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-msg system">Chào mừng đến với phòng đấu Royal Chess.</div>
+          </div>
+          <div class="chat-quick-chips">
+            <button type="button" class="chat-chip emoji-btn" data-msg="Chúc ván đấu hay!" data-emoji="GG">Chúc ván hay</button>
+            <button type="button" class="chat-chip emoji-btn" data-msg="Nước đi rất sắc sảo!" data-emoji="NICE">Nước đi hay</button>
+            <button type="button" class="chat-chip emoji-btn" data-msg="Cảm ơn bạn, ván đấu tuyệt vời!" data-emoji="WP">Ván đấu đẹp</button>
+            <button type="button" class="chat-chip emoji-btn" data-msg="Làm thêm ván nữa nhé?" data-emoji="RE">Tái đấu nhé</button>
+          </div>
+          <form id="chat-form" class="chat-input-row">
+            <input type="text" id="chat-input" class="rc-code-input" placeholder="Nhập tin nhắn..." maxlength="220" autocomplete="off" />
+            <button type="submit" class="rc-btn-gradient btn-xs">Gửi</button>
+          </form>
         </div>
 
-        <form class="chat-input-row" id="chat-form">
-          <input
-            type="text"
-            id="chat-input"
-            class="ui-input"
-            placeholder="Nhập tin nhắn..."
-            maxlength="180"
-            autocomplete="off"
-          />
-          <button type="submit" class="btn-green-3d">Gửi</button>
-        </form>
-      </div>
-
-      <!-- ====================================================
-           TAB 4: BOARD & PIECE CUSTOMIZATION STUDIO
-           ==================================================== -->
-      <div class="dock-pane" id="tab-pane-customize">
-        <div class="custom-studio-scroll">
-          <div class="studio-group">
-            <h3>Màu bàn cờ (8 chủ đề)</h3>
-            <div class="theme-grid" id="board-theme-grid"></div>
-          </div>
-
-          <div class="studio-group">
-            <h3>Kiểu quân cờ (5 bộ)</h3>
-            <div class="piece-set-grid" id="piece-set-grid"></div>
-          </div>
-
-          <div class="studio-group">
-            <h3>Tông màu nền</h3>
-            <div class="ui-theme-grid" id="ui-theme-grid"></div>
-          </div>
-
-          <div class="studio-group">
-            <h3>Cài đặt bàn cờ & âm thanh</h3>
-            <div class="form-group">
-              <label for="select-sound-pack">Âm thanh quân cờ</label>
-              <select id="select-sound-pack" class="ui-select">
-                <option value="wood" selected>Gỗ tiêu chuẩn (Chess.com Wood)</option>
-                <option value="crystal">Hiện đại (Crystal)</option>
-                <option value="muted">Tắt tiếng</option>
-              </select>
+        <!-- ==================================================================
+             PANE 4: CUSTOMIZATION STUDIO (8 BOARDS, 5 PIECE SETS, 4 UI THEMES)
+             ================================================================== -->
+        <div class="tab-pane" id="tab-pane-customize">
+          <div class="custom-studio-scroll">
+            <div class="custom-group">
+              <div class="rc-section-label">Chủ đề bàn cờ (8 phong cách)</div>
+              <div class="theme-grid" id="board-theme-grid"></div>
             </div>
 
-            <div class="switch-list">
-              <label class="switch-row">
-                <span>Bàn cờ góc nhìn 3D nghiêng</span>
-                <input type="checkbox" class="ui-switch" id="chk-board-3d" />
+            <div class="custom-group">
+              <div class="rc-section-label">Bộ sưu tập quân cờ (5 bộ SVG 3D)</div>
+              <div class="piece-set-grid" id="piece-set-grid"></div>
+            </div>
+
+            <div class="custom-group">
+              <div class="rc-section-label">Không gian nền (4 giao diện)</div>
+              <div class="ui-theme-grid" id="ui-theme-grid"></div>
+            </div>
+
+            <div class="custom-group">
+              <div class="rc-section-label">Hiệu ứng &amp; Hỗ trợ</div>
+              <label class="rc-toggle-row">
+                <span>Bàn cờ phối cảnh 3D Perspective</span>
+                <input type="checkbox" id="chk-board-3d" />
               </label>
-              <label class="switch-row">
-                <span>Thanh đánh giá thế cờ (Eval Bar)</span>
-                <input type="checkbox" class="ui-switch" id="chk-show-eval" checked />
+              <label class="rc-toggle-row">
+                <span>Hiện thanh đánh giá thế cờ (Eval Bar)</span>
+                <input type="checkbox" id="chk-show-eval" checked />
               </label>
-              <label class="switch-row">
-                <span>Chấm gợi ý nước đi hợp lệ</span>
-                <input type="checkbox" class="ui-switch" id="chk-show-legal" checked />
+              <label class="rc-toggle-row">
+                <span>Hiện chấm gợi ý nước đi hợp lệ</span>
+                <input type="checkbox" id="chk-show-legal" checked />
               </label>
-              <label class="switch-row">
-                <span>Hiện tọa độ bàn cờ (a–h, 1–8)</span>
-                <input type="checkbox" class="ui-switch" id="chk-show-coords" checked />
+              <label class="rc-toggle-row">
+                <span>Hiện tọa độ bàn cờ (A-H, 1-8)</span>
+                <input type="checkbox" id="chk-show-coords" checked />
               </label>
-              <label class="switch-row">
+              <label class="rc-toggle-row">
                 <span>Tự động phong Hậu nhanh</span>
-                <input type="checkbox" class="ui-switch" id="chk-auto-queen" />
+                <input type="checkbox" id="chk-auto-queen" />
               </label>
+              <div class="rc-sound-row">
+                <span>Âm thanh</span>
+                <select id="select-sound-pack" class="rc-native-select">
+                  <option value="wood" selected>Gỗ cổ điển</option>
+                  <option value="crystal">Pha lê</option>
+                  <option value="muted">Tắt âm</option>
+                </select>
+              </div>
+              <button type="button" id="btn-reset-custom" class="rc-btn-glass" style="width:100%;margin-top:8px">Khôi phục mặc định</button>
             </div>
           </div>
+        </div>
+      </div>
 
-          <button type="button" class="btn-dark-3d full-width" id="btn-reset-custom">
-            Khôi phục mặc định
+      <!-- BOTTOM FEATURED PROMO BANNER: DRAGON DYNASTY (Matches Reference Image!) -->
+      <div class="rc-dragon-banner">
+        <div class="rc-dragon-glow"></div>
+        <div class="rc-dragon-content">
+          <div class="rc-dragon-head">
+            <svg class="rc-icon rc-dragon-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="13 17 18 12 13 7" />
+              <polyline points="6 17 11 12 6 7" />
+            </svg>
+            <span>DRAGON DYNASTY</span>
+          </div>
+          <div class="rc-dragon-sub">Legendary Chess Set</div>
+
+          <!-- Vector Preview Showcase of the Dragon Dynasty Pieces -->
+          <div class="rc-dragon-lineup" id="dragon-showcase-pieces" aria-hidden="true"></div>
+
+          <button type="button" id="btn-dragon-collection" class="rc-dragon-btn">
+            <span>Xem bộ sưu tập</span>
           </button>
         </div>
       </div>
     </aside>
-  </main>
+  </div>
 
-  <!-- PLAYER PROFILE MODAL -->
-  <div class="global-modal-backdrop hidden" id="profile-modal">
+  <!-- ========================================================================
+       PLAYER PROFILE MODAL
+       ======================================================================== -->
+  <div id="profile-modal" class="global-modal-backdrop hidden">
     <div class="global-modal-card">
       <div class="modal-header">
-        <h3>Hồ sơ kỳ thủ</h3>
-        <button type="button" class="modal-close-btn" id="btn-close-profile">Đóng</button>
+        <h3>Hồ sơ Kỳ thủ</h3>
+        <button type="button" id="btn-close-profile" class="rc-icon-box" data-tooltip="Đóng cửa sổ" aria-label="Đóng">
+          <svg class="rc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label for="input-profile-name">Tên kỳ thủ</label>
-          <input type="text" id="input-profile-name" class="ui-input" maxlength="22" placeholder="Nhập tên hiển thị..." />
-        </div>
-        <div class="form-group">
-          <label>Danh hiệu</label>
-          <div class="title-picker-grid" id="title-picker-grid"></div>
-        </div>
-        <div class="form-group">
-          <label>Chữ cái đại diện</label>
-          <div class="avatar-picker-grid" id="avatar-picker-grid"></div>
-        </div>
+        <label class="field-label" for="input-profile-name">Tên hiển thị</label>
+        <input type="text" id="input-profile-name" class="rc-code-input" maxlength="22" placeholder="Nhập tên kỳ thủ..." />
+
+        <label class="field-label">Danh hiệu</label>
+        <div class="title-picker-grid" id="title-picker-grid"></div>
+
+        <label class="field-label">Chân dung Đại Kiện Tượng (SVG Vector)</label>
+        <div class="avatar-picker-grid" id="avatar-picker-grid"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-green-3d full-width" id="btn-save-profile">Lưu hồ sơ</button>
+        <button type="button" id="btn-save-profile" class="rc-cta-primary" style="width:100%">
+          <span class="rc-cta-text"><strong>Lưu hồ sơ</strong></span>
+        </button>
       </div>
     </div>
   </div>
 
-  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script type="module" src="/app.js?v=3"></script>
+  <script type="module" src="/app.js?v=4"></script>
 </body>
 </html>

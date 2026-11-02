@@ -1,223 +1,535 @@
 // ============================================================================
-// ROYAL CHESS ARENA — CUSTOM PIECE SETS, BOARD THEMES, SOUND & OPENINGS
+// ROYAL CHESS — UNIFIED VECTOR SVG ICON SYSTEM, PIECE ASSETS, THEMES & AUDIO
+// Strict compliance: ZERO emojis, ZERO Unicode symbols. 100% vector SVG paths.
 // ============================================================================
 
 export const BOARD_THEMES = {
   emerald: {
     id: 'emerald',
-    name: 'Emerald Royal',
-    subtitle: 'Giải đấu cổ điển',
-    light: '#eeeed2',
-    dark: '#769656',
-    border: '#2d3b22',
-    coordLight: '#769656',
-    coordDark: '#eeeed2',
-    lastMove: 'rgba(255, 255, 51, 0.48)',
-    selected: 'rgba(186, 202, 43, 0.75)'
+    name: 'Midnight Cosmic Marble',
+    subtitle: 'Đá cẩm thạch vũ trụ (Mặc định)',
+    light: '#8d95b0',
+    dark: '#23263a',
+    border: '#312e59',
+    coordLight: '#cbd5e1',
+    coordDark: '#94a3b8',
+    lastMove: 'rgba(139, 92, 246, 0.36)',
+    selected: 'rgba(168, 85, 247, 0.52)'
   },
-  wood: {
-    id: 'wood',
-    name: 'Walnut Grandmaster',
-    subtitle: 'Gỗ óc chó thượng hạng',
-    light: '#f0d9b5',
-    dark: '#b58863',
-    border: '#4a2f1d',
-    coordLight: '#b58863',
-    coordDark: '#f0d9b5',
-    lastMove: 'rgba(247, 236, 93, 0.48)',
-    selected: 'rgba(218, 165, 32, 0.65)'
+  royal_gold: {
+    id: 'royal_gold',
+    name: 'Onyx & Imperial Gold',
+    subtitle: 'Hắc ngọc & Hoàng kim',
+    light: '#e6d3a3',
+    dark: '#2c2419',
+    border: '#b48a3e',
+    coordLight: '#2c2419',
+    coordDark: '#e6d3a3',
+    lastMove: 'rgba(212, 175, 55, 0.42)',
+    selected: 'rgba(245, 158, 11, 0.58)'
   },
   cyberpunk: {
     id: 'cyberpunk',
     name: 'Midnight Cyberpunk',
     subtitle: 'Neon tương lai',
-    light: '#242947',
+    light: '#272c4d',
     dark: '#111428',
-    border: '#00f5d4',
-    coordLight: '#00f5d4',
-    coordDark: '#ff2a85',
-    lastMove: 'rgba(0, 245, 212, 0.34)',
-    selected: 'rgba(255, 42, 133, 0.5)'
+    border: '#6366f1',
+    coordLight: '#38bdf8',
+    coordDark: '#c084fc',
+    lastMove: 'rgba(56, 189, 248, 0.34)',
+    selected: 'rgba(192, 132, 252, 0.52)'
+  },
+  wood: {
+    id: 'wood',
+    name: 'Walnut Grandmaster',
+    subtitle: 'Gỗ óc chó thượng hạng',
+    light: '#ead6b3',
+    dark: '#9e6f46',
+    border: '#3d2616',
+    coordLight: '#9e6f46',
+    coordDark: '#ead6b3',
+    lastMove: 'rgba(245, 158, 11, 0.42)',
+    selected: 'rgba(217, 119, 6, 0.58)'
   },
   ocean: {
     id: 'ocean',
     name: 'Oceanic Glass',
     subtitle: 'Đại dương pha lê',
-    light: '#dce9f5',
-    dark: '#4b7399',
-    border: '#1e354d',
-    coordLight: '#4b7399',
-    coordDark: '#dce9f5',
-    lastMove: 'rgba(56, 189, 248, 0.45)',
-    selected: 'rgba(14, 165, 233, 0.65)'
+    light: '#c9dced',
+    dark: '#35587a',
+    border: '#1b3147',
+    coordLight: '#35587a',
+    coordDark: '#c9dced',
+    lastMove: 'rgba(56, 189, 248, 0.42)',
+    selected: 'rgba(14, 165, 233, 0.58)'
   },
   marble: {
     id: 'marble',
-    name: 'Imperial Marble',
-    subtitle: 'Cẩm thạch hoàng gia',
-    light: '#e8ecef',
-    dark: '#636e7b',
-    border: '#22272e',
-    coordLight: '#636e7b',
-    coordDark: '#e8ecef',
-    lastMove: 'rgba(167, 139, 250, 0.45)',
-    selected: 'rgba(139, 92, 246, 0.6)'
+    name: 'Tournament Classic',
+    subtitle: 'Chuẩn giải đấu quốc tế',
+    light: '#dee3e6',
+    dark: '#5d7c66',
+    border: '#243328',
+    coordLight: '#5d7c66',
+    coordDark: '#dee3e6',
+    lastMove: 'rgba(132, 204, 22, 0.42)',
+    selected: 'rgba(16, 185, 129, 0.55)'
   },
   sakura: {
     id: 'sakura',
-    name: 'Sakura Sunset',
-    subtitle: 'Hoa anh đào hoàng hôn',
-    light: '#fceef2',
-    dark: '#c96f8b',
-    border: '#592538',
-    coordLight: '#c96f8b',
-    coordDark: '#fceef2',
-    lastMove: 'rgba(251, 191, 36, 0.45)',
+    name: 'Crimson Amethyst',
+    subtitle: 'Hồng ngọc hoàng gia',
+    light: '#d8c7d9',
+    dark: '#4a2342',
+    border: '#702459',
+    coordLight: '#4a2342',
+    coordDark: '#d8c7d9',
+    lastMove: 'rgba(236, 72, 153, 0.4)',
     selected: 'rgba(244, 63, 94, 0.55)'
   },
   nordic: {
     id: 'nordic',
-    name: 'Nordic Ice',
+    name: 'Nordic Frost',
     subtitle: 'Băng giá Bắc Âu',
-    light: '#e6f0f5',
-    dark: '#5b8291',
-    border: '#233942',
-    coordLight: '#5b8291',
-    coordDark: '#e6f0f5',
-    lastMove: 'rgba(45, 212, 191, 0.42)',
-    selected: 'rgba(20, 184, 166, 0.6)'
-  },
-  royal_gold: {
-    id: 'royal_gold',
-    name: 'Onyx & Gold',
-    subtitle: 'Hắc ngọc & Hoàng kim',
-    light: '#f3e5ab',
-    dark: '#3d3522',
-    border: '#d4af37',
-    coordLight: '#3d3522',
-    coordDark: '#f3e5ab',
-    lastMove: 'rgba(212, 175, 55, 0.48)',
-    selected: 'rgba(245, 158, 11, 0.65)'
+    light: '#d5e3ec',
+    dark: '#466675',
+    border: '#1f333d',
+    coordLight: '#466675',
+    coordDark: '#d5e3ec',
+    lastMove: 'rgba(45, 212, 191, 0.4)',
+    selected: 'rgba(20, 184, 166, 0.55)'
   }
 };
 
 export const PIECE_SETS = {
   staunton: {
     id: 'staunton',
-    name: 'Neo-Staunton Pro',
-    subtitle: 'Chuẩn giải đấu quốc tế'
+    name: 'Royal Sculpted 3D',
+    subtitle: 'Hoàng gia chạm khắc vàng & bạc'
   },
   imperial: {
     id: 'imperial',
-    name: 'Royal Imperial',
-    subtitle: 'Hoàng gia chạm khắc'
+    name: 'Dragon Dynasty',
+    subtitle: 'Huyền thoại Long Tộc'
   },
   neon: {
     id: 'neon',
     name: 'Cyber Neon Glow',
     subtitle: 'Quang phổ điện tử'
   },
-  minimal: {
-    id: 'minimal',
-    name: 'Bauhaus Minimal',
-    subtitle: 'Hình học tối giản'
-  },
   crystal: {
     id: 'crystal',
     name: '3D Faceted Crystal',
     subtitle: 'Lăng kính pha lê'
+  },
+  minimal: {
+    id: 'minimal',
+    name: 'Grandmaster Classic',
+    subtitle: 'Vector hình học chuẩn mực'
   }
 };
 
 export const UI_THEMES = {
   obsidian: {
     id: 'obsidian',
-    name: 'Chess.com Slate',
-    bg: '#302e2b',
-    panel: '#262421',
-    text: '#ffffff'
+    name: 'Midnight',
+    bg: '#0b0c15',
+    panel: '#121424',
+    text: '#f8fafc'
   },
   midnight: {
     id: 'midnight',
-    name: 'Midnight Pro',
-    bg: '#161b22',
-    panel: '#0d1117',
-    text: '#f0f6fc'
+    name: 'Abyssal Blue',
+    bg: '#070d19',
+    panel: '#0f172a',
+    text: '#f1f5f9'
   },
   espresso: {
     id: 'espresso',
-    name: 'Walnut Club',
-    bg: '#241c17',
-    panel: '#1b1410',
-    text: '#fdf8f5'
+    name: 'Royal Ember',
+    bg: '#140c14',
+    panel: '#1f1220',
+    text: '#fdf2f8'
   },
   alabaster: {
     id: 'alabaster',
-    name: 'Light Classic',
-    bg: '#ebecd0',
-    panel: '#ffffff',
-    text: '#1f2937'
+    name: 'Obsidian Slate',
+    bg: '#111318',
+    panel: '#191c24',
+    text: '#f3f4f6'
   }
 };
 
 export const AVATAR_LIST = [
-  'A', 'B', 'C', 'D', 'E', 'F',
-  'G', 'H', 'K', 'M', 'N', 'P',
-  'Q', 'R', 'S', 'V'
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'K'
 ];
 
 export const TITLE_LIST = [
-  'GM', 'IM', 'FM', 'CM', 'PRO', 'KING', 'SOLO', 'VIP', 'BOSS'
+  'GM', 'IM', 'FM', 'CM', 'PRO', 'KING', 'SOLO', 'VIP'
 ];
 
-// Base Staunton SVG paths for K, Q, R, B, N, P
+// ============================================================================
+// UNIFIED PROFESSIONAL SVG ICON SYSTEM (Lucide Geometry + Custom Royal Chess)
+// Stroke hierarchy:
+//   nav: 1.85px | action: 2px | control: 1.65px | meta: 1.5px
+// ============================================================================
+export const ROYAL_ICONS = {
+  // Brand & Custom Chess Icons
+  'royal-logo': `
+    <defs>
+      <linearGradient id="rcLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f0abfc" />
+        <stop offset="50%" stop-color="#a855f7" />
+        <stop offset="100%" stop-color="#6366f1" />
+      </linearGradient>
+    </defs>
+    <path d="M12 2L14.5 5.5L18 4L16.5 8.5H7.5L6 4L9.5 5.5L12 2Z" fill="url(#rcLogoGrad)" stroke="#f5d0fe" stroke-width="1.4"/>
+    <path d="M8.5 8.5H15.5L14.5 16.5H9.5L8.5 8.5Z" fill="url(#rcLogoGrad)" stroke="#e9d5ff" stroke-width="1.4"/>
+    <path d="M6.5 16.5H17.5L19 20.5H5L6.5 16.5Z" fill="url(#rcLogoGrad)" stroke="#f5d0fe" stroke-width="1.4"/>
+    <line x1="4" y1="22" x2="20" y2="22" stroke="#f0abfc" stroke-width="2"/>
+  `,
+  'home-play': `
+    <path d="M3 10.5L12 3l9 7.5" />
+    <path d="M5 9.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9.5" />
+    <path d="M10 14.5l4.5 2.5-4.5 2.5v-5z" />
+  `,
+  'puzzle-shield': `
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="m9 12 2 2 4-4" />
+  `,
+  'book-open': `
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+  `,
+  'users': `
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  `,
+  'bar-chart': `
+    <line x1="18" y1="20" x2="18" y2="10" />
+    <line x1="12" y1="20" x2="12" y2="4" />
+    <line x1="6" y1="20" x2="6" y2="14" />
+    <line x1="3" y1="20" x2="21" y2="20" />
+  `,
+  'shopping-bag': `
+    <circle cx="9" cy="21" r="1" />
+    <circle cx="20" cy="21" r="1" />
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+  `,
+  'calendar': `
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+  `,
+  'settings': `
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+  `,
+  'mail': `
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+  `,
+  'moon-stars': `
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+    <path d="M19 3v4" />
+    <path d="M21 5h-4" />
+  `,
+  'crown': `
+    <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" fill="currentColor" fill-opacity="0.2" />
+  `,
+  'vn-flag': `
+    <rect x="2" y="4" width="20" height="16" rx="3" fill="#da251d" stroke="none" />
+    <polygon points="12,7.2 13.35,10.8 17.2,10.8 14.1,13.05 15.3,16.7 12,14.45 8.7,16.7 9.9,13.05 6.8,10.8 10.65,10.8" fill="#ffff00" stroke="none" />
+  `,
+  // Chess-specific Custom SVG Icons (Section 50)
+  'chess-king': `
+    <path d="M12 3v3m-2-1.5h4" />
+    <path d="M9 9c0-1.7 1.3-3 3-3s3 1.3 3 3c0 1.4-.8 2.6-2 3l1.5 5H9.5L11 12c-1.2-.4-2-1.6-2-3z" />
+    <path d="M7 17h10l1 3H6l1-3z" />
+  `,
+  'chess-knight': `
+    <path d="M16.5 18H7.5l1-6.5L6 11l1.5-5 5-2.5 4.5 2.5c1.5 2.5 1 7.5-.5 12z" />
+    <path d="M6 21h12" />
+    <circle cx="11.5" cy="7.5" r="0.8" fill="currentColor" />
+  `,
+  'chess-board': `
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+  `,
+  'analysis': `
+    <circle cx="10.5" cy="10.5" r="6.5" />
+    <line x1="15.5" y1="15.5" x2="21" y2="21" />
+    <path d="M9 8.5v4m0-2l2.5-2m-2.5 2l2.5 2" />
+  `,
+  'undo': `
+    <path d="M9 14 4 9l5-5" />
+    <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+  `,
+  'shield-draw': `
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="M8.5 12h7" />
+  `,
+  'flag': `
+    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+    <line x1="4" y1="22" x2="4" y2="15" />
+  `,
+  'maximize': `
+    <polyline points="15 3 21 3 21 9" />
+    <polyline points="9 21 3 21 3 15" />
+    <line x1="21" y1="3" x2="14" y2="10" />
+    <line x1="3" y1="21" x2="10" y2="14" />
+  `,
+  'flip-board': `
+    <path d="m17 2 4 4-4 4" />
+    <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+    <path d="m7 22-4-4 4-4" />
+    <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+  `,
+  'clock': `
+    <circle cx="12" cy="12" r="9" />
+    <polyline points="12 7 12 12 15 15" />
+  `,
+  'timer': `
+    <line x1="10" y1="2" x2="14" y2="2" />
+    <line x1="12" y1="14" x2="15" y2="11" />
+    <circle cx="12" cy="14" r="8" />
+  `,
+  'user-color': `
+    <circle cx="12" cy="8" r="4" />
+    <path d="M5 20a7 7 0 0 1 14 0" />
+  `,
+  'gauge': `
+    <path d="m12 14 4-4" />
+    <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+  `,
+  'zap': `
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor" fill-opacity="0.22" />
+  `,
+  'lock-room': `
+    <rect x="4" y="11" width="16" height="10" rx="2" />
+    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    <circle cx="12" cy="16" r="1" />
+  `,
+  'lock': `
+    <rect x="5" y="11" width="14" height="10" rx="2" />
+    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+  `,
+  'refresh': `
+    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+    <path d="M3 3v5h5" />
+    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+    <path d="M16 16h5v5" />
+  `,
+  'chevron-right': `
+    <polyline points="9 18 15 12 9 6" />
+  `,
+  'chevron-down': `
+    <polyline points="6 9 12 15 18 9" />
+  `,
+  'chevron-left': `
+    <polyline points="15 18 9 12 15 6" />
+  `,
+  'chevrons-left': `
+    <polyline points="11 17 6 12 11 7" />
+    <polyline points="18 17 13 12 18 7" />
+  `,
+  'chevrons-right': `
+    <polyline points="13 17 18 12 13 7" />
+    <polyline points="6 17 11 12 6 7" />
+  `,
+  'arrow-right': `
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  `,
+  'copy': `
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  `,
+  'link': `
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+  `,
+  'chat': `
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  `,
+  'send': `
+    <line x1="22" y1="2" x2="11" y2="13" />
+    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+  `,
+  'close': `
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  `,
+  'check': `
+    <polyline points="20 6 9 17 4 12" />
+  `,
+  'sparkles': `
+    <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z" />
+  `,
+  'trophy': `
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+    <path d="M4 22h16" />
+    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+  `
+};
+
+const WEIGHT_MAP = {
+  nav: '1.85',
+  action: '2',
+  control: '1.65',
+  meta: '1.5'
+};
+
+export function renderIcon(name, { weight = 'control', className = '', size = 18 } = {}) {
+  const pathMarkup = ROYAL_ICONS[name] || ROYAL_ICONS['sparkles'];
+  const sw = WEIGHT_MAP[weight] || '1.75';
+  return `<svg class="rc-icon rc-icon-${name} ${className}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${pathMarkup}</svg>`;
+}
+
+// ============================================================================
+// CUSTOM SVG MINI-SILHOUETTES FOR CAPTURED PIECES (NO UNICODE!)
+// ============================================================================
+export function renderCapturedPieceSVG(type, color = 'w') {
+  const isWhite = color === 'w';
+  const fill = isWhite ? '#e2e8f0' : '#94a3b8';
+  const stroke = isWhite ? '#f8fafc' : '#475569';
+  let d = '';
+  switch (type) {
+    case 'p':
+      d = 'M12 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-3.5 13h7l-1-5.5h-5L8.5 18zM6 20h12';
+      break;
+    case 'r':
+      d = 'M7 5v3h2V6h2v2h2V6h2v2h2V5M8 8v9h8V8M6 19h12';
+      break;
+    case 'n':
+      d = 'M8 18l1-6-2-.5L8.5 6l5-2 3.5 2.5c1 2.5.5 7.5-1 11.5H8zM6 20h12';
+      break;
+    case 'b':
+      d = 'M12 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-4 14c0-5 2-9 4-10 2 1 4 5 4 10H8zM6 20h12';
+      break;
+    case 'q':
+      d = 'M5 17L4 8l4.5 4L12 7l3.5 5L20 8l-1 9H5zM6 20h12';
+      break;
+    default:
+      d = 'M12 3v3m-1.5-1.5h3M7 18L6 9l3.5 3L12 7l2.5 5L18 9l-1 9H7z';
+  }
+  return `<svg class="captured-piece-svg" width="15" height="15" viewBox="0 0 24 24" fill="${fill}" stroke="${stroke}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+}
+
+// ============================================================================
+// CUSTOM ILLUSTRATED VECTOR PORTRAIT AVATARS (8 FANTASY GRANDMASTER PORTRAITS)
+// ============================================================================
+const PORTRAIT_THEMES = {
+  A: { bg1: '#1e1b4b', bg2: '#4c1d95', hair: '#e2e8f0', skin: '#fde68a', visor: '#a855f7', accent: '#38bdf8' },
+  B: { bg1: '#0f172a', bg2: '#1e293b', hair: '#0f172a', skin: '#fed7aa', visor: '#6366f1', accent: '#f43f5e' },
+  C: { bg1: '#31102f', bg2: '#701a75', hair: '#f8fafc', skin: '#fef3c7', visor: '#ec4899', accent: '#f59e0b' },
+  D: { bg1: '#042f2e', bg2: '#115e59', hair: '#cbd5e1', skin: '#fde68a', visor: '#14b8a6', accent: '#38bdf8' },
+  E: { bg1: '#27171c', bg2: '#7f1d1d', hair: '#1e293b', skin: '#fed7aa', visor: '#ef4444', accent: '#fbbf24' },
+  F: { bg1: '#172554', bg2: '#1d4ed8', hair: '#f1f5f9', skin: '#fde68a', visor: '#60a5fa', accent: '#a855f7' },
+  G: { bg1: '#1c1917', bg2: '#44403c', hair: '#fbbf24', skin: '#fef3c7', visor: '#eab308', accent: '#f97316' },
+  K: { bg1: '#090d16', bg2: '#312e81', hair: '#111827', skin: '#fde68a', visor: '#8b5cf6', accent: '#ec4899' }
+};
+
+export function renderAvatarSVG(code = 'K') {
+  const key = PORTRAIT_THEMES[code] ? code : 'K';
+  const p = PORTRAIT_THEMES[key];
+  const uid = `av_${key}`;
+  const isSilverQueen = key === 'A' || key === 'C' || key === 'F';
+  const hairPath = isSilverQueen
+    ? `<path d="M14 54C14 34 17 11 32 10C47 11 50 34 50 54C46 42 44 26 41 21C38 17 35 16 32 16C29 16 26 17 23 21C20 26 18 42 14 54Z" fill="${p.hair}" />
+       <path d="M18 25C18 15 24 9 32 9C40 9 46 15 46 25C43 19 38 16 32 18C26 16 21 19 18 25Z" fill="${p.hair}" />`
+    : `<path d="M18 27C16 15 23 8 32 8C41 8 48 15 46 27C44 20 40 16 36 19L32 14L28 19C24 16 20 20 18 27Z" fill="${p.hair}" />`;
+
+  return `
+    <svg class="rc-avatar-svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="${uid}_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${p.bg1}" />
+          <stop offset="100%" stop-color="${p.bg2}" />
+        </linearGradient>
+        <linearGradient id="${uid}_armor" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${p.visor}" />
+          <stop offset="100%" stop-color="${p.accent}" />
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="32" fill="url(#${uid}_bg)" />
+      <circle cx="32" cy="32" r="29" stroke="url(#${uid}_armor)" stroke-opacity="0.45" stroke-width="1.5" />
+      <path d="M10 60C12 46 21 41 32 41C43 41 52 46 54 60" fill="#0f172a" stroke="url(#${uid}_armor)" stroke-width="2" />
+      <path d="M24 42L32 54L40 42" fill="url(#${uid}_armor)" fill-opacity="0.65" />
+      <rect x="28" y="34" width="8" height="9" rx="3" fill="${p.skin}" />
+      <path d="M21 24C21 17 25.5 13 32 13C38.5 13 43 17 43 24C43 31 38 37 32 37C26 37 21 31 21 24Z" fill="${p.skin}" />
+      <ellipse cx="27.5" cy="26" rx="2.2" ry="1.3" fill="${p.accent}" />
+      <ellipse cx="36.5" cy="26" rx="2.2" ry="1.3" fill="${p.accent}" />
+      ${hairPath}
+      <path d="M23 13L27 7L32 11L37 7L41 13" stroke="${p.accent}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  `;
+}
+
+// ============================================================================
+// CUSTOM 3D-SHADED SVG CHESS PIECES (ROYAL 3D, DRAGON DYNASTY, CYBER, CRYSTAL)
+// ============================================================================
 function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
   const uid = `${styleVariant}_${type}_${isWhite ? 'w' : 'b'}`;
 
   let fillUrl = `url(#grad_${uid})`;
-  let strokeColor = isWhite ? '#1e293b' : '#090d16';
-  let strokeWidth = '1.6';
-  let innerStroke = isWhite ? '#64748b' : '#cbd5e1';
+  let rimUrl = `url(#rim_${uid})`;
+  let strokeColor = isWhite ? '#b48a3e' : '#c09a4b';
+  let strokeWidth = '1.45';
+  let innerStroke = isWhite ? '#d4af37' : '#f59e0b';
   let extraFilter = 'filter="url(#piece-shadow)"';
 
-  let stop1 = isWhite ? '#ffffff' : '#3b4252';
-  let stop2 = isWhite ? '#e2e8f0' : '#1e222d';
-  let stop3 = isWhite ? '#cbd5e1' : '#0f1117';
+  // Default: 'staunton' -> Royal Sculpted 3D (Pearl Ivory & Gold vs Obsidian & Gold, matching reference image!)
+  let stop1 = isWhite ? '#ffffff' : '#374151';
+  let stop2 = isWhite ? '#e5e0d5' : '#181824';
+  let stop3 = isWhite ? '#b8ad99' : '#09090f';
 
   if (styleVariant === 'imperial') {
-    stop1 = isWhite ? '#fffbeb' : '#4a1d1f';
-    stop2 = isWhite ? '#fde68a' : '#2a0f12';
-    stop3 = isWhite ? '#d97706' : '#140507';
-    strokeColor = isWhite ? '#78350f' : '#fbbf24';
-    innerStroke = isWhite ? '#b45309' : '#f59e0b';
-    strokeWidth = '1.7';
+    // Dragon Dynasty (Crimson Gold & Obsidian Dragon scale)
+    stop1 = isWhite ? '#fef3c7' : '#450a0a';
+    stop2 = isWhite ? '#f59e0b' : '#1c0609';
+    stop3 = isWhite ? '#92400e' : '#090204';
+    strokeColor = isWhite ? '#78350f' : '#f59e0b';
+    innerStroke = isWhite ? '#fef08a' : '#ef4444';
+    strokeWidth = '1.6';
   } else if (styleVariant === 'neon') {
-    stop1 = isWhite ? '#083344' : '#3b0764';
-    stop2 = isWhite ? '#061e29' : '#1f0438';
-    stop3 = isWhite ? '#020b10' : '#0c0117';
-    strokeColor = isWhite ? '#00f5d4' : '#ff2a85';
-    innerStroke = isWhite ? '#38bdf8' : '#f472b6';
-    strokeWidth = '2.1';
+    stop1 = isWhite ? '#0e7490' : '#4c1d95';
+    stop2 = isWhite ? '#083344' : '#2e1065';
+    stop3 = isWhite ? '#04131a' : '#0f0524';
+    strokeColor = isWhite ? '#22d3ee' : '#e879f9';
+    innerStroke = isWhite ? '#67e8f9' : '#f472b6';
+    strokeWidth = '1.9';
   } else if (styleVariant === 'crystal') {
     stop1 = isWhite ? '#f0f9ff' : '#312e81';
     stop2 = isWhite ? '#bae6fd' : '#1e1b4b';
     stop3 = isWhite ? '#38bdf8' : '#090721';
-    strokeColor = isWhite ? '#0369a1' : '#818cf8';
-    innerStroke = isWhite ? '#0284c7' : '#a5b4fc';
-    strokeWidth = '1.6';
+    strokeColor = isWhite ? '#0284c7' : '#818cf8';
+    innerStroke = isWhite ? '#e0f2fe' : '#c7d2fe';
+    strokeWidth = '1.5';
   }
 
   const defs = `
     <defs>
-      <linearGradient id="grad_${uid}" x1="15%" y1="10%" x2="85%" y2="90%">
+      <linearGradient id="grad_${uid}" x1="18%" y1="8%" x2="82%" y2="92%">
         <stop offset="0%" stop-color="${stop1}" />
-        <stop offset="55%" stop-color="${stop2}" />
+        <stop offset="48%" stop-color="${stop2}" />
         <stop offset="100%" stop-color="${stop3}" />
+      </linearGradient>
+      <linearGradient id="rim_${uid}" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#fde68a" stop-opacity="0.85" />
+        <stop offset="50%" stop-color="#d97706" stop-opacity="0.95" />
+        <stop offset="100%" stop-color="#fef3c7" stop-opacity="0.85" />
       </linearGradient>
     </defs>
   `;
 
-  // Minimalist Bauhaus geometric set
   if (styleVariant === 'minimal') {
     return renderMinimalistPiece(type, isWhite, defs, fillUrl, strokeColor, innerStroke);
   }
@@ -226,77 +538,87 @@ function getStauntonPaths(type, isWhite, styleVariant = 'staunton') {
   switch (type) {
     case 'p':
       body = `
-        <path d="M 22.5,9 C 19.5,9 17,11.5 17,14.5 C 17,16.8 18.4,18.7 20.4,19.5 C 17.5,21.2 16,24 16,27.5 C 16,30 17.8,31.5 17.8,31.5 L 13.5,36 L 31.5,36 L 27.2,31.5 C 27.2,31.5 29,30 29,27.5 C 29,24 27.5,21.2 24.6,19.5 C 26.6,18.7 28,16.8 28,14.5 C 28,11.5 25.5,9 22.5,9 z"
+        <ellipse cx="22.5" cy="39" rx="12.5" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
+        <path d="M 22.5,8.5 C 19.2,8.5 16.5,11.2 16.5,14.5 C 16.5,16.9 18,19 20.1,19.8 C 17,21.6 15.2,24.8 15.2,28.5 C 15.2,30.8 17.2,32.2 17.2,32.2 L 12.5,36.8 L 32.5,36.8 L 27.8,32.2 C 27.8,32.2 29.8,30.8 29.8,28.5 C 29.8,24.8 28,21.6 24.9,19.8 C 27,19 28.5,16.9 28.5,14.5 C 28.5,11.2 25.8,8.5 22.5,8.5 z"
           fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" />
-        <path d="M 11.5,37 L 33.5,37 C 34.5,37 35,38 35,39.5 L 10,39.5 C 10,38 10.5,37 11.5,37 z"
+        <path d="M 11,36.8 L 34,36.8 C 35,36.8 35.5,37.8 35.5,39.2 L 9.5,39.2 C 9.5,37.8 10,36.8 11,36.8 z"
           fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" />
-        <path d="M 16,33.5 L 29,33.5" stroke="${innerStroke}" stroke-width="1.2" stroke-linecap="round" fill="none" />
+        <!-- 3D Specular Filigree -->
+        <path d="M 22.5,11.5 L 24.2,14.5 L 22.5,17.5 L 20.8,14.5 Z" fill="${innerStroke}" fill-opacity="0.7" stroke="none" />
+        <path d="M 15.5,34.2 L 29.5,34.2" stroke="${innerStroke}" stroke-width="1.35" stroke-linecap="round" fill="none" />
       `;
       break;
 
     case 'r':
       body = `
+        <ellipse cx="22.5" cy="39.2" rx="13.5" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 9,39 L 36,39 L 36,36 L 9,36 L 9,39 z" />
           <path d="M 12,36 L 12,32 L 33,32 L 33,36 L 12,36 z" />
           <path d="M 14,29.5 L 14,16.5 L 31,16.5 L 31,29.5 L 14,29.5 z" />
           <path d="M 14,16.5 L 11,14 L 34,14 L 31,16.5 L 14,16.5 z" />
-          <path d="M 11,14 L 11,9 L 15,9 L 15,11 L 20,11 L 20,9 L 25,9 L 25,11 L 30,11 L 30,9 L 34,9 L 34,14" />
+          <path d="M 11,14 L 11,8.5 L 15.5,8.5 L 15.5,11 L 20,11 L 20,8.5 L 25,8.5 L 25,11 L 29.5,11 L 29.5,8.5 L 34,8.5 L 34,14" />
           <path d="M 12,32 L 14,29.5 L 31,29.5 L 33,32 L 12,32 z" />
-          <path d="M 15,19 L 30,19" stroke="${innerStroke}" stroke-width="1.2" fill="none" />
-          <path d="M 15,27.5 L 30,27.5" stroke="${innerStroke}" stroke-width="1.2" fill="none" />
+          <path d="M 22.5,18.5 L 25,23 L 22.5,27.5 L 20,23 Z" fill="${innerStroke}" fill-opacity="0.55" stroke="none" />
+          <path d="M 15,19 L 30,19" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <path d="M 15,27.5 L 30,27.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
         </g>
       `;
       break;
 
     case 'n':
       body = `
+        <ellipse cx="23.5" cy="39.2" rx="13.5" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18" />
           <path d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10" />
-          <circle cx="15.5" cy="14.5" r="1.3" fill="${innerStroke}" stroke="none" />
-          <path d="M 11.5,37 L 36.5,37" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <circle cx="15.5" cy="14.5" r="1.4" fill="${innerStroke}" stroke="none" />
+          <path d="M 26,15 C 31,18 33,25 33,35" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <path d="M 11.5,37 L 36.5,37" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
         </g>
       `;
       break;
 
     case 'b':
       body = `
+        <ellipse cx="22.5" cy="39.2" rx="13.5" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 9,36 C 12.39,35.03 19.11,36.43 22.5,34 C 25.89,36.43 32.61,35.03 36,36 C 36,36 37.65,36.54 39,38 C 38.32,38.97 37.35,38.99 36,38.5 C 32.61,37.53 25.89,38.96 22.5,37.5 C 19.11,38.96 12.39,37.53 9,38.5 C 7.646,38.99 6.677,38.97 6,38 C 7.354,36.06 9,36 9,36 z" />
           <path d="M 15,32 C 17.5,34.5 27.5,34.5 30,32 C 30.5,30.5 30,30 30,30 C 30,27.5 27.5,26 27.5,26 C 33,24.5 33.5,14.5 22.5,10.5 C 11.5,14.5 12,24.5 17.5,26 C 17.5,26 15,27.5 15,30 C 15,30 14.5,30.5 15,32 z" />
-          <circle cx="22.5" cy="8" r="2.3" />
-          <path d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15.5 L 22.5,20.5 M 20,18 L 25,18" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
+          <circle cx="22.5" cy="7.8" r="2.3" fill="${rimUrl}" />
+          <path d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15 L 22.5,21 M 19.5,18 L 25.5,18" stroke="${innerStroke}" stroke-width="1.45" fill="none" />
         </g>
       `;
       break;
 
     case 'q':
       body = `
+        <ellipse cx="22.5" cy="39.2" rx="14" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 9,26 C 17.5,24.5 30,24.5 36,26 L 38.5,13.5 L 31,25 L 30.7,10.9 L 25.5,24.5 L 22.5,10 L 19.5,24.5 L 14.3,10.9 L 14,25 L 6.5,13.5 L 9,26 z" />
           <path d="M 9,26 C 9,28 10.5,28 11.5,30 C 12.5,31.5 12.5,31 12,33.5 C 10.5,34.5 11,36 11,36 C 9.5,37.5 11,38.5 11,38.5 C 17.5,39.5 27.5,39.5 34,38.5 C 34,38.5 35.5,37.5 34,36 C 34,36 34.5,34.5 33,33.5 C 32.5,31 32.5,31.5 33.5,30 C 34.5,28 36,28 36,26 C 27.5,24.5 17.5,24.5 9,26 z" />
-          <circle cx="6" cy="12" r="2" />
-          <circle cx="14" cy="9" r="2" />
-          <circle cx="22.5" cy="8" r="2.2" />
-          <circle cx="31" cy="9" r="2" />
-          <circle cx="39" cy="12" r="2" />
-          <path d="M 11.5,30 C 15,29 30,29 33.5,30" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
-          <path d="M 12,33.5 C 18,32.5 27,32.5 33,33.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <circle cx="6" cy="12" r="2" fill="${rimUrl}" />
+          <circle cx="14" cy="9" r="2" fill="${rimUrl}" />
+          <circle cx="22.5" cy="7.8" r="2.3" fill="${rimUrl}" />
+          <circle cx="31" cy="9" r="2" fill="${rimUrl}" />
+          <circle cx="39" cy="12" r="2" fill="${rimUrl}" />
+          <path d="M 11.5,30 C 15,29 30,29 33.5,30" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
+          <path d="M 12,33.5 C 18,32.5 27,32.5 33,33.5" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
         </g>
       `;
       break;
 
     case 'k':
       body = `
+        <ellipse cx="22.5" cy="39.2" rx="14" ry="2.6" fill="${rimUrl}" stroke="${strokeColor}" stroke-width="1.1" />
         <g fill="${fillUrl}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M 22.5,11.63 L 22.5,6" stroke-width="2.2" />
-          <path d="M 20,8 L 25,8" stroke-width="2.2" />
-          <path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" />
+          <path d="M 22.5,11.63 L 22.5,5.5" stroke="${innerStroke}" stroke-width="2.4" />
+          <path d="M 19.5,8 L 25.5,8" stroke="${innerStroke}" stroke-width="2.4" />
+          <path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" fill="${rimUrl}" />
           <path d="M 11.5,37 C 17,40.5 27,40.5 32.5,37 L 32.5,30 C 32.5,30 41.5,25.5 38.5,19.5 C 34.5,13 25,16 22.5,23.5 L 22.5,27 L 22.5,23.5 C 19,16 9.5,13 6.5,19.5 C 3.5,25.5 11.5,29.5 11.5,29.5 L 11.5,37 z" />
-          <path d="M 11.5,30 C 17,27 27,27 32.5,30" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
-          <path d="M 11.5,33.5 C 17,30.5 27,30.5 32.5,33.5" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
-          <path d="M 11.5,37 C 17,34 27,34 32.5,37" stroke="${innerStroke}" stroke-width="1.3" fill="none" />
+          <path d="M 11.5,30 C 17,27 27,27 32.5,30" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
+          <path d="M 11.5,33.5 C 17,30.5 27,30.5 32.5,33.5" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
+          <path d="M 11.5,37 C 17,34 27,34 32.5,37" stroke="${innerStroke}" stroke-width="1.4" fill="none" />
         </g>
       `;
       break;
@@ -368,7 +690,7 @@ export function renderPieceSVG(type, color, pieceSet = 'staunton') {
 class ChessSoundEngine {
   constructor() {
     this.ctx = null;
-    this.pack = 'wood'; // 'wood' | 'crystal' | 'muted'
+    this.pack = 'wood';
   }
 
   ensureContext() {
@@ -473,7 +795,7 @@ const OPENINGS = [
 
 export function detectOpeningName(moveHistory) {
   if (!moveHistory || moveHistory.length === 0) {
-    return 'Thế trận Khởi đầu • Sẵn sàng giao đấu';
+    return 'Thế trận Khởi đầu - Sẵn sàng giao đấu';
   }
   const sanString = moveHistory.map((m) => (typeof m === 'string' ? m : m.san)).join(' ');
   for (const op of OPENINGS) {
@@ -481,6 +803,5 @@ export function detectOpeningName(moveHistory) {
       return op.name;
     }
   }
-  return `Trung cuộc • Nước thứ ${Math.ceil(moveHistory.length / 2)}`;
+  return `Trung cuộc - Nước thứ ${Math.ceil(moveHistory.length / 2)}`;
 }
-

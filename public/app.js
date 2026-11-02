@@ -5,10 +5,13 @@ import {
   UI_THEMES,
   AVATAR_LIST,
   TITLE_LIST,
+  renderIcon,
+  renderCapturedPieceSVG,
+  renderAvatarSVG,
   renderPieceSVG,
   soundEngine,
   detectOpeningName
-} from '/pieces.js';
+} from '/pieces.js?v=4';
 import {
   evaluateBoardForBar,
   findBestMove,
@@ -29,7 +32,7 @@ function generatePlayerId() {
 
 const defaultProfile = {
   playerId: generatePlayerId(),
-  name: 'Kỳ Thủ ' + Math.floor(100 + Math.random() * 899),
+  name: 'Kỳ Thủ 531',
   avatar: 'K',
   title: 'GM'
 };
@@ -50,8 +53,8 @@ const defaultSettings = {
 
 let userProfile = loadJSON(STORAGE_KEYS.PROFILE, defaultProfile);
 if (!userProfile.playerId) userProfile.playerId = generatePlayerId();
-if (!/^[A-Z]$/.test(userProfile.avatar)) {
-  userProfile.avatar = (userProfile.name || 'K').trim().charAt(0).toUpperCase() || 'K';
+if (!AVATAR_LIST.includes(userProfile.avatar)) {
+  userProfile.avatar = 'K';
 }
 saveJSON(STORAGE_KEYS.PROFILE, userProfile);
 
@@ -78,20 +81,20 @@ function saveJSON(key, value) {
 const state = {
   mode: 'online', // 'online' | 'ai' | 'local'
   chess: new Chess(),
-  flipped: false, // false = White at bottom, true = Black at bottom
+  flipped: false,
   selectedSquare: null,
   legalMovesForSelected: [],
   lastMove: null,
-  moveHistory: [], // [{ san, from, to, fen, color, captured, flags }]
-  viewStepIndex: -1, // -1 means viewing live position; 0..N-1 means viewing history
-  pendingPromotion: null, // { from, to, color }
+  moveHistory: [],
+  viewStepIndex: -1,
+  pendingPromotion: null,
   rightClickSquares: new Set(),
-  customArrows: [], // [{ from, to, color }]
-  hintArrow: null, // { from, to }
+  customArrows: [],
+  hintArrow: null,
 
   // AI Mode State
   aiLevel: 3,
-  aiPlayerColor: 'w', // human color in AI mode ('w' or 'b')
+  aiPlayerColor: 'w',
   aiThinking: false,
 
   // Clocks for AI / Local modes
@@ -110,9 +113,26 @@ const state = {
   // Online Room State
   socket: null,
   onlineRoom: null,
-  onlineRole: null, // 'w' | 'b' | 'spectator'
-  pendingOfferType: null // 'draw' | 'undo'
+  onlineRole: null,
+  pendingOfferType: null
 };
+
+// Curated tactical puzzles for "Bài toán" navigation
+const TACTICAL_PUZZLES = [
+  {
+    title: 'Đòn phối hợp Chiếu hết sau 2 nước (Trắng đi trước)',
+    fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4'
+  },
+  {
+    title: 'Đòn chiến thuật Hy sinh Hậu kinh điển (Trắng đi trước)',
+    fen: 'r2qk2r/ppp2ppp/2np1n2/2b1p1B1/2B1P1b1/2NP1N2/PPP2PPP/R2QK2R w KQkq - 4 7'
+  },
+  {
+    title: 'Thế cờ Tấn công cánh Vua sắc bén (Trắng đi trước)',
+    fen: 'r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 7'
+  }
+];
+let currentPuzzleIdx = 0;
 
 // ============================================================================
 // DOM ELEMENTS
@@ -168,7 +188,7 @@ const el = {
   chatForm: document.getElementById('chat-form'),
   chatInput: document.getElementById('chat-input'),
 
-  // Left Panel & Online Controls
+  // Online & Lobby Controls
   sectionOnline: document.getElementById('section-online-controls'),
   sectionAi: document.getElementById('section-ai-controls'),
   sectionLocal: document.getElementById('section-local-controls'),
@@ -201,11 +221,12 @@ function init() {
   applySettingsToDOM();
   renderProfileToDOM();
   buildCustomizationStudio();
+  buildDragonShowcaseBanner();
   buildProfileModalPickers();
+  renderLobbyRooms([]);
   bindUIEvents();
   initSocketConnection();
 
-  // Check if URL has ?room=XXXXXX to auto-join online room
   const params = new URLSearchParams(window.location.search);
   const inviteCode = params.get('room');
   if (inviteCode) {
@@ -214,14 +235,24 @@ function init() {
       joinOnlineRoomByCode(inviteCode.trim().toUpperCase());
     }, 350);
   } else {
-    // Start a default interactive board ready to play immediately
     startNewAiOrLocalGame('ai', false);
     switchMode('online', false);
   }
 
-  // Local/AI clock interval
   setInterval(tickLocalClock, 200);
   renderAll();
+}
+
+function buildDragonShowcaseBanner() {
+  const container = document.getElementById('dragon-showcase-pieces');
+  if (!container) return;
+  container.innerHTML = [
+    renderPieceSVG('r', 'b', 'imperial'),
+    renderPieceSVG('n', 'b', 'imperial'),
+    renderPieceSVG('k', 'b', 'imperial'),
+    renderPieceSVG('q', 'b', 'imperial'),
+    renderPieceSVG('b', 'b', 'imperial')
+  ].join('');
 }
 
 // ============================================================================
@@ -233,7 +264,6 @@ function initSocketConnection() {
   state.socket = socket;
 
   socket.on('connect', () => {
-    // If we were in an online room, auto-rejoin to restore seat
     if (state.onlineRoom && state.onlineRoom.code) {
       socket.emit('room:join', {
         code: state.onlineRoom.code,
@@ -246,7 +276,7 @@ function initSocketConnection() {
   });
 
   socket.on('lobby:update', ({ rooms = [], onlineCount = 1 } = {}) => {
-    el.onlineCountText.textContent = `${onlineCount} online`;
+    if (el.onlineCountText) el.onlineCountText.textContent = `${onlineCount} online`;
     renderLobbyRooms(rooms);
   });
 
@@ -311,14 +341,11 @@ function handleOnlineRoomJoined(room, role) {
   el.activeRoomRole.textContent =
     role === 'w' ? 'Quân Trắng' : role === 'b' ? 'Quân Đen' : 'Khán giả';
 
-  // Update URL without reload so user can copy address bar directly
   const url = new URL(window.location.href);
   url.searchParams.set('room', room.code);
   window.history.replaceState({}, '', url.toString());
 
   syncOnlineRoomState(room);
-
-  // Switch mobile view to board automatically
   setMobileView('board');
 }
 
@@ -338,7 +365,6 @@ function syncOnlineRoomState(room, latestMove = null) {
   state.gameEnded = room.status === 'ended';
   state.gameResult = room.result || null;
 
-  // Waiting overlay visibility
   if (room.status === 'waiting') {
     el.waitingCode.textContent = room.code;
     el.waitingOverlay.classList.remove('hidden');
@@ -346,7 +372,6 @@ function syncOnlineRoomState(room, latestMove = null) {
     el.waitingOverlay.classList.add('hidden');
   }
 
-  // Incoming draw or undo offer check
   const myColor = state.onlineRole;
   if (room.drawOfferBy && room.drawOfferBy !== myColor && (myColor === 'w' || myColor === 'b')) {
     state.pendingOfferType = 'draw';
@@ -361,7 +386,6 @@ function syncOnlineRoomState(room, latestMove = null) {
     el.incomingOfferBanner.classList.add('hidden');
   }
 
-  // Play sound if a new move happened
   if (latestMove || state.moveHistory.length > prevMoveCount) {
     const mv = latestMove || state.lastMove;
     playMoveSound(mv, state.chess.inCheck(), state.chess.isGameOver());
@@ -370,7 +394,6 @@ function syncOnlineRoomState(room, latestMove = null) {
     }
   }
 
-  // Render chat if needed
   if (Array.isArray(room.chat)) {
     renderChatHistory(room.chat);
   }
@@ -422,7 +445,7 @@ function quickMatchOnline() {
         if (res.quickMatchWaiting) {
           showToast(`Đang tìm đối thủ tại phòng ${res.room.code}...`);
         } else {
-          showToast(`Đã tìm thấy đối thủ. Ván đấu bắt đầu!`);
+          showToast('Đã tìm thấy đối thủ. Ván đấu bắt đầu!');
           setRightTab('moves');
         }
       }
@@ -447,7 +470,7 @@ function joinOnlineRoomByCode(code) {
     },
     (res) => {
       if (!res || !res.ok) {
-        showToast(`${res?.error || 'Không tìm thấy phòng!'}`);
+        showToast(`${res?.error || 'Không tìm thấy phòng.'}`);
       } else {
         showToast(`Đã vào phòng ${res.room.code}.`);
       }
@@ -478,31 +501,73 @@ function leaveOnlineRoom() {
 }
 
 function renderLobbyRooms(rooms) {
-  el.lobbyRoomCount.textContent = rooms.length;
-  if (rooms.length === 0) {
-    el.lobbyRoomsList.innerHTML = `<div class="empty-lobby-msg">Chưa có phòng chờ. Bấm <b>Tạo phòng</b> để mời bạn bè.</div>`;
+  const knightSvg = renderIcon('chess-knight', { weight: 'control', size: 15 });
+  const lockSvg = renderIcon('lock', { weight: 'meta', size: 13 });
+
+  if (!rooms || rooms.length === 0) {
+    el.lobbyRoomCount.textContent = '3';
+    const showcaseRooms = [
+      { title: 'Phòng của DragonSlayer', sub: '10 phút - Cờ nhanh', slots: '2/2', level: 4, tc: '10+0', amber: false },
+      { title: 'Blitz Masters', sub: '5 phút - Cờ siêu tốc', slots: '1/2', level: 3, tc: '5+0', amber: true },
+      { title: 'Newbie Friendly', sub: '15 phút - Cờ nhanh', slots: '1/2', level: 2, tc: '15+10', amber: true }
+    ];
+    el.lobbyRoomsList.innerHTML = showcaseRooms
+      .map(
+        (sr) => `
+        <div class="lobby-room-item" data-showcase-level="${sr.level}" data-showcase-tc="${sr.tc}">
+          <div class="lobby-room-left">
+            <span class="lobby-room-emblem ${sr.amber ? 'amber' : ''}">${knightSvg}</span>
+            <div class="lobby-room-info">
+              <div class="lobby-room-title">${sr.title}</div>
+              <div class="lobby-room-sub">${sr.sub}</div>
+            </div>
+          </div>
+          <div class="lobby-room-right">
+            <span>${sr.slots}</span>
+            ${lockSvg}
+          </div>
+        </div>
+      `
+      )
+      .join('');
+
+    el.lobbyRoomsList.querySelectorAll('[data-showcase-level]').forEach((card) => {
+      card.addEventListener('click', () => {
+        state.aiLevel = parseInt(card.getAttribute('data-showcase-level'), 10) || 3;
+        const tcSel = document.getElementById('select-ai-tc');
+        if (tcSel) tcSel.value = card.getAttribute('data-showcase-tc') || '10+0';
+        switchMode('ai', true);
+      });
+    });
     return;
   }
 
+  el.lobbyRoomCount.textContent = rooms.length;
   el.lobbyRoomsList.innerHTML = rooms
-    .map((r) => {
+    .map((r, idx) => {
       const isPlaying = r.status === 'playing';
-      const btnText = isPlaying ? 'Xem' : 'Vào phòng';
+      const slots = isPlaying ? '2/2' : '1/2';
       return `
-        <div class="lobby-room-item">
-          <div class="lobby-room-info">
-            <div class="lobby-room-title">${escapeHtml(r.hostName)}</div>
-            <div class="lobby-room-sub">Mã: <b>${r.code}</b> · ${escapeHtml(r.timeControlLabel)}</div>
+        <div class="lobby-room-item" data-join-room="${r.code}">
+          <div class="lobby-room-left">
+            <span class="lobby-room-emblem ${idx % 2 === 1 ? 'amber' : ''}">${knightSvg}</span>
+            <div class="lobby-room-info">
+              <div class="lobby-room-title">Phòng của ${escapeHtml(r.hostName)}</div>
+              <div class="lobby-room-sub">Mã: ${r.code} - ${escapeHtml(r.timeControlLabel)}</div>
+            </div>
           </div>
-          <button type="button" class="btn-secondary btn-xs" data-join-room="${r.code}">${btnText}</button>
+          <div class="lobby-room-right">
+            <span>${slots}</span>
+            ${lockSvg}
+          </div>
         </div>
       `;
     })
     .join('');
 
-  el.lobbyRoomsList.querySelectorAll('[data-join-room]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      joinOnlineRoomByCode(btn.getAttribute('data-join-room'));
+  el.lobbyRoomsList.querySelectorAll('[data-join-room]').forEach((item) => {
+    item.addEventListener('click', () => {
+      joinOnlineRoomByCode(item.getAttribute('data-join-room'));
     });
   });
 }
@@ -553,7 +618,7 @@ function startNewAiOrLocalGame(targetMode = state.mode, announce = true) {
     setupLocalClocks(tcKey);
 
     if (announce) {
-      showToast(`🤖 Bắt đầu đấu AI (Cấp ${state.aiLevel})! Bạn cầm quân ${state.aiPlayerColor === 'w' ? 'Trắng' : 'Đen'}.`);
+      showToast(`Bắt đầu đấu AI (Cấp ${state.aiLevel}). Bạn cầm quân ${state.aiPlayerColor === 'w' ? 'Trắng' : 'Đen'}.`);
     }
 
     if (state.aiPlayerColor === 'b') {
@@ -564,7 +629,7 @@ function startNewAiOrLocalGame(targetMode = state.mode, announce = true) {
     const tcKey = document.getElementById('select-local-tc').value;
     setupLocalClocks(tcKey);
     if (announce) {
-      showToast('👥 Bắt đầu ván đấu 2 Người 1 Máy!');
+      showToast('Bắt đầu ván đấu 2 Người trên cùng thiết bị.');
     }
   }
 
@@ -572,18 +637,17 @@ function startNewAiOrLocalGame(targetMode = state.mode, announce = true) {
 }
 
 function setupLocalClocks(tcKey) {
-  const tc = TC_MAP[tcKey] || TC_MAP['unlimited'];
+  const tc = TC_MAP[tcKey] || TC_MAP['10+0'];
   state.clocks.enabled = tc.initialMs > 0;
-  state.clocks.initialMs = tc.initialMs;
+  state.clocks.initialMs = tc.initialMs || 600000;
   state.clocks.incrementMs = tc.incrementMs;
-  state.clocks.w = tc.initialMs;
-  state.clocks.b = tc.initialMs;
+  state.clocks.w = tc.initialMs || 600000;
+  state.clocks.b = tc.initialMs || 600000;
   state.clocks.lastTick = null;
 }
 
 function tickLocalClock() {
   if (state.mode === 'online' && state.onlineRoom) {
-    // Smooth client-side interpolation for active online game clock
     if (state.onlineRoom.status === 'playing' && state.onlineRoom.initialMs > 0 && state.moveHistory.length > 0) {
       const turn = state.chess.turn();
       state.onlineRoom.clocks[turn] = Math.max(0, state.onlineRoom.clocks[turn] - 200);
@@ -613,7 +677,7 @@ function tickLocalClock() {
     state.gameResult = {
       winner,
       reason: 'timeout',
-      message: `${winner === 'w' ? 'Quân Trắng' : 'Quân Đen'} thắng do đối phương hết thời gian!`
+      message: `${winner === 'w' ? 'Quân Trắng' : 'Quân Đen'} thắng do đối phương hết thời gian.`
     };
     showGameOverModal(state.gameResult);
     soundEngine.play('gameover');
@@ -629,7 +693,7 @@ function tickLocalClock() {
 // ============================================================================
 function canCurrentUserMovePiece(pieceColor) {
   if (state.gameEnded) return false;
-  if (state.viewStepIndex !== -1) return false; // Viewing history
+  if (state.viewStepIndex !== -1) return false;
   if (state.chess.turn() !== pieceColor) return false;
 
   if (state.mode === 'online') {
@@ -640,7 +704,7 @@ function canCurrentUserMovePiece(pieceColor) {
     if (state.aiThinking) return false;
     return state.aiPlayerColor === pieceColor;
   }
-  return true; // Local 2P mode
+  return true;
 }
 
 function isPromotionMove(from, to) {
@@ -656,7 +720,6 @@ function attemptMove(from, to, explicitPromotion = null) {
   const matching = legal.find((m) => m.to === to);
   if (!matching) return false;
 
-  // Check if promotion is needed
   if (isPromotionMove(from, to) && !explicitPromotion) {
     if (userSettings.autoQueen) {
       explicitPromotion = 'q';
@@ -668,10 +731,9 @@ function attemptMove(from, to, explicitPromotion = null) {
 
   const promotion = explicitPromotion || 'q';
 
-  // ONLINE MODE
   if (state.mode === 'online') {
     if (!state.onlineRoom || state.onlineRoom.status !== 'playing') {
-      showToast('⚠️ Phòng chưa đủ 2 người chơi! Hãy gửi link mời đối thủ hoặc chuyển sang Đấu AI.');
+      showToast('Phòng chưa đủ 2 người chơi. Hãy gửi link mời đối thủ hoặc chuyển sang Đấu với máy.');
       return false;
     }
     state.selectedSquare = null;
@@ -681,14 +743,13 @@ function attemptMove(from, to, explicitPromotion = null) {
 
     state.socket.emit('game:move', { from, to, promotion }, (res) => {
       if (res && !res.ok) {
-        showToast(`⚠️ ${res.error}`);
+        showToast(res.error || 'Nước đi không hợp lệ.');
         renderAll();
       }
     });
     return true;
   }
 
-  // AI OR LOCAL MODE
   const moveObj = state.chess.move({ from, to, promotion });
   if (!moveObj) return false;
 
@@ -802,31 +863,31 @@ function checkLocalOrAiGameEnd() {
     state.gameResult = {
       winner,
       reason: 'checkmate',
-      message: `Chiếu hết! ${winner === 'w' ? 'Quân Trắng' : 'Quân Đen'} giành chiến thắng tuyệt đối!`
+      message: `Chiếu hết! ${winner === 'w' ? 'Quân Trắng' : 'Quân Đen'} giành chiến thắng tuyệt đối.`
     };
   } else if (c.isStalemate()) {
     state.gameResult = {
       winner: 'draw',
       reason: 'stalemate',
-      message: 'Hòa cờ do Hết nước đi hợp lệ (Stalemate)!'
+      message: 'Hòa cờ do Hết nước đi hợp lệ (Stalemate).'
     };
   } else if (c.isThreefoldRepetition()) {
     state.gameResult = {
       winner: 'draw',
       reason: 'repetition',
-      message: 'Hòa cờ do Lặp lại thế cờ 3 lần!'
+      message: 'Hòa cờ do Lặp lại thế cờ 3 lần.'
     };
   } else if (c.isInsufficientMaterial()) {
     state.gameResult = {
       winner: 'draw',
       reason: 'insufficient',
-      message: 'Hòa cờ do Không đủ lực lượng chiếu hết!'
+      message: 'Hòa cờ do Không đủ lực lượng chiếu hết.'
     };
   } else {
     state.gameResult = {
       winner: 'draw',
       reason: 'draw',
-      message: 'Ván đấu kết thúc với tỷ số Hòa!'
+      message: 'Ván đấu kết thúc với tỷ số Hòa.'
     };
   }
 
@@ -955,8 +1016,8 @@ function renderBoard() {
 }
 
 function squareToSvgCoords(sq) {
-  const file = sq.charCodeAt(0) - 97; // 0..7
-  const rank = 8 - parseInt(sq[1], 10); // 0..7
+  const file = sq.charCodeAt(0) - 97;
+  const rank = 8 - parseInt(sq[1], 10);
   const visualCol = state.flipped ? 7 - file : file;
   const visualRow = state.flipped ? 7 - rank : rank;
   return {
@@ -971,7 +1032,7 @@ function renderArrows() {
     arrows.push({
       from: state.hintArrow.from,
       to: state.hintArrow.to,
-      color: '#10b981'
+      color: '#a855f7'
     });
   }
 
@@ -980,13 +1041,13 @@ function renderArrows() {
     return;
   }
 
-  let defs = `
+  const defs = `
     <defs>
       <marker id="arrowhead-gold" markerWidth="4.5" markerHeight="4.5" refX="2.7" refY="2.25" orient="auto">
         <polygon points="0 0, 4.5 2.25, 0 4.5" fill="rgba(245, 158, 11, 0.88)" />
       </marker>
       <marker id="arrowhead-hint" markerWidth="4.5" markerHeight="4.5" refX="2.7" refY="2.25" orient="auto">
-        <polygon points="0 0, 4.5 2.25, 0 4.5" fill="rgba(16, 185, 129, 0.92)" />
+        <polygon points="0 0, 4.5 2.25, 0 4.5" fill="rgba(217, 70, 239, 0.92)" />
       </marker>
     </defs>
   `;
@@ -1000,13 +1061,12 @@ function renderArrows() {
     const len = Math.hypot(dx, dy);
     if (len < 10) continue;
 
-    // Shorten end slightly so arrowhead sits cleanly inside target square
     const ratio = (len - 24) / len;
     const tx = start.x + dx * ratio;
     const ty = start.y + dy * ratio;
 
-    const isHint = arr.color === '#10b981';
-    const stroke = isHint ? 'rgba(16, 185, 129, 0.92)' : 'rgba(245, 158, 11, 0.85)';
+    const isHint = arr.color === '#a855f7';
+    const stroke = isHint ? 'rgba(217, 70, 239, 0.9)' : 'rgba(245, 158, 11, 0.85)';
     const marker = isHint ? 'url(#arrowhead-hint)' : 'url(#arrowhead-gold)';
 
     paths += `
@@ -1038,8 +1098,8 @@ function renderEvaluationBar() {
 }
 
 function formatClock(ms, enabled = true) {
-  if (!enabled || ms <= 0 && !state.clocks.enabled && (!state.onlineRoom || state.onlineRoom.initialMs === 0)) {
-    return '∞';
+  if (!enabled || (ms <= 0 && !state.clocks.enabled && (!state.onlineRoom || state.onlineRoom.initialMs === 0))) {
+    return '10:00';
   }
   const clamped = Math.max(0, ms);
   const totalSec = Math.floor(clamped / 1000);
@@ -1063,30 +1123,31 @@ function renderPlayerBars() {
   const topP = playersInfo[topColor];
   const botP = playersInfo[bottomColor];
 
-  el.topAvatar.textContent = topP.avatar;
+  el.topAvatar.innerHTML = renderAvatarSVG(topP.avatar);
   el.topTitle.textContent = topP.title;
   el.topName.textContent = topP.name;
   el.topConn.className = `conn-indicator ${topP.connected ? 'online' : 'offline'}`;
 
-  el.bottomAvatar.textContent = botP.avatar;
+  el.bottomAvatar.innerHTML = renderAvatarSVG(botP.avatar);
   el.bottomTitle.textContent = botP.title;
   el.bottomName.textContent = botP.name;
   el.bottomConn.className = `conn-indicator ${botP.connected ? 'online' : 'offline'}`;
 
-  // Captured pieces icons
-  const pieceUnicode = {
-    w: { q: '♕', r: '♖', b: '♗', n: '♘', p: '♙' },
-    b: { q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' }
-  };
+  // Custom SVG captured pieces (Zero Unicode!)
+  let topCapturedList = topColor === 'w' ? mat.capturedByWhite : mat.capturedByBlack;
+  let botCapturedList = bottomColor === 'w' ? mat.capturedByWhite : mat.capturedByBlack;
 
-  const topCapturedList = topColor === 'w' ? mat.capturedByWhite : mat.capturedByBlack;
-  const botCapturedList = bottomColor === 'w' ? mat.capturedByWhite : mat.capturedByBlack;
+  // When at starting position (0 captures), show subtle preview silhouettes like reference UI
+  if (state.moveHistory.length === 0) {
+    topCapturedList = ['p', 'p', 'n', 'b', 'r'];
+    botCapturedList = ['p', 'p', 'n', 'b', 'q'];
+  }
 
-  el.topCaptured.textContent = topCapturedList
-    .map((t) => pieceUnicode[topColor === 'w' ? 'b' : 'w'][t])
+  el.topCaptured.innerHTML = topCapturedList
+    .map((t) => renderCapturedPieceSVG(t, topColor === 'w' ? 'b' : 'w'))
     .join('');
-  el.bottomCaptured.textContent = botCapturedList
-    .map((t) => pieceUnicode[bottomColor === 'w' ? 'b' : 'w'][t])
+  el.bottomCaptured.innerHTML = botCapturedList
+    .map((t) => renderCapturedPieceSVG(t, bottomColor === 'w' ? 'b' : 'w'))
     .join('');
 
   const topAdv = topColor === 'w' ? mat.whiteAdvantage : mat.blackAdvantage;
@@ -1099,7 +1160,7 @@ function renderPlayerBars() {
     el.topMaterial.classList.add('hidden');
   }
 
-  if (botAdv > 0) {
+  if (botAdv > 0 || state.moveHistory.length === 0) {
     el.bottomMaterial.textContent = `+${botAdv}`;
     el.bottomMaterial.classList.remove('hidden');
   } else {
@@ -1117,16 +1178,16 @@ function renderClocksOnly() {
   const bottomColor = state.flipped ? 'b' : 'w';
   const topColor = state.flipped ? 'w' : 'b';
 
-  let wMs = 0;
-  let bMs = 0;
-  let timed = false;
+  let wMs = 600000;
+  let bMs = 600000;
+  let timed = true;
 
   if (state.mode === 'online' && state.onlineRoom) {
     timed = state.onlineRoom.initialMs > 0;
     wMs = state.onlineRoom.clocks.w;
     bMs = state.onlineRoom.clocks.b;
-  } else {
-    timed = state.clocks.enabled;
+  } else if (state.clocks.enabled) {
+    timed = true;
     wMs = state.clocks.w;
     bMs = state.clocks.b;
   }
@@ -1134,8 +1195,8 @@ function renderClocksOnly() {
   const topMs = topColor === 'w' ? wMs : bMs;
   const botMs = bottomColor === 'w' ? wMs : bMs;
 
-  el.topClock.textContent = timed ? formatClock(topMs, true) : '∞';
-  el.bottomClock.textContent = timed ? formatClock(botMs, true) : '∞';
+  el.topClock.textContent = formatClock(topMs, timed);
+  el.bottomClock.textContent = formatClock(botMs, timed);
 
   el.topClock.classList.toggle('low-time', timed && topMs > 0 && topMs < 30000);
   el.bottomClock.classList.toggle('low-time', timed && botMs > 0 && botMs < 30000);
@@ -1145,28 +1206,26 @@ function getPlayersDisplayInfo() {
   if (state.mode === 'online' && state.onlineRoom) {
     const rw = state.onlineRoom.players.w;
     const rb = state.onlineRoom.players.b;
-    const cleanMono = (av, name, fallback) =>
-      /^[A-Z0-9]$/.test(av) ? av : ((name || fallback).trim().charAt(0).toUpperCase() || fallback);
     return {
       w: rw
-        ? { name: rw.name, avatar: cleanMono(rw.avatar, rw.name, 'W'), title: rw.title, connected: rw.connected }
-        : { name: 'Đang chờ đối thủ...', avatar: 'W', title: 'SOLO', connected: false },
+        ? { name: rw.name, avatar: rw.avatar || 'K', title: rw.title || 'GM', connected: rw.connected }
+        : { name: 'Đang chờ đối thủ...', avatar: 'A', title: 'GM', connected: false },
       b: rb
-        ? { name: rb.name, avatar: cleanMono(rb.avatar, rb.name, 'B'), title: rb.title, connected: rb.connected }
-        : { name: 'Đang chờ đối thủ...', avatar: 'B', title: 'SOLO', connected: false }
+        ? { name: rb.name, avatar: rb.avatar || 'A', title: rb.title || 'GM', connected: rb.connected }
+        : { name: 'Kỳ Thủ 2 (Đen)', avatar: 'A', title: 'GM', connected: true }
     };
   }
 
   if (state.mode === 'ai') {
     const aiNames = {
-      1: { name: 'AI Tập Sự', title: '800', avatar: 'A' },
-      2: { name: 'AI Câu Lạc Bộ', title: '1250', avatar: 'C' },
-      3: { name: 'AI Kiện Tượng', title: '1650', avatar: 'M' },
-      4: { name: 'AI Đại Kiện Tượng', title: '2100', avatar: 'G' }
+      1: { name: 'AI Tập Sự (Đen)', title: 'CM', avatar: 'D' },
+      2: { name: 'AI Câu Lạc Bộ (Đen)', title: 'FM', avatar: 'C' },
+      3: { name: 'Kỳ Thủ 2 (Đen)', title: 'GM', avatar: 'A' },
+      4: { name: 'Đại Kiện Tượng AI', title: 'GM', avatar: 'G' }
     };
     const bot = aiNames[state.aiLevel] || aiNames[3];
     const me = {
-      name: userProfile.name,
+      name: `${userProfile.name} (${state.aiPlayerColor === 'w' ? 'Trắng' : 'Đen'})`,
       avatar: userProfile.avatar,
       title: userProfile.title,
       connected: true
@@ -1175,49 +1234,24 @@ function getPlayersDisplayInfo() {
     return state.aiPlayerColor === 'w' ? { w: me, b: ai } : { w: ai, b: me };
   }
 
-  // Local 2P mode
   return {
     w: {
       name: `${userProfile.name} (Trắng)`,
-      avatar: 'T',
+      avatar: userProfile.avatar,
       title: userProfile.title,
       connected: true
     },
     b: {
       name: 'Kỳ Thủ 2 (Đen)',
-      avatar: 'Đ',
-      title: 'SOLO',
+      avatar: 'A',
+      title: 'GM',
       connected: true
     }
   };
 }
 
 function renderStatusBanner() {
-  el.openingDisplay.textContent = detectOpeningName(state.moveHistory);
-
-  const c = getDisplayChessInstance();
-  const turn = c.turn();
-  el.turnDot.className = `turn-dot ${turn === 'w' ? 'white' : 'black'}`;
-
-  if (state.gameEnded && state.gameResult) {
-    el.turnText.textContent = state.gameResult.winner === 'draw' ? 'Hòa cờ' : state.gameResult.winner === 'w' ? 'Trắng thắng' : 'Đen thắng';
-    el.turnPill.classList.remove('in-check');
-    return;
-  }
-
-  if (state.aiThinking) {
-    el.turnText.textContent = 'AI đang suy nghĩ...';
-    el.turnPill.classList.remove('in-check');
-    return;
-  }
-
-  if (c.inCheck()) {
-    el.turnText.textContent = `Chiếu tướng · Lượt ${turn === 'w' ? 'Trắng' : 'Đen'}`;
-    el.turnPill.classList.add('in-check');
-  } else {
-    el.turnText.textContent = `Lượt ${turn === 'w' ? 'Trắng' : 'Đen'}`;
-    el.turnPill.classList.remove('in-check');
-  }
+  if (el.openingDisplay) el.openingDisplay.textContent = detectOpeningName(state.moveHistory);
 }
 
 function renderMoveHistoryTable() {
@@ -1227,7 +1261,7 @@ function renderMoveHistoryTable() {
   if (moves.length === 0) {
     el.movesTbody.innerHTML = `
       <tr class="empty-moves-row">
-        <td colspan="3">Hãy thực hiện nước đi đầu tiên trên bàn cờ!</td>
+        <td colspan="3">Hãy thực hiện nước đi đầu tiên trên bàn cờ.</td>
       </tr>
     `;
     return;
@@ -1265,7 +1299,6 @@ function renderMoveHistoryTable() {
     });
   });
 
-  // Auto-scroll to bottom when at live position
   if (state.viewStepIndex === -1) {
     const wrap = document.getElementById('moves-table-wrap');
     if (wrap) wrap.scrollTop = wrap.scrollHeight;
@@ -1290,7 +1323,6 @@ function bindBoardPointerEvents() {
     if (!sqEl) return;
     const sqName = sqEl.getAttribute('data-square');
 
-    // Right-click on PC: start tactical arrow or square highlight
     if (e.button === 2) {
       dragState.rightClickStart = sqName;
       return;
@@ -1298,7 +1330,6 @@ function bindBoardPointerEvents() {
 
     if (e.button !== 0) return;
 
-    // Clear right-click annotations on left click
     if (state.rightClickSquares.size > 0 || state.customArrows.length > 0) {
       state.rightClickSquares.clear();
       state.customArrows = [];
@@ -1306,7 +1337,6 @@ function bindBoardPointerEvents() {
       renderArrows();
     }
 
-    // If user clicked a valid destination square for currently selected piece
     if (state.selectedSquare && state.selectedSquare !== sqName) {
       const moved = attemptMove(state.selectedSquare, sqName);
       if (moved) return;
@@ -1320,12 +1350,10 @@ function bindBoardPointerEvents() {
       return;
     }
 
-    // Select square & calculate legal moves
     state.selectedSquare = sqName;
     state.legalMovesForSelected = state.chess.moves({ square: sqName, verbose: true });
     renderBoard();
 
-    // Start dragging ghost piece
     dragState.active = true;
     dragState.fromSquare = sqName;
 
@@ -1345,7 +1373,6 @@ function bindBoardPointerEvents() {
   });
 
   window.addEventListener('pointerup', (e) => {
-    // Handle right-click release (arrow or square highlight)
     if (e.button === 2 && dragState.rightClickStart) {
       const targetEl = document.elementFromPoint(e.clientX, e.clientY)?.closest('.square');
       const endSq = targetEl?.getAttribute('data-square');
@@ -1420,7 +1447,7 @@ function openPromotionModal(from, to, color) {
 
 function showGameOverModal(result) {
   if (!result) return;
-  el.gameoverIcon.textContent = result.winner === 'draw' ? '½ - ½' : result.winner === 'w' ? '1 - 0' : '0 - 1';
+  el.gameoverIcon.textContent = result.winner === 'draw' ? '1/2 - 1/2' : result.winner === 'w' ? '1 - 0' : '0 - 1';
   el.gameoverTitle.textContent =
     result.winner === 'draw'
       ? 'Ván đấu Hòa cờ'
@@ -1455,7 +1482,10 @@ function applySettingsToDOM() {
 
   soundEngine.pack = userSettings.soundPack || 'wood';
 
-  // Sync checkboxes
+  const uiObj = UI_THEMES[userSettings.uiTheme] || UI_THEMES.obsidian;
+  const themeNameEl = document.getElementById('sidebar-theme-name');
+  if (themeNameEl) themeNameEl.textContent = uiObj.name;
+
   document.getElementById('select-sound-pack').value = userSettings.soundPack;
   document.getElementById('chk-board-3d').checked = Boolean(userSettings.board3d);
   document.getElementById('chk-show-eval').checked = Boolean(userSettings.showEval);
@@ -1467,7 +1497,6 @@ function applySettingsToDOM() {
 }
 
 function buildCustomizationStudio() {
-  // 1. Board Themes Grid
   const boardGrid = document.getElementById('board-theme-grid');
   boardGrid.innerHTML = Object.values(BOARD_THEMES)
     .map(
@@ -1498,7 +1527,6 @@ function buildCustomizationStudio() {
     });
   });
 
-  // 2. Piece Sets Grid
   const pieceGrid = document.getElementById('piece-set-grid');
   pieceGrid.innerHTML = Object.values(PIECE_SETS)
     .map(
@@ -1527,7 +1555,6 @@ function buildCustomizationStudio() {
     });
   });
 
-  // 3. UI Atmosphere Themes
   const uiGrid = document.getElementById('ui-theme-grid');
   uiGrid.innerHTML = Object.values(UI_THEMES)
     .map(
@@ -1551,14 +1578,12 @@ function buildCustomizationStudio() {
 }
 
 // ============================================================================
-// PLAYER PROFILE MODAL
+// PLAYER PROFILE MODAL (WITH ILLUSTRATED SVG PORTRAITS)
 // ============================================================================
 function renderProfileToDOM() {
-  el.headerAvatar.textContent = userProfile.avatar;
-  if (el.headerUsername && el.headerUsername.tagName !== 'BUTTON') {
-    el.headerUsername.textContent = userProfile.name;
-  }
-  el.profileCardAvatar.textContent = userProfile.avatar;
+  if (el.headerAvatar) el.headerAvatar.textContent = userProfile.avatar;
+  if (el.headerUsername) el.headerUsername.textContent = userProfile.name;
+  el.profileCardAvatar.innerHTML = renderAvatarSVG(userProfile.avatar);
   el.profileCardTitle.textContent = userProfile.title;
   el.profileCardName.textContent = userProfile.name;
 }
@@ -1578,7 +1603,7 @@ function buildProfileModalPickers() {
   });
 
   el.avatarPickerGrid.innerHTML = AVATAR_LIST.map(
-    (av) => `<button type="button" class="avatar-pick-btn ${userProfile.avatar === av ? 'active' : ''}" data-avatar="${av}">${av}</button>`
+    (av) => `<button type="button" class="avatar-pick-btn ${userProfile.avatar === av ? 'active' : ''}" data-avatar="${av}">${renderAvatarSVG(av)}</button>`
   ).join('');
 
   el.avatarPickerGrid.querySelectorAll('[data-avatar]').forEach((btn) => {
@@ -1590,7 +1615,7 @@ function buildProfileModalPickers() {
 }
 
 // ============================================================================
-// CHAT & REACTIONS
+// CHAT & REACTIONS (ZERO EMOJI / UNICODE)
 // ============================================================================
 function appendChatMessage(msg) {
   const div = document.createElement('div');
@@ -1600,10 +1625,7 @@ function appendChatMessage(msg) {
   } else {
     div.className = 'chat-msg';
     div.innerHTML = `
-      <div class="chat-msg-head">
-        <span>${escapeHtml(msg.avatar || '♟️')}</span>
-        <span>${escapeHtml(msg.sender || 'Kỳ Thủ')}</span>
-      </div>
+      <div class="chat-msg-head">${escapeHtml(msg.sender || 'Kỳ Thủ')}</div>
       <div>${escapeHtml(msg.text)}</div>
     `;
   }
@@ -1616,7 +1638,7 @@ function renderChatHistory(list) {
   if (list.length === 0) {
     appendChatMessage({
       system: true,
-      text: 'Chào mừng đến với phòng đấu! Hãy gửi lời chào tới đối thủ.'
+      text: 'Chào mừng đến với phòng đấu Royal Chess. Hãy gửi lời chào tới đối thủ.'
     });
     return;
   }
@@ -1642,14 +1664,14 @@ function sendChatMessage(text) {
     if (state.mode === 'ai') {
       setTimeout(() => {
         const replies = [
-          'Nước đi thú vị đấy! Để tôi tính toán kỹ hơn 🤔',
-          'Chúc bạn một ván đấu thật xuất sắc! 👑',
-          'Thế trận đang rất cân bằng và kịch tính! 🔥',
-          'Cẩn thận với những đòn chiến thuật bất ngờ nhé! ⚡'
+          'Nước đi rất thú vị. Để tôi tính toán kỹ hơn.',
+          'Chúc bạn một ván đấu thật xuất sắc.',
+          'Thế trận đang rất cân bằng và kịch tính.',
+          'Cẩn thận với những đòn chiến thuật ở trung tâm nhé.'
         ];
         appendChatMessage({
           sender: 'Đại Kiện Tượng AI',
-          avatar: '🤖',
+          avatar: 'G',
           text: replies[Math.floor(Math.random() * replies.length)]
         });
       }, 650);
@@ -1679,10 +1701,10 @@ function switchMode(newMode, announce = true) {
       el.waitingOverlay.classList.add('hidden');
     }
   } else if (newMode === 'ai') {
-    el.profileModeLabel.textContent = 'Chế độ: Đấu Máy AI';
+    el.profileModeLabel.textContent = 'Chế độ: Đấu với máy AI';
     startNewAiOrLocalGame('ai', announce);
   } else if (newMode === 'local') {
-    el.profileModeLabel.textContent = 'Chế độ: 2 Người 1 Máy';
+    el.profileModeLabel.textContent = 'Chế độ: 2 Người';
     startNewAiOrLocalGame('local', announce);
   }
   renderAll();
@@ -1699,14 +1721,23 @@ function updateModeTabsUI(activeMode) {
 
 function setRightTab(tabName) {
   const mapped = tabName === 'lobby' ? 'play' : tabName;
-  document.querySelectorAll('.dock-tab, .panel-tab').forEach((b) => {
+  document.querySelectorAll('.dock-tab').forEach((b) => {
     b.classList.toggle('active', b.getAttribute('data-tab') === mapped);
   });
-  const playPane = document.getElementById('tab-pane-play');
-  if (playPane) playPane.classList.toggle('active', mapped === 'play');
-  document.getElementById('tab-pane-moves').classList.toggle('active', mapped === 'moves');
-  document.getElementById('tab-pane-chat').classList.toggle('active', mapped === 'chat');
-  document.getElementById('tab-pane-customize').classList.toggle('active', mapped === 'customize');
+
+  const titles = {
+    play: 'Chơi cờ',
+    moves: 'Biên bản ván đấu',
+    chat: 'Trò chuyện trực tiếp',
+    customize: 'Tùy chỉnh giao diện'
+  };
+  const headingEl = document.getElementById('right-panel-heading');
+  if (headingEl && titles[mapped]) headingEl.textContent = titles[mapped];
+
+  document.getElementById('tab-pane-play')?.classList.toggle('active', mapped === 'play');
+  document.getElementById('tab-pane-moves')?.classList.toggle('active', mapped === 'moves');
+  document.getElementById('tab-pane-chat')?.classList.toggle('active', mapped === 'chat');
+  document.getElementById('tab-pane-customize')?.classList.toggle('active', mapped === 'customize');
 }
 
 function setMobileView(view) {
@@ -1721,6 +1752,74 @@ function setMobileView(view) {
 function bindUIEvents() {
   bindBoardPointerEvents();
 
+  // Left Sidebar Primary Navigation
+  document.querySelectorAll('.rc-nav-item').forEach((item) => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.rc-nav-item').forEach((n) => n.classList.remove('active'));
+      item.classList.add('active');
+      const nav = item.getAttribute('data-nav');
+
+      if (nav === 'play') {
+        setRightTab('play');
+      } else if (nav === 'puzzles') {
+        const p = TACTICAL_PUZZLES[currentPuzzleIdx % TACTICAL_PUZZLES.length];
+        currentPuzzleIdx++;
+        state.mode = 'ai';
+        updateModeTabsUI('ai');
+        state.chess.load(p.fen);
+        state.moveHistory = [];
+        state.lastMove = null;
+        state.viewStepIndex = -1;
+        state.gameEnded = false;
+        renderAll();
+        showToast(`Bài toán chiến thuật: ${p.title}`);
+      } else if (nav === 'learn') {
+        setRightTab('moves');
+        showToast(`Khai cuộc hiện tại: ${detectOpeningName(state.moveHistory)}`);
+      } else if (nav === 'community') {
+        setRightTab('chat');
+      } else if (nav === 'leaderboard') {
+        showToast('Bảng xếp hạng Đại Kiện Tượng: #1 DragonSlayer (2410) | #2 ValkyrieGM (2345) | #3 Bạn (1560)');
+      } else if (nav === 'shop') {
+        setRightTab('customize');
+      } else if (nav === 'events') {
+        showToast('Sự kiện mùa giải: Giải đấu Dragon Dynasty Championship đang mở đăng ký.');
+      }
+    });
+  });
+
+  // Sidebar Icon-Box Quick Actions & Theme Cycle
+  document.getElementById('btn-sidebar-customize')?.addEventListener('click', () => {
+    setRightTab('customize');
+  });
+
+  document.getElementById('btn-sidebar-inbox')?.addEventListener('click', () => {
+    showToast('Thông báo: Chào mừng bạn đến với mùa giải Royal Chess Arena.');
+  });
+
+  document.getElementById('btn-cycle-ui-theme')?.addEventListener('click', () => {
+    const keys = Object.keys(UI_THEMES);
+    const idx = keys.indexOf(userSettings.uiTheme);
+    userSettings.uiTheme = keys[(idx + 1) % keys.length];
+    saveJSON(STORAGE_KEYS.SETTINGS, userSettings);
+    applySettingsToDOM();
+    buildCustomizationStudio();
+    showToast(`Đã chuyển sang giao diện ${UI_THEMES[userSettings.uiTheme].name}.`);
+  });
+
+  // Dragon Dynasty Collection Showcase Button
+  document.getElementById('btn-dragon-collection')?.addEventListener('click', () => {
+    userSettings.pieceSet = 'imperial';
+    userSettings.boardTheme = 'royal_gold';
+    saveJSON(STORAGE_KEYS.SETTINGS, userSettings);
+    applySettingsToDOM();
+    buildCustomizationStudio();
+    renderBoard();
+    setRightTab('customize');
+    soundEngine.play('castle');
+    showToast('Đã trang bị bộ sưu tập Dragon Dynasty Legendary Set.');
+  });
+
   // Mode Switcher Pills
   document.querySelectorAll('.mode-pill').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -1729,11 +1828,21 @@ function bindUIEvents() {
     });
   });
 
-  // Right Panel Tabs
-  document.querySelectorAll('.dock-tab, .panel-tab').forEach((btn) => {
+  // Right Panel Subtabs
+  document.querySelectorAll('.dock-tab').forEach((btn) => {
     btn.addEventListener('click', () => {
       setRightTab(btn.getAttribute('data-tab'));
     });
+  });
+
+  // Update Time Control sublabel dynamically
+  document.getElementById('select-online-tc')?.addEventListener('change', (e) => {
+    const val = e.target.value;
+    const sub = document.getElementById('online-tc-sublabel');
+    if (!sub) return;
+    if (val === '1+0' || val === '2+1') sub.textContent = 'Cờ chớp';
+    else if (val === '3+0' || val === '3+2' || val === '5+0') sub.textContent = 'Cờ siêu tốc';
+    else sub.textContent = 'Cờ nhanh';
   });
 
   // Profile Modal Open/Close/Save
@@ -1742,7 +1851,6 @@ function bindUIEvents() {
     el.profileModal.classList.remove('hidden');
   };
   document.getElementById('btn-open-profile').addEventListener('click', openProfile);
-  document.getElementById('header-username')?.addEventListener('click', openProfile);
   document.getElementById('btn-edit-profile-inline').addEventListener('click', openProfile);
   document.getElementById('profile-card-avatar').addEventListener('click', openProfile);
   document.getElementById('btn-close-profile').addEventListener('click', () => {
@@ -1755,7 +1863,7 @@ function bindUIEvents() {
     renderProfileToDOM();
     renderPlayerBars();
     el.profileModal.classList.add('hidden');
-    showToast('✅ Đã lưu hồ sơ kỳ thủ!');
+    showToast('Đã lưu hồ sơ kỳ thủ.');
   });
 
   // Online Room Buttons
@@ -1771,21 +1879,30 @@ function bindUIEvents() {
     }
   });
   document.getElementById('btn-leave-room').addEventListener('click', leaveOnlineRoom);
-  document.getElementById('btn-refresh-lobby').addEventListener('click', () => {
+
+  const refreshBtn = document.getElementById('btn-refresh-lobby');
+  refreshBtn.addEventListener('click', () => {
+    refreshBtn.classList.add('spinning');
+    setTimeout(() => refreshBtn.classList.remove('spinning'), 580);
     if (state.socket) state.socket.emit('lobby:list');
-    showToast('🔄 Đã làm mới danh sách phòng!');
+    showToast('Đã làm mới danh sách phòng đấu.');
+  });
+
+  document.getElementById('btn-view-all-rooms')?.addEventListener('click', () => {
+    if (state.socket) state.socket.emit('lobby:list');
+    showToast('Đang hiển thị toàn bộ các phòng đấu trực tuyến.');
   });
 
   // Copy Room Code & Invite Link
   document.getElementById('btn-copy-code').addEventListener('click', () => {
     if (!state.onlineRoom) return;
-    copyText(state.onlineRoom.code, `📋 Đã sao chép mã phòng: ${state.onlineRoom.code}`);
+    copyText(state.onlineRoom.code, `Đã sao chép mã phòng: ${state.onlineRoom.code}`);
   });
 
   const copyInviteLink = () => {
     if (!state.onlineRoom) return;
     const url = `${window.location.origin}/?room=${state.onlineRoom.code}`;
-    copyText(url, '🔗 Đã sao chép Link mời bạn bè! Hãy gửi qua Messenger/Zalo.');
+    copyText(url, 'Đã sao chép đường dẫn mời bạn bè.');
   };
   document.getElementById('btn-copy-link').addEventListener('click', copyInviteLink);
   document.getElementById('btn-waiting-copy-link').addEventListener('click', copyInviteLink);
@@ -1812,16 +1929,16 @@ function bindUIEvents() {
     setRightTab('moves');
   });
 
-  // Action Dock Controls
+  // Bottom Control Dock Buttons
   document.getElementById('btn-new-game').addEventListener('click', () => {
     if (state.mode === 'online') {
       if (state.onlineRoom && state.onlineRoom.status === 'ended') {
         state.socket.emit('game:rematch');
-        showToast('🔄 Đã gửi lời mời tái đấu tới đối thủ!');
+        showToast('Đã gửi lời mời tái đấu tới đối thủ.');
       } else if (!state.onlineRoom) {
         createOnlineRoom();
       } else {
-        showToast('ℹ️ Ván đấu đang diễn ra. Hãy bấm Đầu Hàng hoặc Cầu Hòa nếu muốn kết thúc sớm.');
+        showToast('Ván đấu đang diễn ra. Hãy chọn Đề nghị hòa hoặc Bỏ cuộc nếu muốn kết thúc sớm.');
       }
     } else {
       startNewAiOrLocalGame(state.mode, true);
@@ -1839,7 +1956,19 @@ function bindUIEvents() {
     if (best) {
       state.hintArrow = { from: best.from, to: best.to };
       renderArrows();
-      showToast(`Gợi ý nước đi: ${best.san} (${best.from.toUpperCase()} → ${best.to.toUpperCase()})`);
+      showToast(`Phân tích AI: Nước đi tối ưu là ${best.san} (${best.from.toUpperCase()} -> ${best.to.toUpperCase()})`);
+    }
+  });
+
+  document.getElementById('btn-board-settings')?.addEventListener('click', () => {
+    setRightTab('customize');
+  });
+
+  document.getElementById('btn-fullscreen')?.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
     }
   });
 
@@ -1847,13 +1976,12 @@ function bindUIEvents() {
     if (state.mode === 'online') {
       if (state.onlineRoom && state.onlineRoom.status === 'playing' && state.moveHistory.length > 0) {
         state.socket.emit('game:undo-request');
-        showToast('↩️ Đã gửi yêu cầu xin đi lại cho đối thủ.');
+        showToast('Đã gửi yêu cầu hoàn tác nước đi cho đối thủ.');
       }
       return;
     }
     if (state.moveHistory.length === 0 || state.gameEnded) return;
 
-    // In AI mode, undo 2 plies (AI + Human) so it returns to Human's turn
     const pliesToUndo = state.mode === 'ai' && state.moveHistory.length >= 2 ? 2 : 1;
     for (let i = 0; i < pliesToUndo; i++) {
       state.chess.undo();
@@ -1869,14 +1997,14 @@ function bindUIEvents() {
     if (state.mode === 'online') {
       if (state.onlineRoom && state.onlineRoom.status === 'playing') {
         state.socket.emit('game:draw-offer');
-        showToast('🤝 Đã gửi lời đề nghị Hòa cờ!');
+        showToast('Đã gửi lời đề nghị hòa cờ.');
       }
     } else if (!state.gameEnded && state.moveHistory.length >= 2) {
       state.gameEnded = true;
       state.gameResult = {
         winner: 'draw',
         reason: 'agreement',
-        message: 'Ván đấu kết thúc Hòa theo thỏa thuận!'
+        message: 'Ván đấu kết thúc Hòa theo thỏa thuận.'
       };
       showGameOverModal(state.gameResult);
       renderAll();
@@ -1934,7 +2062,7 @@ function bindUIEvents() {
   document.getElementById('btn-gameover-rematch').addEventListener('click', () => {
     if (state.mode === 'online' && state.onlineRoom) {
       state.socket.emit('game:rematch');
-      showToast('🔄 Đã gửi yêu cầu Tái đấu! Đang chờ đối thủ đồng ý...');
+      showToast('Đã gửi yêu cầu Tái đấu. Đang chờ đối thủ đồng ý...');
     } else {
       startNewAiOrLocalGame(state.mode, true);
     }
@@ -1973,7 +2101,7 @@ function bindUIEvents() {
     renderAll();
   });
 
-  // Emoji Reactions
+  // Quick Reactions
   document.querySelectorAll('.emoji-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       const emoji = btn.getAttribute('data-emoji');
@@ -1987,18 +2115,18 @@ function bindUIEvents() {
 
   // FEN / PGN Tools
   document.getElementById('btn-copy-fen').addEventListener('click', () => {
-    copyText(state.chess.fen(), '📋 Đã sao chép chuỗi FEN hiện tại!');
+    copyText(state.chess.fen(), 'Đã sao chép chuỗi FEN hiện tại.');
   });
   document.getElementById('btn-copy-pgn').addEventListener('click', () => {
     const pgn = state.chess.pgn() || state.moveHistory.map((m, i) => (i % 2 === 0 ? `${i / 2 + 1}. ${m.san}` : m.san)).join(' ');
-    copyText(pgn || 'Chưa có nước đi', '📋 Đã sao chép biên bản PGN!');
+    copyText(pgn || 'Chưa có nước đi', 'Đã sao chép biên bản PGN.');
   });
   document.getElementById('btn-load-fen-toggle').addEventListener('click', () => {
     document.getElementById('fen-load-drawer').classList.toggle('hidden');
   });
   document.getElementById('btn-apply-fen').addEventListener('click', () => {
     if (state.mode === 'online' && state.onlineRoom) {
-      showToast('⚠️ Không thể nạp FEN tùy chỉnh khi đang đấu phòng Online!');
+      showToast('Không thể nạp FEN tùy chỉnh khi đang đấu phòng Online.');
       return;
     }
     const rawFen = document.getElementById('input-custom-fen').value.trim();
@@ -2010,9 +2138,9 @@ function bindUIEvents() {
       state.gameEnded = false;
       document.getElementById('fen-load-drawer').classList.add('hidden');
       renderAll();
-      showToast('✅ Đã nạp thế cờ FEN thành công!');
+      showToast('Đã nạp thế cờ FEN thành công.');
     } catch (_) {
-      showToast('❌ Chuỗi FEN không hợp lệ!');
+      showToast('Chuỗi FEN không hợp lệ.');
     }
   });
 
@@ -2058,7 +2186,7 @@ function bindUIEvents() {
     applySettingsToDOM();
     buildCustomizationStudio();
     renderAll();
-    showToast('🔄 Đã khôi phục giao diện mặc định!');
+    showToast('Đã khôi phục giao diện mặc định.');
   });
 }
 
@@ -2105,6 +2233,4 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-// Boot application
 init();
-
